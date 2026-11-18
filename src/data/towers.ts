@@ -78,7 +78,7 @@ export const TOWERS: TowerDefinition[] = [
     cost: 2,
     materials: {
       iron: 1,
-      ether: 2,
+      ether: 1,
     },
 
     range: 125,

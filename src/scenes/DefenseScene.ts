@@ -20,6 +20,13 @@ import {
   spendTowerCost,
   formatTowerCost,
 } from '../data/towers';
+import {
+  canAffordUpgrade,
+  formatUpgradeCost,
+  getTowerRuntimeStats,
+  getTowerUpgrade,
+  upgradeTower,
+} from '../data/towerUpgrades';
 
 import {
   WaveSystem,
@@ -31,18 +38,32 @@ import {
   getRepulsorPush,
   selectTargetsInRange,
 } from '../systems/towerCombat';
+import {
+  ARENA_HEIGHT as HEIGHT,
+  ARENA_WIDTH as WIDTH,
+  BUILD_PANEL_WIDTH as MENU_WIDTH,
+  MAIN_ROAD_DRAW_POINTS,
+  MAIN_ROAD_WAYPOINTS,
+  ROAD_SPAWN,
+  ROAD_WIDTH,
+  SANCTUARY,
+  distanceToMainRoad,
+  isInsideBuildArea,
+} from '../data/arena';
+import { VISUAL_ASSETS } from '../visual/assets';
+import {
+  createSceneLayers,
+  type SceneLayers,
+} from '../visual/layers';
+import { drawSanctuary } from '../visual/sanctuary';
+import { THEME } from '../visual/theme';
+import { addFramedImage, drawHudPanel } from '../visual/ui';
+import { createVoltaicBeam } from '../visual/vfx';
 
 
 // =====================================
 // CONFIGURAÇÕES
 // =====================================
-
-const WIDTH = 960;
-const HEIGHT = 540;
-const MENU_WIDTH = 240;
-
-const ROAD_TOP = 240;
-const ROAD_BOTTOM = 330;
 
 interface Enemy {
   kind: EnemyKind;
@@ -54,6 +75,8 @@ interface Enemy {
   baseDamage: number;
   slowTicks: number;
   attackCooldown: number;
+  pathIndex: number;
+  pathOffsetY: number;
   graphic: Graphics;
 }
 
@@ -63,6 +86,7 @@ interface Effect {
 }
 
 export class DefenseScene implements Scene {
+  private layers!: SceneLayers;
   private waves = new WaveSystem();
   private selected: TowerType | null = null;
 
@@ -72,6 +96,7 @@ export class DefenseScene implements Scene {
 
   private pointerX = 0;
   private pointerY = 0;
+  private upgradeCandidateId: number | null = null;
 
   private buttons: {
     type: TowerType;
@@ -89,21 +114,31 @@ export class DefenseScene implements Scene {
   // ==================================
 
   enter(game: Game): void {
-    const stage = game.app.stage;
+    this.layers = createSceneLayers(game.app.stage);
+    const stage = this.layers.entities;
 
     game.state.wave = 1;
 
-    drawRect(stage, 0, 0, WIDTH, HEIGHT, 0x365b45);
+    drawRect(this.layers.ground, 0, 0, WIDTH, HEIGHT, 0x263e35);
 
-    // Estrada dos invasores
-    drawRect(
-      stage,
-      MENU_WIDTH,
-      ROAD_TOP,
-      WIDTH - MENU_WIDTH,
-      ROAD_BOTTOM - ROAD_TOP,
-      0x897354
+    // Estrada compartilhada pelas três waves
+    const roadBorder = new Graphics().moveTo(
+      MAIN_ROAD_DRAW_POINTS[0].x,
+      MAIN_ROAD_DRAW_POINTS[0].y
     );
+    const road = new Graphics().moveTo(
+      MAIN_ROAD_DRAW_POINTS[0].x,
+      MAIN_ROAD_DRAW_POINTS[0].y
+    );
+
+    for (const point of MAIN_ROAD_DRAW_POINTS.slice(1)) {
+      roadBorder.lineTo(point.x, point.y);
+      road.lineTo(point.x, point.y);
+    }
+
+    roadBorder.stroke({ color: 0x6f5c43, width: ROAD_WIDTH + 10 });
+    road.stroke({ color: 0x897354, width: ROAD_WIDTH });
+    this.layers.ground.addChild(roadBorder, road);
 
     // Árvores decorativas
     for (const [x, y] of [
@@ -112,13 +147,19 @@ export class DefenseScene implements Scene {
       [765, 150],
       [870, 430],
     ]) {
-      drawCircle(stage, x, y, 27, 0x274f39);
+      drawCircle(this.layers.ground, x, y, 27, 0x1d402f);
     }
 
     // Santuário
-    drawCircle(stage, 280, 285, 38, 0x506b9b);
-    drawRect(stage, 262, 274, 36, 25, 0xb6c4d5);
-    drawText(stage, 'SANTUARIO', 250, 335, 14);
+    drawSanctuary(stage, SANCTUARY.x, SANCTUARY.y, 0.82);
+    drawText(
+      this.layers.worldUi,
+      'SANTUARIO',
+      SANCTUARY.x - 42,
+      SANCTUARY.y + 52,
+      13,
+      THEME.colors.sanctuaryGlow
+    );
 
     // Superfície que recebe os cliques
     const surface = new Graphics()
@@ -132,7 +173,7 @@ export class DefenseScene implements Scene {
 
     surface.eventMode = 'static';
     surface.cursor = 'crosshair';
-    stage.addChild(surface);
+    this.layers.groundDecals.addChild(surface);
 
     surface.on(
       'pointermove',
@@ -154,17 +195,37 @@ export class DefenseScene implements Scene {
       'pointerdown',
       (event: FederatedPointerEvent) => {
         const position = stage.toLocal(event.global);
-        this.handleMapClick(game, position.x, position.y);
+        this.handleMapClick(
+          game,
+          position.x,
+          position.y,
+          event.shiftKey
+        );
       }
     );
 
     // Painel lateral
-    drawRect(stage, 0, 0, MENU_WIDTH, HEIGHT, 0x162633);
-
-    drawText(stage, 'FORJA DE KAELEN', 15, 17, 19);
+    drawHudPanel(this.layers.hud, 0, 0, MENU_WIDTH, HEIGHT, 1);
+    drawHudPanel(
+      this.layers.hud,
+      MENU_WIDTH + 5,
+      5,
+      WIDTH - MENU_WIDTH - 10,
+      84,
+      0.94
+    );
 
     drawText(
-      stage,
+      this.layers.hud,
+      'FORJA DE KAELEN',
+      15,
+      17,
+      19,
+      THEME.colors.sanctuaryGlow
+    );
+
+    drawText(
+      this.layers.hud,
       'Selecione uma estrutura',
       15,
       53,
@@ -177,11 +238,12 @@ export class DefenseScene implements Scene {
     });
 
     // Interface
-    this.hud = drawText(stage, '', 252, 15, 16);
+    this.hud = drawText(this.layers.hud, '', 252, 15, 16);
 
     this.status = drawText(
-      stage,
-      'Selecione uma torre para construir.',
+      this.layers.hud,
+      `Expedicao: ${game.state.expedition.telemetry.nodesCollected}` +
+        `/${game.state.expedition.telemetry.totalNodes} nos coletados.`,
       252,
       48,
       14,
@@ -189,8 +251,8 @@ export class DefenseScene implements Scene {
     );
 
     drawText(
-      stage,
-      'ENTER: iniciar | ESC: cancelar | Clique: reparar',
+      this.layers.hud,
+      'ENTER: iniciar | Clique: reparar | SHIFT+clique: upgrade',
       252,
       75,
       12,
@@ -202,7 +264,7 @@ export class DefenseScene implements Scene {
     this.preview.eventMode = 'none';
     this.preview.visible = false;
 
-    stage.addChild(this.preview);
+    this.layers.vfx.addChild(this.preview);
 
     // Recupera torres do estado compartilhado
     for (const tower of game.state.towers) {
@@ -222,7 +284,7 @@ export class DefenseScene implements Scene {
     type: TowerType,
     index: number
   ): void {
-    const stage = game.app.stage;
+    const stage = this.layers.hud;
     const definition = getTowerDefinition(type);
     const y = 95 + index * 73;
 
@@ -236,6 +298,7 @@ export class DefenseScene implements Scene {
 
       this.selected =
         this.selected === type ? null : type;
+      this.upgradeCandidateId = null;
 
       this.refreshButtons();
       this.updatePreview(game);
@@ -255,10 +318,19 @@ export class DefenseScene implements Scene {
       definition.color
     ).eventMode = 'none';
 
+    addFramedImage(
+      stage,
+      VISUAL_ASSETS.towers[type],
+      14,
+      y + 5,
+      40,
+      48
+    ).eventMode = 'none';
+
     drawText(
       stage,
       `${index + 1}. ${definition.name}`,
-      55,
+      62,
       y + 6,
       13
     ).eventMode = 'none';
@@ -266,7 +338,7 @@ export class DefenseScene implements Scene {
     drawText(
       stage,
       formatTowerCost(definition),
-      55,
+      62,
       y + 29,
       12,
       0xc8d4ce
@@ -301,9 +373,17 @@ export class DefenseScene implements Scene {
   private handleMapClick(
     game: Game,
     x: number,
-    y: number
+    y: number,
+    shiftKey: boolean
   ): void {
     if (this.waves.phase !== 'preparation') return;
+
+    if (shiftKey) {
+      this.tryUpgrade(game, x, y);
+      return;
+    }
+
+    this.upgradeCandidateId = null;
 
     if (this.selected !== null) {
       this.tryBuild(game, x, y);
@@ -324,28 +404,23 @@ export class DefenseScene implements Scene {
   ): string | null {
     const definition = getTowerDefinition(type);
 
-    if (
-      x < MENU_WIDTH + 30 ||
-      x > WIDTH - 30 ||
-      y < 115 ||
-      y > HEIGHT - 30
-    ) {
+    if (!isInsideBuildArea(x, y)) {
       return 'Fora da area construivel.';
     }
 
-    if (Math.hypot(x - 280, y - 285) < 85) {
+    if (
+      Math.hypot(x - SANCTUARY.x, y - SANCTUARY.y) <
+      SANCTUARY.buildClearance
+    ) {
       return 'Nao construa sobre o santuario.';
     }
 
     if (definition.placement === 'road') {
-      if (y < 265 || y > 305) {
+      if (distanceToMainRoad(x, y) > ROAD_WIDTH / 2 - 8) {
         return 'Barricadas precisam ficar na estrada.';
       }
     } else {
-      if (
-        y + 24 > ROAD_TOP &&
-        y - 24 < ROAD_BOTTOM
-      ) {
+      if (distanceToMainRoad(x, y) < ROAD_WIDTH / 2 + 24) {
         return 'Torres devem ficar fora da estrada.';
       }
     }
@@ -527,15 +602,78 @@ export class DefenseScene implements Scene {
       `Torre reparada! HP: ${Math.ceil(tower.hp)}/${tower.maxHp}`;
   }
 
+  private tryUpgrade(game: Game, x: number, y: number): void {
+    const tower = game.state.towers.find(
+      (item) => Math.hypot(item.x - x, item.y - y) < 32
+    );
+
+    if (!tower) {
+      this.upgradeCandidateId = null;
+      this.status.text = 'Use SHIFT+clique sobre uma estrutura.';
+      return;
+    }
+
+    this.selected = null;
+    this.refreshButtons();
+    this.updatePreview(game);
+
+    const upgrade = getTowerUpgrade(tower);
+    if (!upgrade) {
+      this.upgradeCandidateId = null;
+      this.status.text = tower.tier >= 2
+        ? 'Esta estrutura ja esta no Tier 2.'
+        : 'Upgrade Tier 2 ainda indisponivel para esta torre.';
+      return;
+    }
+
+    const towerName = getTowerDefinition(tower.type).name;
+    const cost = formatUpgradeCost(upgrade);
+
+    if (tower.hp < tower.maxHp) {
+      this.upgradeCandidateId = null;
+      this.status.text =
+        `${towerName} precisa estar com HP cheio. Custo T2: ${cost}.`;
+      return;
+    }
+
+    if (!canAffordUpgrade(game.state.inventory, upgrade)) {
+      this.upgradeCandidateId = null;
+      this.status.text = `Materiais insuficientes. ${upgrade.name}: ${cost}.`;
+      return;
+    }
+
+    if (this.upgradeCandidateId !== tower.id) {
+      this.upgradeCandidateId = tower.id;
+      this.status.text =
+        `${towerName} -> ${upgrade.name} | Custo ${cost}. ` +
+        'SHIFT+clique novamente para confirmar.';
+      return;
+    }
+
+    const result = upgradeTower(game.state.inventory, tower);
+    this.upgradeCandidateId = null;
+
+    if (result !== 'upgraded') {
+      this.status.text = 'O upgrade nao pode mais ser aplicado.';
+      return;
+    }
+
+    const graphic = this.towerGraphics.get(tower.id);
+    if (graphic) this.drawTierMark(graphic, tower);
+    this.refreshTowerHealth(tower);
+    this.refreshHUD(game);
+    this.status.text = `${towerName} aprimorada para Tier 2!`;
+  }
+
   // ==================================
   // DESENHO DAS TORRES
   // ==================================
 
   private drawTower(
-    game: Game,
+    _game: Game,
     tower: TowerState
   ): void {
-    const stage = game.app.stage;
+    const stage = this.layers.entities;
     const definition = getTowerDefinition(tower.type);
 
     const graphic = new Graphics();
@@ -559,6 +697,8 @@ export class DefenseScene implements Scene {
         .fill(0x424a52);
     }
 
+    this.drawTierMark(graphic, tower);
+
     if (tower.hp <= 0) {
       graphic.tint = 0x555555;
     }
@@ -569,10 +709,29 @@ export class DefenseScene implements Scene {
     const bar = new Graphics();
     bar.eventMode = 'none';
 
-    stage.addChild(bar);
+    this.layers.worldUi.addChild(bar);
     this.healthBars.set(tower.id, bar);
 
     this.refreshTowerHealth(tower);
+  }
+
+  private drawTierMark(graphic: Graphics, tower: TowerState): void {
+    if (tower.tier < 2) return;
+
+    if (tower.type === 'spike_barricade') {
+      graphic
+        .roundRect(-27, -19, 54, 38, 6)
+        .stroke({ color: 0xffd36f, width: 3 });
+    } else {
+      graphic
+        .circle(0, 0, 26)
+        .stroke({ color: 0xffd36f, width: 3 });
+    }
+
+    graphic
+      .rect(-6, 9, 4, 9)
+      .rect(2, 9, 4, 9)
+      .fill(0xffe6a3);
   }
 
   private refreshTowerHealth(tower: TowerState): void {
@@ -627,17 +786,18 @@ export class DefenseScene implements Scene {
   // ==================================
 
   private spawnEnemy(
-    game: Game,
+    _game: Game,
     kind: EnemyKind
   ): void {
 
 
     const values = ENEMY_STATS[kind];
 
-    const y =
+    const pathOffsetY =
       kind === 'alpha'
-        ? 280
-        : 280 + ((this.waves.spawned % 3) - 1) * 15;
+        ? 0
+        : ((this.waves.spawned % 3) - 1) * 15;
+    const y = ROAD_SPAWN.y + pathOffsetY;
 
     const graphic = new Graphics()
       .circle(0, 0, values.radius)
@@ -645,14 +805,14 @@ export class DefenseScene implements Scene {
       .circle(-4, -3, 3)
       .fill(0xffffff);
 
-    graphic.position.set(975, y);
+    graphic.position.set(ROAD_SPAWN.x, y);
     graphic.eventMode = 'none';
 
-    game.app.stage.addChild(graphic);
+    this.layers.entities.addChild(graphic);
 
     this.enemies.push({
       kind,
-      x: 975,
+      x: ROAD_SPAWN.x,
       y,
       hp: values.hp,
       speed: values.speed,
@@ -660,12 +820,14 @@ export class DefenseScene implements Scene {
       baseDamage: values.damage,
       slowTicks: 0,
       attackCooldown: 0,
+      pathIndex: 0,
+      pathOffsetY,
       graphic,
     });
   }
 
   private removeEnemy(
-    game: Game,
+    _game: Game,
     enemy: Enemy
   ): void {
     const index = this.enemies.indexOf(enemy);
@@ -674,7 +836,7 @@ export class DefenseScene implements Scene {
 
     this.enemies.splice(index, 1);
 
-    game.app.stage.removeChild(enemy.graphic);
+    enemy.graphic.removeFromParent();
     enemy.graphic.destroy();
   }
 
@@ -698,12 +860,12 @@ export class DefenseScene implements Scene {
   // ==================================
 
   private addEffect(
-    game: Game,
+    _game: Game,
     graphic: Graphics
   ): void {
     graphic.eventMode = 'none';
 
-    game.app.stage.addChild(graphic);
+    this.layers.vfx.addChild(graphic);
 
     this.effects.push({
       graphic,
@@ -721,13 +883,7 @@ export class DefenseScene implements Scene {
   ): void {
     this.addEffect(
       game,
-      new Graphics()
-        .moveTo(x1, y1)
-        .lineTo(x2, y2)
-        .stroke({
-          color,
-          width: 3,
-        })
+      createVoltaicBeam(x1, y1, x2, y2, color)
     );
   }
 
@@ -743,23 +899,24 @@ export class DefenseScene implements Scene {
     if (tower.type === 'spike_barricade') return;
     if (tower.cooldown > 0) return;
 
-    const definition = getTowerDefinition(tower.type);
+    const stats = getTowerRuntimeStats(tower);
 
     const targets = selectTargetsInRange(
       this.enemies,
       tower.x,
       tower.y,
-      definition.range,
-      280,
-      285
+      stats.range,
+      SANCTUARY.x,
+      SANCTUARY.y
     );
 
     if (targets.length === 0) return;
 
-    tower.cooldown = definition.fireInterval;
+    tower.cooldown = stats.fireInterval;
 
     switch (tower.type) {
       case 'arc_ballista': {
+        game.audio.play('ballista');
         const target = targets[0];
 
         this.showBeam(
@@ -774,8 +931,33 @@ export class DefenseScene implements Scene {
         this.damageEnemy(
           game,
           target,
-          definition.damage
+          stats.damage
         );
+
+        const chainedTargets = targets
+          .slice(1)
+          .filter(
+            (candidate) =>
+              Math.hypot(candidate.x - target.x, candidate.y - target.y) <=
+              stats.chainRange
+          )
+          .slice(0, stats.chainTargets);
+
+        for (const chained of chainedTargets) {
+          this.showBeam(
+            game,
+            target.x,
+            target.y,
+            chained.x,
+            chained.y,
+            0x90e0ef
+          );
+          this.damageEnemy(
+            game,
+            chained,
+            stats.damage * stats.chainDamageMultiplier
+          );
+        }
 
         break;
       }
@@ -790,7 +972,7 @@ export class DefenseScene implements Scene {
           this.damageEnemy(
             game,
             target,
-            definition.damage
+            stats.damage
           );
         }
 
@@ -800,25 +982,29 @@ export class DefenseScene implements Scene {
             .circle(
               tower.x,
               tower.y,
-              definition.range
+              stats.range
             )
+            .fill({ color: THEME.colors.ether, alpha: 0.1 })
             .stroke({
               color: 0xbd70ec,
               width: 5,
             })
+            .circle(tower.x, tower.y, stats.range * 0.62)
+            .stroke({ color: THEME.colors.etherGlow, width: 2 })
         );
 
         break;
       }
 
       case 'repulsor': {
+        game.audio.play('repulsor');
         for (const target of targets) {
 
           // Cada classe resiste de forma diferente
           const pushDistance = getRepulsorPush(target.kind);
 
           target.x = Math.min(
-            975,
+            ROAD_SPAWN.x,
             target.x + pushDistance
           );
 
@@ -831,12 +1017,14 @@ export class DefenseScene implements Scene {
             .circle(
               tower.x,
               tower.y,
-              definition.range
+              stats.range
             )
             .stroke({
               color: 0x8ddbe9,
               width: 4,
             })
+            .circle(tower.x, tower.y, stats.range * 0.72)
+            .stroke({ color: THEME.colors.etherGlow, width: 2 })
         );
 
         break;
@@ -857,7 +1045,7 @@ export class DefenseScene implements Scene {
           this.damageEnemy(
             game,
             target,
-            definition.damage
+            stats.damage
           );
         }
 
@@ -885,22 +1073,18 @@ export class DefenseScene implements Scene {
         enemy.slowTicks - dt
       );
 
-      const nextX =
-        enemy.x - enemy.speed * multiplier * dt;
+      const step = enemy.speed * multiplier * dt;
 
-      // Verifica barricadas no caminho
+      // Barricadas bloqueiam o trajeto curvo pelo contato real.
       const barricade = game.state.towers.find(
         (tower) =>
           tower.type === 'spike_barricade' &&
           tower.hp > 0 &&
-          Math.abs(tower.y - enemy.y) <= 32 &&
-          enemy.x >= tower.x + 20 &&
-          nextX <= tower.x + 25
+          Math.hypot(tower.x - enemy.x, tower.y - enemy.y) <=
+            enemy.radius + 30
       );
 
       if (barricade) {
-        enemy.x = barricade.x + 25;
-
         if (enemy.attackCooldown <= 0) {
           const damage =
             enemy.kind === 'alpha'
@@ -910,19 +1094,39 @@ export class DefenseScene implements Scene {
                 : 12;
 
           this.damageTower(barricade, damage);
-          this.damageEnemy(game, enemy, 0.7);
+          this.damageEnemy(
+            game,
+            enemy,
+            getTowerRuntimeStats(barricade).damage
+          );
 
           enemy.attackCooldown = 42;
         }
       } else {
-        enemy.x = nextX;
+        const target = MAIN_ROAD_WAYPOINTS[enemy.pathIndex];
+
+        if (target) {
+          const targetY = target.y + enemy.pathOffsetY;
+          const dx = target.x - enemy.x;
+          const dy = targetY - enemy.y;
+          const distance = Math.hypot(dx, dy);
+
+          if (distance <= Math.max(5, step)) {
+            enemy.x = target.x;
+            enemy.y = targetY;
+            enemy.pathIndex++;
+          } else if (distance > 0) {
+            enemy.x += dx / distance * step;
+            enemy.y += dy / distance * step;
+          }
+        }
       }
 
       if (!this.enemies.includes(enemy)) {
         continue;
       }
 
-      enemy.graphic.x = enemy.x;
+      enemy.graphic.position.set(enemy.x, enemy.y);
 
       // Unidades maiores atacam torres próximas
       if (
@@ -960,7 +1164,12 @@ export class DefenseScene implements Scene {
       }
 
       // Dano ao santuário
-      if (enemy.x <= 310) {
+      if (
+        Math.hypot(
+          SANCTUARY.x - enemy.x,
+          SANCTUARY.y - enemy.y
+        ) <= enemy.radius + SANCTUARY.radius - 4
+      ) {
         this.removeEnemy(game, enemy);
         //se o chefe alcançar o santuário,
         //a defesa é considerada perdida.
@@ -1016,6 +1225,7 @@ private startWave(game: Game): void {
   // =====================================
 
   this.selected = null;
+  this.upgradeCandidateId = null;
 
   this.refreshButtons();
   this.updatePreview(game);
@@ -1052,7 +1262,7 @@ private startWave(game: Game): void {
       effect.life -= dt;
 
       if (effect.life <= 0) {
-        game.app.stage.removeChild(effect.graphic);
+        effect.graphic.removeFromParent();
         effect.graphic.destroy();
 
         this.effects.splice(
@@ -1131,7 +1341,7 @@ private startWave(game: Game): void {
   ): void {
     this.preview.visible = false;
 
-    const stage = game.app.stage;
+    const stage = this.layers.hud;
 
     drawRect(
       stage,
@@ -1184,6 +1394,7 @@ private startWave(game: Game): void {
           )
         ) {
           this.selected = definition.type;
+          this.upgradeCandidateId = null;
           this.refreshButtons();
           this.updatePreview(game);
         }
@@ -1192,6 +1403,7 @@ private startWave(game: Game): void {
       // Cancelar seleção
       if (game.input.wasPressed('Escape')) {
         this.selected = null;
+        this.upgradeCandidateId = null;
         this.refreshButtons();
         this.updatePreview(game);
 

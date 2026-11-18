@@ -3,13 +3,24 @@ import { Graphics, type Text } from 'pixi.js';
 
 import type { Game } from '../core/Game';
 import type { Scene } from '../core/Scene';
-import { formatClock } from '../systems/ExpeditionSystem';
+import {
+  DAYLIGHT_WARNING_SECONDS,
+  finishExpedition,
+  formatClock,
+  getExpeditionReport,
+} from '../systems/ExpeditionSystem';
 
 import {
   drawRect,
   drawCircle,
   drawText,
 } from '../core/draw';
+import {
+  createSceneLayers,
+  type SceneLayers,
+} from '../visual/layers';
+import { THEME } from '../visual/theme';
+import { drawHudPanel } from '../visual/ui';
 
 interface Rectangle {
   x: number;
@@ -43,6 +54,7 @@ const surfaces: Rectangle[] = [
 ];
 
 export class PlatformScene implements Scene {
+  private layers!: SceneLayers;
   private player!: Graphics;
   private clockText!: Text;
   private velocityY = 0;
@@ -53,31 +65,32 @@ export class PlatformScene implements Scene {
   }
 
   enter(game: Game): void {
-    const stage = game.app.stage;
+    this.layers = createSceneLayers(game.app.stage);
+    const stage = this.layers.entities;
 
     // Céu e paisagem
-    drawRect(stage, 0, 0, 960, 540, 0x172b3b);
-    drawCircle(stage, 780, 105, 46, 0xe6dfa7);
+    drawRect(this.layers.ground, 0, 0, 960, 540, 0x111a29);
+    drawCircle(this.layers.ground, 780, 105, 46, 0xd7c98f);
 
     for (const x of [80, 250, 460, 680, 870]) {
-      drawRect(stage, x, 275, 16, 180, 0x5b4534);
-      drawCircle(stage, x + 8, 290, 55, 0x24543f);
+      drawRect(this.layers.ground, x, 275, 16, 180, 0x49372d);
+      drawCircle(this.layers.ground, x + 8, 290, 55, 0x1d4034);
     }
 
     // Chão
-    drawRect(stage, 0, GROUND, WIDTH, 85, 0x385c3c);
-    drawRect(stage, 0, GROUND, WIDTH, 12, 0x64925c);
+    drawRect(this.layers.ground, 0, GROUND, WIDTH, 85, 0x2b4939);
+    drawRect(this.layers.ground, 0, GROUND, WIDTH, 12, 0x657d55);
 
     // Plataformas
     for (const p of platforms) {
-      drawRect(stage, p.x, p.y, p.width, p.height, 0x9d7651);
-      drawRect(stage, p.x, p.y, p.width, 5, 0x8db16b);
+      drawRect(this.layers.ground, p.x, p.y, p.width, p.height, 0x76583f);
+      drawRect(this.layers.ground, p.x, p.y, p.width, 5, 0x77965d);
     }
 
     // Obstáculos
     for (const rock of rocks) {
       drawRect(
-        stage,
+        this.layers.ground,
         rock.x,
         rock.y,
         rock.width,
@@ -107,17 +120,20 @@ export class PlatformScene implements Scene {
 
     stage.addChild(this.player);
 
+    drawHudPanel(this.layers.hud, 8, 7, 944, 74, 0.92);
     drawText(
-      stage,
+      this.layers.hud,
       this.goingBack
         ? 'OAKHEAVEN | Retorno ao acampamento'
         : 'OAKHEAVEN | Expedicao',
       20,
-      15
+      15,
+      20,
+      THEME.colors.sanctuaryGlow
     );
 
     drawText(
-      stage,
+      this.layers.hud,
       'A/D: mover | ESPACO: pular',
       20,
       48,
@@ -126,8 +142,8 @@ export class PlatformScene implements Scene {
     );
 
     this.clockText = drawText(
-      stage,
-      'ANOITECER: 02:00',
+      this.layers.hud,
+      'ANOITECER: 01:30',
       735,
       15,
       17,
@@ -152,6 +168,10 @@ export class PlatformScene implements Scene {
   update(game: Game, dt: number): void {
     this.clockText.text =
       `ANOITECER: ${formatClock(game.state.expedition.remainingSeconds)}`;
+    this.clockText.tint =
+      game.state.expedition.remainingSeconds <= DAYLIGHT_WARNING_SECONDS
+        ? 0xff7777
+        : 0xffffff;
     const input = game.input;
     const oldX = this.player.x;
 
@@ -225,6 +245,11 @@ export class PlatformScene implements Scene {
       this.player.x < 45 &&
       this.player.y >= GROUND - 2
     ) {
+      finishExpedition(game.state, 'voluntary');
+      console.info(
+        '[OAKHEAVEN] Expedicao concluida:',
+        getExpeditionReport(game.state)
+      );
       game.changeScene('defense');
     }
   }

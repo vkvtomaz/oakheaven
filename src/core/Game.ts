@@ -10,13 +10,19 @@ import {
 
 import type { Scene } from './Scene';
 import type { WaveSystem } from '../systems/WaveSystem';
-import { updateDaylight } from '../systems/ExpeditionSystem';
+import {
+  getExpeditionReport,
+  updateDaylight,
+} from '../systems/ExpeditionSystem';
 import { LastStandScene } from '../scenes/LastStandScene';
-import { PlatformScene } from '../scenes/PlatformScene';
+import { EnhancedPlatformScene } from '../scenes/EnhancedPlatformScene';
 import { ForestScene } from '../scenes/ForestScene';
 import { DefenseScene } from '../scenes/DefenseScene';
+import { TitleScene } from '../scenes/TitleScene';
+import { SoundFX } from '../audio/SoundFX';
 
 export type SceneId =
+  | 'title'
   | 'platform-out'
   | 'forest'
   | 'platform-back'
@@ -26,23 +32,30 @@ export type SceneId =
 export class Game {
   readonly app: Application;
   readonly input = new Input();
+  readonly audio = new SoundFX();
 
   state: GameState;
 
   private scene: Scene | null = null;
   private currentSceneId!: SceneId;
 
-  constructor(app: Application) {
+  constructor(app: Application, initialSceneId: SceneId = 'title') {
     this.app = app;
     this.state = createInitialState();
 
-    this.changeScene('platform-out');
+    this.changeScene(initialSceneId);
 
     this.app.ticker.add((ticker) => {
       const dt = Math.min(ticker.deltaTime, 2);
 
+      if (this.input.wasPressed('KeyM')) {
+        const muted = this.audio.toggleMute();
+        console.info(`[OAKHEAVEN] Audio ${muted ? 'mutado' : 'ativado'}.`);
+      }
+
       // Contagem de tempo durante toda a expedição
       if (
+        this.currentSceneId !== 'title' &&
         this.currentSceneId !== 'defense' &&
         this.currentSceneId !== 'last-stand'
       ) {
@@ -57,6 +70,10 @@ export class Game {
         );
 
         if (nightfall) {
+          console.info(
+            '[OAKHEAVEN] Expedicao concluida:',
+            getExpeditionReport(this.state)
+          );
           this.changeScene('defense');
         }
       }
@@ -75,8 +92,12 @@ export class Game {
     }
 
     switch (sceneId) {
+      case 'title':
+        this.scene = new TitleScene();
+        break;
+
       case 'platform-out':
-        this.scene = new PlatformScene(false);
+        this.scene = new EnhancedPlatformScene(false);
         break;
 
       case 'forest':
@@ -84,7 +105,7 @@ export class Game {
         break;
 
       case 'platform-back':
-        this.scene = new PlatformScene(true);
+        this.scene = new EnhancedPlatformScene(true);
         break;
 
       case 'defense':
@@ -107,6 +128,6 @@ export class Game {
 
   restart(): void {
     this.state = createInitialState();
-    this.changeScene('platform-out');
+    this.changeScene('title');
   }
 }

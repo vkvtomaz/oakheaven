@@ -6,7 +6,8 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: #0b101a;
+  background:
+    radial-gradient(circle at 50% 25%, #27203b 0%, #0b101a 55%, #05070b 100%);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -20,6 +21,10 @@ canvas {
   display: block;
   width: 100%;
   height: auto;
-  border: 2px solid #405065;
-  border-radius: 8px;
+  border: 3px solid #3a3f54;
+  border-radius: 10px;
+  box-shadow:
+    0 0 0 2px #2c1e16,
+    0 18px 60px rgb(0 0 0 / 65%),
+    0 0 32px rgb(157 78 221 / 18%);
 }

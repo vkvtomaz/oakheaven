@@ -15,6 +15,7 @@ import {
   WaveSystem,
   type EnemyKind,
 } from '../src/systems/WaveSystem.ts';
+import { SANCTUARY } from '../src/data/arena.ts';
 
 test('wave 3 tem 32 inimigos, 8 brutos e 1 Alpha', () => {
   const waves = new WaveSystem();
@@ -114,8 +115,8 @@ test('torres priorizam o alvo mais proximo do santuario', () => {
     450,
     285,
     200,
-    105,
-    285
+    SANCTUARY.x,
+    SANCTUARY.y
   );
 
   assert.deepEqual(

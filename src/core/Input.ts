@@ -2,6 +2,7 @@
 export class Input {
   private down = new Set<string>();
   private pressed = new Set<string>();
+  private released = new Set<string>();
 
   constructor() {
     window.addEventListener('keydown', (event) => {
@@ -25,12 +26,16 @@ export class Input {
     });
 
     window.addEventListener('keyup', (event) => {
+      if (this.down.has(event.code)) {
+        this.released.add(event.code);
+      }
       this.down.delete(event.code);
     });
 
     window.addEventListener('blur', () => {
       this.down.clear();
       this.pressed.clear();
+      this.released.clear();
     });
   }
 
@@ -42,7 +47,12 @@ export class Input {
     return this.pressed.has(code);
   }
 
+  wasReleased(code: string): boolean {
+    return this.released.has(code);
+  }
+
   endFrame(): void {
     this.pressed.clear();
+    this.released.clear();
   }
 }

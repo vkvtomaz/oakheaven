@@ -1,13 +1,174 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>oakheaven</title>
+    <meta name="theme-color" content="#0b0a10" />
+    <meta
+      name="description"
+      content="OAKHEAVEN — atravesse a floresta, erga as defesas e proteja o último santuário."
+    />
+    <title>OAKHEAVEN — O Último Juramento</title>
   </head>
   <body>
-    <div id="app"></div>
+    <a class="skip-link" href="#arena">Ir para o jogo</a>
+
+    <header class="site-header" id="topo">
+      <a class="brand" href="#inicio" aria-label="OAKHEAVEN, início">
+        <span class="brand-mark" aria-hidden="true">O</span>
+        <span>OAKHEAVEN<small>O último juramento</small></span>
+      </a>
+      <nav class="site-nav" aria-label="Navegação principal">
+        <a href="#arena">Arena</a>
+        <a href="#manual">Guia</a>
+        <a href="#cronica">Crônica</a>
+        <a href="#forja">Forja</a>
+        <a href="#bestiario">Bestiário</a>
+        <a href="#historia">História</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" id="inicio" aria-labelledby="hero-title">
+        <div class="hero-embers" aria-hidden="true">
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+        </div>
+        <div class="hero-copy">
+          <h1 id="hero-title">OAK<span>HEAVEN</span></h1>
+          <p class="hero-oath">“Nenhuma criatura pisará onde eles descansam.”</p>
+          <div class="hero-actions">
+            <button class="primary-action" data-start-game>Jogar agora</button>
+            <a class="text-action" href="#cronica">Abrir a crônica</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section arena-section" id="arena" aria-labelledby="arena-title">
+        <header class="section-heading arena-heading" data-reveal>
+          <h2 id="arena-title">Defenda o Santuário</h2>
+        </header>
+
+        <div class="arena-shell" id="arena-shell" data-reveal>
+          <div class="arena-toolbar">
+            <div class="focus-status" id="focus-status" aria-live="polite">
+              <span></span> Clique na Arena para controlar Kaelen
+            </div>
+            <div class="arena-tools">
+              <button id="theater-toggle" type="button">Modo Teatro</button>
+              <button id="fullscreen-toggle" type="button">Tela Cheia</button>
+            </div>
+          </div>
+          <div class="game-frame" id="game-frame">
+            <div id="app" aria-label="Palco do jogo OAKHEAVEN"></div>
+            <div class="game-start-overlay" id="game-start-overlay">
+              <img id="game-cover" alt="Kaelen diante do santuário de OakHeaven" />
+              <div class="game-start-copy">
+                <span>O sino do crepúsculo tocou</span>
+                <strong>A defesa aguarda seu juramento</strong>
+                <button class="primary-action" id="arena-start" type="button">Iniciar defesa</button>
+              </div>
+            </div>
+          </div>
+          <div class="command-ribbon" aria-label="Comandos essenciais">
+            <span><kbd>1–5</kbd> Torres</span>
+            <span><kbd>Enter</kbd> Wave</span>
+            <span><kbd>E</kbd> Extrair / Reparar</span>
+            <span><kbd>Espaço</kbd> / <kbd>F</kbd> Atacar</span>
+            <span><kbd>R</kbd> Reiniciar</span>
+            <span><kbd>M</kbd> Áudio</span>
+          </div>
+        </div>
+
+        <div class="manual" id="manual" data-reveal>
+          <div class="manual-tabs" role="tablist" aria-label="Fases da noite">
+            <button role="tab" aria-selected="true" aria-controls="manual-day" id="tab-day">I. Dia</button>
+            <button role="tab" aria-selected="false" aria-controls="manual-dusk" id="tab-dusk">II. Anoitecer</button>
+            <button role="tab" aria-selected="false" aria-controls="manual-climax" id="tab-climax">III. Última Linha</button>
+          </div>
+          <div class="manual-page" id="manual-day" role="tabpanel" aria-labelledby="tab-day">
+            <span class="manual-number">01</span>
+            <div><p class="eyebrow">Travessia e floresta</p><h3>Colete recursos para construir</h3></div>
+            <p>Use <strong>A/D para movimento</strong> e <strong>Espaço</strong> para pular na travessia. A rota alta é veloz e oferece itens, mas uma queda custa tempo. Na floresta, mova-se com WASD e segure <strong>E</strong> para extrair materiais. Não espere o tempo acabar para voltar.</p>
+          </div>
+          <div class="manual-page" id="manual-dusk" role="tabpanel" aria-labelledby="tab-dusk" hidden>
+            <span class="manual-number">02</span>
+            <div><p class="eyebrow">Waves 1 e 2</p><h3>A forja decide quem atravessa</h3></div>
+            <p>Selecione as defesas com <kbd>1–5</kbd>, construa nas margens ou na estrada e pressione <kbd>Enter</kbd>. Entre waves, um reparo custa 1 Madeira e restaura 35 HP. <kbd>Shift</kbd> + clique aprimora Balesta ou Barricada elegíveis.</p>
+          </div>
+          <div class="manual-page" id="manual-climax" role="tabpanel" aria-labelledby="tab-climax" hidden>
+            <span class="manual-number">03</span>
+            <div><p class="eyebrow">A Última Linha</p><h3>Kaelen entra na arena</h3></div>
+            <p>Use <kbd>WASD</kbd>, ataque com <kbd>Espaço/F</kbd> e segure para carregar o Quebra-Terra. Repare com <kbd>E</kbd>. Flanqueadores marcados em ciano recebem apenas 45% do dano das torres, mas 100% do dano direto de Kaelen.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section chronicle-section" id="cronica" aria-labelledby="chronicle-title">
+        <header class="section-heading chronicle-heading" data-reveal>
+          <p class="eyebrow">Crônica de uma cidade caída</p>
+          <h2 id="chronicle-title">O que ainda vive em OakHeaven</h2>
+        </header>
+        <div class="timeline" data-reveal>
+          <article><span>I</span><div><small>O passado na vanguarda</small><h3>A forja antes da guerra</h3><p>Kaelen moldava ferramentas e defesas para uma cidade que acreditava estar longe do front.</p></div></article>
+          <article><span>II</span><div><small>A queda de OakHeaven</small><h3>Éter sobre as muralhas</h3><p>Os Ceifadores vieram pelo núcleo sob a colina. Elena, Toren e Lyra não deixaram o santuário.</p></div></article>
+          <article><span>III</span><div><small>O último juramento</small><h3>Uma noite que não termina</h3><p>Sozinho na defesa, Kaelen transforma luto em metal, madeira e resistência.</p></div></article>
+        </div>
+        <div class="character-codex" data-reveal>
+          <div class="character-list" id="character-list" aria-label="Personagens e lugares"></div>
+          <article class="character-profile" id="character-profile" aria-live="polite"></article>
+        </div>
+      </section>
+
+      <section class="section forge-section" id="forja" aria-labelledby="forge-title">
+        <header class="section-heading editorial-heading" data-reveal>
+          <p class="eyebrow">Arsenal híbrido de defesa</p>
+          <h2 id="forge-title">O livro da Forja</h2>
+          <p>Madeira de OakHeaven, sucata humana e tecnologia dos próprios invasores.</p>
+        </header>
+        <div class="forge-ledger" id="forge-grid" data-reveal></div>
+      </section>
+
+      <section class="section bestiary-section" id="bestiario" aria-labelledby="bestiary-title">
+        <header class="section-heading editorial-heading" data-reveal>
+          <p class="eyebrow">Códice dos Ceifadores de Éter</p>
+          <h2 id="bestiary-title">Conhecer a presa é sobreviver</h2>
+        </header>
+        <div class="bestiary-ledger" id="bestiary-grid" data-reveal></div>
+      </section>
+
+      <section class="section history-section" id="historia" aria-labelledby="history-title">
+        <header class="section-heading editorial-heading" data-reveal>
+          <p class="eyebrow">Antes e depois da queda</p>
+          <h2 id="history-title">A História de OakHeaven</h2>
+        </header>
+        <div class="history-copy" data-reveal>
+          <p>OakHeaven nasceu ao redor de uma árvore ancestral, no encontro entre a estrada das montanhas e as rotas dos antigos ferreiros. Durante gerações, a cidade prosperou com madeira, minério e o trabalho de famílias que transformaram uma colina isolada em lar.</p>
+          <p>Sob essa colina, porém, repousava um núcleo de energia que ninguém compreendia por inteiro. Quando os Ceifadores de Éter atravessaram o vale, não vieram por muralhas ou riquezas: vieram pelo que pulsava sob as raízes. A praça foi destruída, a população dispersada e o santuário tornou-se túmulo para Elena, Toren e Lyra.</p>
+          <p>Kaelen permaneceu. Com a forja ainda acesa e os materiais deixados entre as ruínas, ele ergue defesas feitas de madeira, ferro, quitina e tecnologia inimiga. Cada noite protegida mantém a memória de OakHeaven viva — e impede que os invasores profanem o último lugar onde sua família descansa.</p>
+          <blockquote>OakHeaven não é apenas uma cidade perdida. É a promessa de que alguma coisa ainda pode permanecer.</blockquote>
+        </div>
+        <div class="history-comparison" id="history-comparison" data-reveal style="--comparison: 50%">
+          <img id="history-after" alt="OakHeaven depois da invasão" />
+          <div class="history-before"><img id="history-before" alt="OakHeaven antes da invasão" /></div>
+          <span class="comparison-label before">Antes</span>
+          <span class="comparison-label after">Depois</span>
+          <div class="comparison-handle" aria-hidden="true"><i>↔</i></div>
+          <input id="history-slider" type="range" min="0" max="100" value="50" aria-label="Comparar OakHeaven antes e depois da invasão" />
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <strong>OAKHEAVEN</strong>
+      <p>Projeto desenvolvido por <a href="https://github.com/vkvtomaz" target="_blank" rel="noreferrer">Vinicius Tomaz</a>. Todos os direitos reservados.</p>
+    </footer>
+
+    <dialog class="codex-modal" id="codex-modal" aria-labelledby="codex-modal-title">
+      <button class="modal-close" type="button" data-close-modal aria-label="Fechar">×</button>
+      <div id="codex-modal-content"></div>
+    </dialog>
+
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

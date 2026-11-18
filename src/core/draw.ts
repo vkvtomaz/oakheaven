@@ -1,5 +1,6 @@
 
 import { Container, Graphics, Text } from 'pixi.js';
+import { THEME } from '../visual/theme';
 
 export function drawRect(
   stage: Container,
@@ -43,7 +44,7 @@ export function drawText(
   const text = new Text({
     text: content,
     style: {
-      fontFamily: 'Arial',
+      fontFamily: THEME.fonts.display,
       fontSize: size,
       fill: color,
       fontWeight: 'bold',

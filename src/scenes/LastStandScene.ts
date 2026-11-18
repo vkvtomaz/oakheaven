@@ -14,6 +14,7 @@ import {
   type FlankSide,
 } from '../data/enemies';
 import { getTowerDefinition } from '../data/towers';
+import { getTowerRuntimeStats } from '../data/towerUpgrades';
 import {
   REPAIR_COST,
   REPAIR_DURATION,
@@ -23,31 +24,68 @@ import {
   getRepulsorPush,
   selectTargetsInRange,
 } from '../systems/towerCombat';
+import {
+  BASIC_ATTACK_COOLDOWN,
+  BASIC_ATTACK_DAMAGE,
+  BASIC_ATTACK_HITSTOP,
+  BASIC_ATTACK_KNOCKBACK,
+  BASIC_ATTACK_RANGE,
+  GROUND_BREAK_COOLDOWN,
+  GROUND_BREAK_DAMAGE,
+  GROUND_BREAK_HITSTOP,
+  GROUND_BREAK_KNOCKBACK,
+  GROUND_BREAK_RADIUS,
+  getChargeRatio,
+  isInsideCleave,
+  isInsideGroundBreak,
+  resolveHammerRelease,
+} from '../systems/kaelenCombat';
+import {
+  ALPHA_FINAL_SPEED_MULTIPLIER,
+  ALPHA_ROAR_RADIUS,
+  ALPHA_STANCE_FLANKERS,
+  ALPHA_SUPPRESSION_TICKS,
+  breakObsidianStance,
+  createAlphaBossState,
+  getAlphaDamageMultiplier,
+  isInsideAlphaRoar,
+  updateAlphaStun,
+  updateAlphaThresholds,
+  type AlphaBossState,
+  type AlphaDamageSource,
+} from '../systems/alphaBoss';
+import { VISUAL_ASSETS } from '../visual/assets';
+import {
+  createSceneLayers,
+  type SceneLayers,
+} from '../visual/layers';
+import { drawSanctuary } from '../visual/sanctuary';
+import { THEME } from '../visual/theme';
+import { addFramedImage, drawHudPanel } from '../visual/ui';
+import { createVoltaicBeam } from '../visual/vfx';
 import type { EnemyKind, WaveSystem } from '../systems/WaveSystem';
-
-const WIDTH = 960;
-const HEIGHT = 540;
-const HUD_HEIGHT = 92;
-const ROAD_TOP = 240;
-const ROAD_BOTTOM = 330;
-const SANCTUARY = { x: 105, y: 285 };
+import {
+  ARENA_HEIGHT as HEIGHT,
+  ARENA_WIDTH as WIDTH,
+  FLANK_ROUTES,
+  HUD_HEIGHT,
+  KAELEN_START,
+  MAIN_ROAD_DRAW_POINTS,
+  MAIN_ROAD_WAYPOINTS,
+  ROAD_SPAWN,
+  ROAD_WIDTH,
+  SANCTUARY,
+  type ArenaPoint as Point,
+} from '../data/arena';
 
 const PLAYER_SPEED = 4;
 const PLAYER_RADIUS = 14;
-const ATTACK_RANGE = 66;
-const ATTACK_DAMAGE = 4;
-const ATTACK_COOLDOWN = 22;
 const REPAIR_RANGE = 58;
 const INTRO_DURATION = 180;
 const FLANK_WARNING_DURATION = 36;
 const PLAYER_INVULNERABILITY = 42;
 
-interface Point {
-  x: number;
-  y: number;
-}
-
-type DamageSource = 'tower' | 'kaelen';
+type DamageSource = AlphaDamageSource;
 
 interface Enemy {
   kind: EnemyKind;
@@ -64,7 +102,7 @@ interface Enemy {
   path: Point[];
   pathIndex: number;
   targetTowerId: number | null;
-  specialUsed: boolean;
+  alphaState: AlphaBossState | null;
   graphic: Graphics;
   healthBar: Graphics;
 }
@@ -82,8 +120,10 @@ interface PendingSpawn {
 }
 
 export class LastStandScene implements Scene {
+  private layers!: SceneLayers;
   private readonly waves: WaveSystem;
   private player!: Graphics;
+  private chargeIndicator!: Graphics;
   private hud!: Text;
   private status!: Text;
   private interaction!: Text;
@@ -93,8 +133,13 @@ export class LastStandScene implements Scene {
   private effects: Effect[] = [];
   private towerGraphics = new Map<number, Graphics>();
   private towerHealthBars = new Map<number, Graphics>();
+  private towerSuppression = new Map<number, number>();
   private lastDirection: Point = { x: 1, y: 0 };
   private attackCooldown = 0;
+  private groundBreakCooldown = 0;
+  private attackCharge = 0;
+  private attackCharging = false;
+  private hitstopRemaining = 0;
   private queuedSequence = 0;
   private flankerSequence = 0;
   private statusTimer = 0;
@@ -110,27 +155,38 @@ export class LastStandScene implements Scene {
   }
 
   enter(game: Game): void {
-    const stage = game.app.stage;
+    this.layers = createSceneLayers(game.app.stage);
+    const stage = this.layers.entities;
 
-    stage.addChild(
+    this.layers.ground.addChild(
       new Graphics().rect(0, 0, WIDTH, HEIGHT).fill(0x294638)
     );
-    stage.addChild(
+    this.layers.ground.addChild(
       new Graphics()
         .rect(0, HUD_HEIGHT, WIDTH, HEIGHT - HUD_HEIGHT)
         .fill(0x355b45)
-        .rect(0, ROAD_TOP, WIDTH, ROAD_BOTTOM - ROAD_TOP)
-        .fill(0x897354)
-        .rect(0, ROAD_TOP - 5, WIDTH, 5)
-        .fill(0x6f5c43)
-        .rect(0, ROAD_BOTTOM, WIDTH, 5)
-        .fill(0x6f5c43)
     );
+
+    const roadBorder = new Graphics().moveTo(
+      MAIN_ROAD_DRAW_POINTS[0].x,
+      MAIN_ROAD_DRAW_POINTS[0].y
+    );
+    const road = new Graphics().moveTo(
+      MAIN_ROAD_DRAW_POINTS[0].x,
+      MAIN_ROAD_DRAW_POINTS[0].y
+    );
+    for (const point of MAIN_ROAD_DRAW_POINTS.slice(1)) {
+      roadBorder.lineTo(point.x, point.y);
+      road.lineTo(point.x, point.y);
+    }
+    roadBorder.stroke({ color: 0x6f5c43, width: ROAD_WIDTH + 10 });
+    road.stroke({ color: 0x897354, width: ROAD_WIDTH });
+    this.layers.ground.addChild(roadBorder, road);
 
     for (const [x, y] of [
       [235, 155], [430, 430], [690, 150], [850, 440],
     ]) {
-      stage.addChild(
+      this.layers.ground.addChild(
         new Graphics()
           .circle(x, y, 26)
           .fill(0x234b34)
@@ -139,30 +195,29 @@ export class LastStandScene implements Scene {
       );
     }
 
-    stage.addChild(
+    this.layers.worldUi.addChild(
       new Graphics()
-        .moveTo(945, 135)
-        .lineTo(918, 150)
-        .lineTo(945, 165)
+        .moveTo(945, FLANK_ROUTES.upper.warning.y - 15)
+        .lineTo(918, FLANK_ROUTES.upper.warning.y)
+        .lineTo(945, FLANK_ROUTES.upper.warning.y + 15)
         .closePath()
         .fill({ color: 0x70e4ff, alpha: 0.72 })
-        .moveTo(945, 415)
-        .lineTo(918, 430)
-        .lineTo(945, 445)
+        .moveTo(945, FLANK_ROUTES.lower.warning.y - 15)
+        .lineTo(918, FLANK_ROUTES.lower.warning.y)
+        .lineTo(945, FLANK_ROUTES.lower.warning.y + 15)
         .closePath()
         .fill({ color: 0x70e4ff, alpha: 0.72 })
     );
 
-    stage.addChild(
-      new Graphics()
-        .circle(SANCTUARY.x, SANCTUARY.y, 46)
-        .fill(0x405b82)
-        .circle(SANCTUARY.x, SANCTUARY.y, 34)
-        .fill(0x7995bb)
-        .rect(SANCTUARY.x - 17, SANCTUARY.y - 15, 34, 30)
-        .fill(0xc5d4e4)
+    drawSanctuary(stage, SANCTUARY.x, SANCTUARY.y, 0.92);
+    drawText(
+      this.layers.worldUi,
+      'SANTUARIO',
+      SANCTUARY.x - 45,
+      SANCTUARY.y + 53,
+      13,
+      THEME.colors.sanctuaryGlow
     );
-    drawText(stage, 'SANTUARIO', 60, 338, 13, 0xe7eef6);
 
     for (const tower of game.state.towers) {
       this.drawTower(game, tower);
@@ -175,28 +230,44 @@ export class LastStandScene implements Scene {
       .fill(0xead0ad)
       .rect(9, -3, 18, 6)
       .fill(0x9da5ad);
-    this.player.position.set(185, 385);
+    this.player.position.set(KAELEN_START.x, KAELEN_START.y);
     stage.addChild(this.player);
 
+    this.chargeIndicator = new Graphics();
+    this.chargeIndicator.eventMode = 'none';
+    this.chargeIndicator.visible = false;
+    this.layers.vfx.addChild(this.chargeIndicator);
+
+    drawHudPanel(this.layers.hud, 5, 5, WIDTH - 10, HUD_HEIGHT - 10, 0.94);
+    addFramedImage(
+      this.layers.hud,
+      VISUAL_ASSETS.kaelen,
+      12,
+      13,
+      52,
+      52,
+      true
+    );
+
     drawText(
-      stage,
+      this.layers.hud,
       'OAKHEAVEN — A ULTIMA LINHA',
+      76,
+      12,
       20,
-      14,
-      22,
-      0xffd38a
+      THEME.colors.sanctuaryGlow
     );
     drawText(
-      stage,
-      'WASD/setas: mover | ESPACO/F: atacar | E: reparar | R: reiniciar apos o fim',
-      20,
+      this.layers.hud,
+      'WASD/setas: mover | toque ESPACO/F: golpe | segure: Quebra-Terra | E: reparar',
+      76,
       44,
       13,
       0xe0e0e0
     );
-    this.hud = drawText(stage, '', 20, 67, 14, 0xb3dfb5);
+    this.hud = drawText(this.layers.hud, '', 76, 65, 13, 0xb3dfb5);
     this.status = drawText(
-      stage,
+      this.layers.hud,
       'Defenda o santuario e intercepte os flanqueadores!',
       505,
       14,
@@ -204,7 +275,7 @@ export class LastStandScene implements Scene {
       0xffe5a5
     );
     this.interaction = drawText(
-      stage,
+      this.layers.hud,
       '',
       505,
       67,
@@ -212,7 +283,7 @@ export class LastStandScene implements Scene {
       0x9fe8ff
     );
     this.introText = drawText(
-      stage,
+      this.layers.hud,
       'A ULTIMA LINHA\nPrepare-se: 3',
       365,
       185,
@@ -222,7 +293,7 @@ export class LastStandScene implements Scene {
     this.updateHUD(game);
   }
 
-  private drawTower(game: Game, tower: TowerState): void {
+  private drawTower(_game: Game, tower: TowerState): void {
     const definition = getTowerDefinition(tower.type);
     const graphic = new Graphics();
 
@@ -243,13 +314,29 @@ export class LastStandScene implements Scene {
         .fill(0x424a52);
     }
 
+    if (tower.tier >= 2) {
+      if (tower.type === 'spike_barricade') {
+        graphic
+          .roundRect(-27, -19, 54, 38, 6)
+          .stroke({ color: 0xffd36f, width: 3 });
+      } else {
+        graphic
+          .circle(0, 0, 26)
+          .stroke({ color: 0xffd36f, width: 3 });
+      }
+      graphic
+        .rect(-6, 9, 4, 9)
+        .rect(2, 9, 4, 9)
+        .fill(0xffe6a3);
+    }
+
     graphic.position.set(tower.x, tower.y);
     graphic.eventMode = 'none';
-    game.app.stage.addChild(graphic);
+    this.layers.entities.addChild(graphic);
 
     const healthBar = new Graphics();
     healthBar.eventMode = 'none';
-    game.app.stage.addChild(healthBar);
+    this.layers.worldUi.addChild(healthBar);
     this.towerGraphics.set(tower.id, graphic);
     this.towerHealthBars.set(tower.id, healthBar);
     this.refreshTowerHealth(tower);
@@ -267,7 +354,11 @@ export class LastStandScene implements Scene {
       .fill(0x172029)
       .rect(tower.x - 22, tower.y - 37, 44 * ratio, 6)
       .fill(ratio > 0.5 ? 0x76dc8f : 0xe4a35d);
-    graphic.tint = tower.hp > 0 ? 0xffffff : 0x555555;
+    const suppressed = (this.towerSuppression.get(tower.id) ?? 0) > 0;
+    graphic.tint = tower.hp <= 0
+      ? 0x555555
+      : suppressed ? 0x9b69c7 : 0xffffff;
+    graphic.alpha = tower.hp > 0 && suppressed ? 0.55 : 1;
   }
 
   private queueEnemy(game: Game, kind: EnemyKind): void {
@@ -282,7 +373,7 @@ export class LastStandScene implements Scene {
       this.addEffect(
         game,
         new Graphics()
-          .circle(925, SANCTUARY.y, 45)
+          .circle(ROAD_SPAWN.x - 50, ROAD_SPAWN.y, 45)
           .stroke({ color: 0xbb3d96, width: 9 }),
         55
       );
@@ -290,13 +381,14 @@ export class LastStandScene implements Scene {
     }
 
     if (role === 'flanker' && side) {
-      const y = side === 'upper' ? 150 : 430;
+      game.audio.play('flankAlert');
+      const warning = FLANK_ROUTES[side].warning;
       this.addEffect(
         game,
         new Graphics()
-          .circle(925, y, 31)
+          .circle(warning.x, warning.y, 31)
           .stroke({ color: 0x70e4ff, width: 6 })
-          .circle(925, y, 18)
+          .circle(warning.x, warning.y, 18)
           .stroke({ color: 0xffffff, width: 2 }),
         FLANK_WARNING_DURATION
       );
@@ -317,7 +409,7 @@ export class LastStandScene implements Scene {
   }
 
   private spawnEnemy(
-    game: Game,
+    _game: Game,
     kind: EnemyKind,
     role: EnemyRole,
     side: FlankSide | null
@@ -325,21 +417,13 @@ export class LastStandScene implements Scene {
     const values = ENEMY_STATS[kind];
     const hpMultiplier = getLastStandHpMultiplier(kind, role);
     const maxHp = Math.ceil(values.hp * hpMultiplier);
-    const upperFlank = side === 'upper';
-    const spawnY = role === 'route'
-      ? SANCTUARY.y
-      : upperFlank ? 150 : 430;
+    const flankRoute = side ? FLANK_ROUTES[side] : null;
+    const spawn = role === 'route'
+      ? ROAD_SPAWN
+      : flankRoute?.spawn ?? ROAD_SPAWN;
     const path: Point[] = role === 'route'
-      ? [
-          { x: 780, y: SANCTUARY.y },
-          { x: 600, y: SANCTUARY.y },
-          { x: 420, y: SANCTUARY.y },
-          { x: 170, y: SANCTUARY.y },
-        ]
-      : [
-          { x: 780, y: spawnY },
-          { x: 610, y: upperFlank ? 155 : 425 },
-        ];
+      ? MAIN_ROAD_WAYPOINTS.map((point) => ({ ...point }))
+      : (flankRoute?.waypoints ?? []).map((point) => ({ ...point }));
 
     const graphic = new Graphics()
       .circle(0, 0, values.radius)
@@ -353,18 +437,18 @@ export class LastStandScene implements Scene {
         .lineTo(7, -values.radius - 5)
         .stroke({ color: 0x70e4ff, width: 3 });
     }
-    graphic.position.set(975, spawnY);
+    graphic.position.set(spawn.x, spawn.y);
     graphic.eventMode = 'none';
-    game.app.stage.addChild(graphic);
+    this.layers.entities.addChild(graphic);
 
     const healthBar = new Graphics();
     healthBar.eventMode = 'none';
-    game.app.stage.addChild(healthBar);
+    this.layers.worldUi.addChild(healthBar);
     const enemy: Enemy = {
       kind,
       role,
-      x: 975,
-      y: spawnY,
+      x: spawn.x,
+      y: spawn.y,
       hp: maxHp,
       maxHp,
       speed: values.speed * (role === 'flanker' ? 1.12 : 1),
@@ -376,7 +460,7 @@ export class LastStandScene implements Scene {
       path,
       pathIndex: 0,
       targetTowerId: null,
-      specialUsed: false,
+      alphaState: kind === 'alpha' ? createAlphaBossState() : null,
       graphic,
       healthBar,
     };
@@ -423,12 +507,12 @@ export class LastStandScene implements Scene {
       .fill(0xe66d78);
   }
 
-  private removeEnemy(game: Game, enemy: Enemy): void {
+  private removeEnemy(_game: Game, enemy: Enemy): void {
     const index = this.enemies.indexOf(enemy);
     if (index < 0) return;
     this.enemies.splice(index, 1);
-    game.app.stage.removeChild(enemy.graphic);
-    game.app.stage.removeChild(enemy.healthBar);
+    enemy.graphic.removeFromParent();
+    enemy.healthBar.removeFromParent();
     enemy.graphic.destroy();
     enemy.healthBar.destroy();
   }
@@ -440,9 +524,39 @@ export class LastStandScene implements Scene {
     source: DamageSource = 'tower'
   ): void {
     if (!this.enemies.includes(enemy)) return;
-    const effectiveDamage = source === 'tower'
+    let effectiveDamage = source === 'tower'
       ? damage * getTowerDamageMultiplier(enemy.role)
       : damage;
+
+    if (enemy.alphaState) {
+      const stanceWasActive = enemy.alphaState.stanceActive;
+      effectiveDamage *= getAlphaDamageMultiplier(
+        enemy.alphaState,
+        source
+      );
+
+      if (
+        stanceWasActive &&
+        source === 'ground_break' &&
+        breakObsidianStance(enemy.alphaState)
+      ) {
+        this.refreshAlphaAppearance(enemy);
+        this.addEffect(
+          game,
+          new Graphics()
+            .circle(enemy.x, enemy.y, 68)
+            .stroke({ color: 0xf8df9a, width: 10 })
+            .circle(enemy.x, enemy.y, 42)
+            .stroke({ color: 0xffffff, width: 4 }),
+          24
+        );
+        this.setStatus(
+          'POSTURA DE OBSIDIANA QUEBRADA! Alpha atordoado!',
+          150
+        );
+      }
+    }
+
     enemy.hp -= effectiveDamage;
     if (enemy.hp <= 0) {
       this.addEffect(
@@ -456,7 +570,127 @@ export class LastStandScene implements Scene {
       game.state.defeatedEnemies++;
       return;
     }
+
+
+    if (enemy.alphaState) {
+      this.handleAlphaThresholds(game, enemy);
+    }
     this.refreshEnemyHealth(enemy);
+  }
+
+  private handleAlphaThresholds(game: Game, enemy: Enemy): void {
+    const alphaState = enemy.alphaState;
+    if (!alphaState) return;
+
+    for (const event of updateAlphaThresholds(
+      alphaState,
+      enemy.hp,
+      enemy.maxHp
+    )) {
+      if (event === 'roar') {
+        this.triggerAlphaRoar(game, enemy);
+      } else {
+        this.triggerObsidianStance(game, enemy);
+      }
+    }
+    this.refreshAlphaAppearance(enemy);
+  }
+
+  private triggerAlphaRoar(game: Game, enemy: Enemy): void {
+    game.audio.play('alphaRoar');
+    let suppressed = 0;
+
+    for (const tower of game.state.towers) {
+      if (
+        tower.hp <= 0 ||
+        tower.type === 'spike_barricade' ||
+        !isInsideAlphaRoar(
+          enemy.x,
+          enemy.y,
+          tower.x,
+          tower.y
+        )
+      ) continue;
+
+      this.towerSuppression.set(tower.id, ALPHA_SUPPRESSION_TICKS);
+      this.refreshTowerHealth(tower);
+      suppressed++;
+      this.addEffect(
+        game,
+        new Graphics()
+          .circle(tower.x, tower.y, 31)
+          .stroke({ color: 0xbb68df, width: 5 }),
+        45
+      );
+    }
+
+    this.addEffect(
+      game,
+      new Graphics()
+        .circle(enemy.x, enemy.y, ALPHA_ROAR_RADIUS)
+        .stroke({ color: 0xbb3d96, width: 9, alpha: 0.85 }),
+      45
+    );
+    this.setStatus(
+      `RUGIDO SUPRESSOR! ${suppressed} torre${suppressed === 1 ? '' : 's'} silenciada${suppressed === 1 ? '' : 's'} por 5s.`,
+      150
+    );
+  }
+
+  private triggerObsidianStance(game: Game, enemy: Enemy): void {
+    const sides: FlankSide[] = ['upper', 'lower'];
+
+    for (let index = 0; index < ALPHA_STANCE_FLANKERS; index++) {
+      const side = sides[index % sides.length];
+      const warning = FLANK_ROUTES[side].warning;
+      this.pendingSpawns.push({
+        kind: 'scout',
+        role: 'flanker',
+        side,
+        delay: 18 + index * 24,
+      });
+      this.addEffect(
+        game,
+        new Graphics()
+          .circle(warning.x, warning.y, 35)
+          .stroke({ color: 0x70e4ff, width: 7 })
+          .circle(warning.x, warning.y, 20)
+          .stroke({ color: 0xffffff, width: 3 }),
+        55
+      );
+    }
+
+    this.addEffect(
+      game,
+      new Graphics()
+        .circle(enemy.x, enemy.y, 58)
+        .fill({ color: 0x252636, alpha: 0.28 })
+        .stroke({ color: 0x8f92b8, width: 9 }),
+      80
+    );
+    this.setStatus(
+      'POSTURA DE OBSIDIANA! Use o Quebra-Terra para rompe-la!',
+      180
+    );
+  }
+
+  private refreshAlphaAppearance(enemy: Enemy): void {
+    const state = enemy.alphaState;
+    if (!state) return;
+
+    if (state.stanceActive) {
+      enemy.graphic.tint = 0x65677d;
+      enemy.graphic.alpha = 1;
+    } else if (state.stunnedTicks > 0) {
+      enemy.graphic.tint = 0xd7e6ef;
+      enemy.graphic.alpha = 0.55;
+    } else if (state.finalPhase) {
+      enemy.graphic.tint = 0xff7878;
+      enemy.graphic.alpha = 1;
+    } else {
+      enemy.graphic.tint = 0xffffff;
+      enemy.graphic.alpha = 1;
+    }
   }
 
   private damageTower(tower: TowerState, damage: number): void {
@@ -497,6 +731,9 @@ export class LastStandScene implements Scene {
     this.repairProgress = 0;
     this.repairTargetId = null;
     this.repairLockedUntilRelease = true;
+    this.attackCharge = 0;
+    this.attackCharging = false;
+    this.chargeIndicator.visible = false;
 
     const dx = this.player.x - enemy.x;
     const dy = this.player.y - enemy.y;
@@ -511,33 +748,35 @@ export class LastStandScene implements Scene {
   private updateEnemy(game: Game, enemy: Enemy, dt: number): void {
     enemy.attackCooldown = Math.max(0, enemy.attackCooldown - dt);
     enemy.slowTicks = Math.max(0, enemy.slowTicks - dt);
-    const step = enemy.speed * (enemy.slowTicks > 0 ? 0.55 : 1) * dt;
+
+    if (enemy.alphaState?.stunnedTicks) {
+      const finalPhaseStarted = updateAlphaStun(enemy.alphaState, dt);
+      this.refreshAlphaAppearance(enemy);
+
+      if (finalPhaseStarted) {
+        this.setStatus(
+          'FASE FINAL! O Alpha investe contra o Santuario!',
+          150
+        );
+      } else {
+        enemy.graphic.position.set(enemy.x, enemy.y);
+        this.refreshEnemyHealth(enemy);
+        return;
+      }
+    }
+
+    const phaseSpeed = enemy.alphaState?.finalPhase
+      ? ALPHA_FINAL_SPEED_MULTIPLIER
+      : 1;
+    const step =
+      enemy.speed *
+      phaseSpeed *
+      (enemy.slowTicks > 0 ? 0.55 : 1) *
+      dt;
     const playerDistance = Math.hypot(
       this.player.x - enemy.x,
       this.player.y - enemy.y
     );
-
-    if (
-      enemy.kind === 'alpha' &&
-      !enemy.specialUsed &&
-      enemy.x < 700
-    ) {
-      enemy.specialUsed = true;
-      for (const tower of game.state.towers) {
-        tower.cooldown += 60;
-      }
-      this.addEffect(
-        game,
-        new Graphics()
-          .circle(enemy.x, enemy.y, 125)
-          .stroke({ color: 0xbb3d96, width: 8 }),
-        28
-      );
-      this.setStatus(
-        'O Alpha rugiu: torres temporariamente desestabilizadas!',
-        120
-      );
-    }
 
     if (playerDistance <= enemy.radius + PLAYER_RADIUS + 4) {
       if (enemy.attackCooldown <= 0) {
@@ -563,7 +802,11 @@ export class LastStandScene implements Scene {
               ? 30
               : enemy.kind === 'brute' ? 18 : 12
           );
-          this.damageEnemy(game, enemy, 0.7);
+          this.damageEnemy(
+            game,
+            enemy,
+            getTowerRuntimeStats(barricade).damage
+          );
           enemy.attackCooldown = 42;
         }
         return;
@@ -659,7 +902,7 @@ export class LastStandScene implements Scene {
 
   private attackWithTower(game: Game, tower: TowerState): void {
     if (tower.hp <= 0) return;
-    const definition = getTowerDefinition(tower.type);
+    const stats = getTowerRuntimeStats(tower);
 
     if (tower.type === 'spike_barricade') {
       for (const enemy of [...this.enemies]) {
@@ -667,40 +910,63 @@ export class LastStandScene implements Scene {
           Math.hypot(enemy.x - tower.x, enemy.y - tower.y) <=
           enemy.radius + 25
         ) {
-          this.damageEnemy(game, enemy, definition.damage * 0.12);
+          this.damageEnemy(game, enemy, stats.damage * 0.12);
         }
       }
       return;
     }
 
+    if ((this.towerSuppression.get(tower.id) ?? 0) > 0) return;
+
     const targets = selectTargetsInRange(
       this.enemies,
       tower.x,
       tower.y,
-      definition.range,
+      stats.range,
       SANCTUARY.x,
       SANCTUARY.y
     );
     if (tower.cooldown > 0 || targets.length === 0) return;
-    tower.cooldown = definition.fireInterval;
+    tower.cooldown = stats.fireInterval;
 
     if (tower.type === 'arc_ballista') {
+      game.audio.play('ballista');
       const target = targets[0];
       this.showBeam(game, tower, target, 0xf5df82);
-      this.damageEnemy(game, target, definition.damage);
+      this.damageEnemy(game, target, stats.damage);
+      const chainedTargets = targets
+        .slice(1)
+        .filter(
+          (candidate) =>
+            Math.hypot(candidate.x - target.x, candidate.y - target.y) <=
+            stats.chainRange
+        )
+        .slice(0, stats.chainTargets);
+      for (const chained of chainedTargets) {
+        this.showBeam(game, tower, chained, 0x90e0ef);
+        this.damageEnemy(
+          game,
+          chained,
+          stats.damage * stats.chainDamageMultiplier
+        );
+      }
     } else if (tower.type === 'slag_forge') {
       for (const target of [...targets]) {
         target.slowTicks = Math.max(target.slowTicks, 65);
-        this.damageEnemy(game, target, definition.damage);
+        this.damageEnemy(game, target, stats.damage);
       }
       this.addEffect(
         game,
         new Graphics()
-          .circle(tower.x, tower.y, definition.range)
-          .stroke({ color: 0xbd70ec, width: 4 }),
+          .circle(tower.x, tower.y, stats.range)
+          .fill({ color: THEME.colors.ether, alpha: 0.1 })
+          .stroke({ color: 0xbd70ec, width: 4 })
+          .circle(tower.x, tower.y, stats.range * 0.62)
+          .stroke({ color: THEME.colors.etherGlow, width: 2 }),
         12
       );
     } else if (tower.type === 'repulsor') {
+      game.audio.play('repulsor');
       for (const target of targets) {
         const dx = target.x - SANCTUARY.x;
         const dy = target.y - SANCTUARY.y;
@@ -717,15 +983,32 @@ export class LastStandScene implements Scene {
       this.addEffect(
         game,
         new Graphics()
-          .circle(tower.x, tower.y, definition.range)
-          .stroke({ color: 0x8ddbe9, width: 4 }),
+          .circle(tower.x, tower.y, stats.range)
+          .stroke({ color: 0x8ddbe9, width: 4 })
+          .circle(tower.x, tower.y, stats.range * 0.72)
+          .stroke({ color: THEME.colors.etherGlow, width: 2 }),
         12
       );
     } else if (tower.type === 'chitin_cannon') {
       for (const target of targets.slice(0, 3)) {
         this.showBeam(game, tower, target, 0xf3a09c);
-        this.damageEnemy(game, target, definition.damage);
+        this.damageEnemy(game, target, stats.damage);
       }
+    }
+  }
+
+  private updateTowerSuppression(game: Game, dt: number): void {
+    for (const [towerId, remaining] of this.towerSuppression) {
+      const next = Math.max(0, remaining - dt);
+      const tower = game.state.towers.find((item) => item.id === towerId);
+
+      if (next === 0 || !tower || tower.hp <= 0) {
+        this.towerSuppression.delete(towerId);
+      } else {
+        this.towerSuppression.set(towerId, next);
+      }
+
+      if (tower) this.refreshTowerHealth(tower);
     }
   }
 
@@ -737,10 +1020,13 @@ export class LastStandScene implements Scene {
   ): void {
     this.addEffect(
       game,
-      new Graphics()
-        .moveTo(tower.x, tower.y)
-        .lineTo(target.x, target.y)
-        .stroke({ color, width: 3 }),
+      createVoltaicBeam(
+        tower.x,
+        tower.y,
+        target.x,
+        target.y,
+        color
+      ),
       7
     );
   }
@@ -781,15 +1067,82 @@ export class LastStandScene implements Scene {
         ? 0.35
         : 1;
     this.attackCooldown = Math.max(0, this.attackCooldown - dt);
+    this.groundBreakCooldown = Math.max(
+      0,
+      this.groundBreakCooldown - dt
+    );
+
+    const attackHeld = game.input.isDown('Space', 'KeyF');
+    const attackPressed =
+      game.input.wasPressed('Space') ||
+      game.input.wasPressed('KeyF');
+    const attackReleased =
+      game.input.wasReleased('Space') ||
+      game.input.wasReleased('KeyF');
+    const repairing =
+      game.input.isDown('KeyE') || this.repairProgress > 0;
 
     if (
+      attackPressed &&
       this.attackCooldown <= 0 &&
-      (game.input.wasPressed('Space') || game.input.wasPressed('KeyF'))
+      !repairing
     ) {
-      this.playerAttack(game);
+      this.attackCharging = true;
+      this.attackCharge = 0;
+      this.repairProgress = 0;
+      this.repairTargetId = null;
+    }
+
+    if (this.attackCharging && attackHeld) {
+      this.attackCharge += dt;
+      this.updateChargeIndicator();
+    }
+
+    if (this.attackCharging && attackReleased) {
+      const action = resolveHammerRelease(
+        this.attackCharge,
+        this.attackCooldown <= 0,
+        this.groundBreakCooldown <= 0,
+        repairing
+      );
+
+      this.attackCharging = false;
+      this.attackCharge = 0;
+      this.chargeIndicator.visible = false;
+
+      if (action === 'ground_break') {
+        this.playerGroundBreak(game);
+      } else if (action === 'basic') {
+        this.playerAttack(game);
+      }
+    } else if (this.attackCharging && !attackHeld) {
+      // Cancela uma carga perdida por blur/foco sem gerar um ataque.
+      this.attackCharging = false;
+      this.attackCharge = 0;
+      this.chargeIndicator.visible = false;
     }
 
     this.updateRepair(game, dt);
+  }
+
+  private updateChargeIndicator(): void {
+    const ratio = getChargeRatio(this.attackCharge);
+    const ready = ratio >= 1 && this.groundBreakCooldown <= 0;
+    const color = ready ? 0xffd36f : 0x8fd9ff;
+    const radius = 24 + ratio * 22;
+
+    this.chargeIndicator
+      .clear()
+      .circle(this.player.x, this.player.y, radius)
+      .stroke({ color, width: ready ? 6 : 3, alpha: 0.9 })
+      .circle(this.player.x, this.player.y, 18 + ratio * 8)
+      .fill({ color, alpha: 0.08 + ratio * 0.16 });
+    this.chargeIndicator.visible = true;
+
+    const percent = Math.floor(ratio * 100);
+    this.interaction.text = ready
+      ? 'QUEBRA-TERRA PRONTO — solte o ataque!'
+      : `Carregando Quebra-Terra... ${percent}%`;
   }
 
   private resolvePlayerCollisions(game: Game): void {
@@ -832,42 +1185,145 @@ export class LastStandScene implements Scene {
   }
 
   private playerAttack(game: Game): void {
-    this.attackCooldown = ATTACK_COOLDOWN;
-    const impactX = this.player.x + this.lastDirection.x * 38;
-    const impactY = this.player.y + this.lastDirection.y * 38;
+    this.attackCooldown = BASIC_ATTACK_COOLDOWN;
+    game.audio.play('kaelenAttack');
+    const angle = Math.atan2(this.lastDirection.y, this.lastDirection.x);
+    const cleave = new Graphics()
+      .moveTo(this.player.x, this.player.y)
+      .arc(
+        this.player.x,
+        this.player.y,
+        BASIC_ATTACK_RANGE,
+        angle - 0.9,
+        angle + 0.9
+      )
+      .lineTo(this.player.x, this.player.y)
+      .fill({ color: 0xffd36f, alpha: 0.18 })
+      .stroke({ color: 0xffdf8b, width: 6, alpha: 0.92 });
     this.addEffect(
       game,
-      new Graphics()
-        .circle(impactX, impactY, 30)
-        .stroke({ color: 0xffdf8b, width: 6 }),
+      cleave,
       9
     );
 
     let hits = 0;
     for (const enemy of [...this.enemies]) {
-      const dx = enemy.x - this.player.x;
-      const dy = enemy.y - this.player.y;
-      const distance = Math.hypot(dx, dy);
-      const dot = distance > 0
-        ? dx / distance * this.lastDirection.x +
-          dy / distance * this.lastDirection.y
-        : 1;
-      if (distance <= ATTACK_RANGE + enemy.radius && dot >= 0.15) {
-        this.damageEnemy(
-          game,
-          enemy,
-          enemy.kind === 'alpha' ? ATTACK_DAMAGE * 0.8 : ATTACK_DAMAGE,
-          'kaelen'
-        );
-        hits++;
+      if (!isInsideCleave(
+        this.player.x,
+        this.player.y,
+        this.lastDirection.x,
+        this.lastDirection.y,
+        enemy.x,
+        enemy.y,
+        enemy.radius
+      )) continue;
+
+      this.damageEnemy(
+        game,
+        enemy,
+        enemy.kind === 'alpha'
+          ? BASIC_ATTACK_DAMAGE * 0.8
+          : BASIC_ATTACK_DAMAGE,
+        'kaelen'
+      );
+      if (this.enemies.includes(enemy)) {
+        this.applyEnemyKnockback(enemy, BASIC_ATTACK_KNOCKBACK);
       }
+      hits++;
     }
     if (hits > 0) {
+      this.hitstopRemaining = BASIC_ATTACK_HITSTOP;
       this.setStatus(
         hits === 1 ? 'Golpe certeiro!' : `${hits} inimigos atingidos!`,
         40
       );
     }
+  }
+
+  private playerGroundBreak(game: Game): void {
+    this.attackCooldown = BASIC_ATTACK_COOLDOWN;
+    this.groundBreakCooldown = GROUND_BREAK_COOLDOWN;
+    game.audio.play('groundBreak');
+
+    this.addEffect(
+      game,
+      new Graphics()
+        .circle(this.player.x, this.player.y, GROUND_BREAK_RADIUS)
+        .fill({ color: 0xf0b85f, alpha: 0.2 })
+        .stroke({ color: 0xffdc82, width: 8, alpha: 0.95 })
+        .circle(this.player.x, this.player.y, GROUND_BREAK_RADIUS * 0.55)
+        .stroke({ color: 0xffffff, width: 3, alpha: 0.7 }),
+      18
+    );
+
+    let hits = 0;
+    let brokeStance = false;
+    for (const enemy of [...this.enemies]) {
+      if (!isInsideGroundBreak(
+        this.player.x,
+        this.player.y,
+        enemy.x,
+        enemy.y,
+        enemy.radius
+      )) continue;
+
+      brokeStance = brokeStance || Boolean(
+        enemy.alphaState?.stanceActive
+      );
+      this.damageEnemy(
+        game,
+        enemy,
+        enemy.kind === 'alpha'
+          ? GROUND_BREAK_DAMAGE * 0.8
+          : GROUND_BREAK_DAMAGE,
+        'ground_break'
+      );
+      if (this.enemies.includes(enemy)) {
+        const resistance = enemy.kind === 'alpha'
+          ? 0.4
+          : enemy.kind === 'brute' ? 0.7 : 1;
+        this.applyEnemyKnockback(
+          enemy,
+          GROUND_BREAK_KNOCKBACK * resistance
+        );
+      }
+      hits++;
+    }
+
+    this.hitstopRemaining = hits > 0 ? GROUND_BREAK_HITSTOP : 0;
+    this.setStatus(
+      brokeStance
+        ? 'POSTURA DE OBSIDIANA QUEBRADA! Alpha atordoado!'
+        : hits > 0
+          ? `QUEBRA-TERRA! ${hits} inimigo${hits === 1 ? '' : 's'} atingido${hits === 1 ? '' : 's'}!`
+          : 'QUEBRA-TERRA! O impacto sacudiu a arena.',
+      brokeStance ? 150 : 80
+    );
+  }
+
+  private applyEnemyKnockback(enemy: Enemy, distance: number): void {
+    let dx = enemy.x - this.player.x;
+    let dy = enemy.y - this.player.y;
+    const magnitude = Math.hypot(dx, dy);
+
+    if (magnitude === 0) {
+      dx = this.lastDirection.x;
+      dy = this.lastDirection.y;
+    } else {
+      dx /= magnitude;
+      dy /= magnitude;
+    }
+
+    enemy.x = Math.max(
+      enemy.radius,
+      Math.min(WIDTH - enemy.radius, enemy.x + dx * distance)
+    );
+    enemy.y = Math.max(
+      HUD_HEIGHT + enemy.radius,
+      Math.min(HEIGHT - enemy.radius, enemy.y + dy * distance)
+    );
+    enemy.graphic.position.set(enemy.x, enemy.y);
+    this.refreshEnemyHealth(enemy);
   }
 
   private findRepairTarget(game: Game): TowerState | null {
@@ -891,6 +1347,12 @@ export class LastStandScene implements Scene {
   private updateRepair(game: Game, dt: number): void {
     const holdingRepair = game.input.isDown('KeyE');
 
+    if (this.attackCharging) {
+      this.repairProgress = 0;
+      this.repairTargetId = null;
+      return;
+    }
+
     if (!holdingRepair) {
       this.repairProgress = 0;
       this.repairTargetId = null;
@@ -900,7 +1362,9 @@ export class LastStandScene implements Scene {
     const tower = this.findRepairTarget(game);
 
     if (!tower) {
-      this.interaction.text = '';
+      this.interaction.text = this.groundBreakCooldown <= 0
+        ? 'Quebra-Terra pronto'
+        : `Quebra-Terra: ${Math.ceil(this.groundBreakCooldown / 60)}s`;
       this.repairProgress = 0;
       this.repairTargetId = null;
       return;
@@ -954,17 +1418,17 @@ export class LastStandScene implements Scene {
     }
   }
 
-  private addEffect(game: Game, graphic: Graphics, life: number): void {
+  private addEffect(_game: Game, graphic: Graphics, life: number): void {
     graphic.eventMode = 'none';
-    game.app.stage.addChild(graphic);
+    this.layers.vfx.addChild(graphic);
     this.effects.push({ graphic, life });
   }
 
-  private updateEffects(game: Game, dt: number): void {
+  private updateEffects(_game: Game, dt: number): void {
     for (const effect of [...this.effects]) {
       effect.life -= dt;
       if (effect.life <= 0) {
-        game.app.stage.removeChild(effect.graphic);
+        effect.graphic.removeFromParent();
         effect.graphic.destroy();
         this.effects.splice(this.effects.indexOf(effect), 1);
       }
@@ -993,14 +1457,14 @@ export class LastStandScene implements Scene {
   private showResult(game: Game, victory: boolean): void {
     if (this.resultShown) return;
     this.resultShown = true;
-    game.app.stage.addChild(
+    this.layers.hud.addChild(
       new Graphics()
         .roundRect(235, 175, 490, 190, 16)
         .fill({ color: 0x111820, alpha: 0.94 })
         .stroke({ color: victory ? 0x7de39b : 0xe47676, width: 4 })
     );
     drawText(
-      game.app.stage,
+      this.layers.hud,
       victory ? 'OAKHEAVEN RESISTIU!' : 'A ULTIMA LINHA CAIU',
       victory ? 330 : 315,
       220,
@@ -1008,7 +1472,7 @@ export class LastStandScene implements Scene {
       victory ? 0x8af0a5 : 0xff8b8b
     );
     drawText(
-      game.app.stage,
+      this.layers.hud,
       victory
         ? `Inimigos derrotados: ${game.state.defeatedEnemies}`
         : game.state.kaelen.hp <= 0
@@ -1020,7 +1484,7 @@ export class LastStandScene implements Scene {
       0xffffff
     );
     drawText(
-      game.app.stage,
+      this.layers.hud,
       'Pressione R para reiniciar',
       360,
       315,
@@ -1030,6 +1494,12 @@ export class LastStandScene implements Scene {
   }
 
   private updateCombat(game: Game, dt: number): void {
+    if (this.hitstopRemaining > 0) {
+      this.hitstopRemaining = Math.max(0, this.hitstopRemaining - dt);
+      this.updateEffects(game, dt);
+      return;
+    }
+
     for (const kind of this.waves.update(dt)) {
       this.queueEnemy(game, kind);
     }
@@ -1041,6 +1511,7 @@ export class LastStandScene implements Scene {
       }
     }
     this.separateEnemies();
+    this.updateTowerSuppression(game, dt);
     for (const tower of game.state.towers) {
       tower.cooldown = Math.max(0, tower.cooldown - dt);
       this.attackWithTower(game, tower);

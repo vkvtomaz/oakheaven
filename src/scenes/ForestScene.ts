@@ -4,6 +4,13 @@ import { Graphics, type Text } from 'pixi.js';
 import type { Game } from '../core/Game';
 import type { Scene } from '../core/Scene';
 import type { ResourceType } from '../core/GameState';
+import {
+  EXPEDITION_NODES,
+  EXPEDITION_ZONES,
+  getExpeditionZone,
+  type ExpeditionZone,
+  type ResourceNodeKind,
+} from '../data/expedition';
 
 import {
   drawRect,
@@ -11,7 +18,19 @@ import {
   drawText,
 } from '../core/draw';
 
-import { formatClock } from '../systems/ExpeditionSystem';
+import {
+  DAYLIGHT_WARNING_SECONDS,
+  beginExpeditionReturn,
+  formatClock,
+  recordExpeditionCollection,
+  visitExpeditionZone,
+} from '../systems/ExpeditionSystem';
+import {
+  createSceneLayers,
+  type SceneLayers,
+} from '../visual/layers';
+import { THEME } from '../visual/theme';
+import { drawHudPanel } from '../visual/ui';
 
 // ======================================
 // 1. CONFIGURAÇÕES DA FLORESTA
@@ -20,13 +39,6 @@ import { formatClock } from '../systems/ExpeditionSystem';
 const WIDTH = 960;
 const HEIGHT = 540;
 const SPEED = 4.5;
-
-// Tipos de objetos que podemos extrair
-type NodeKind =
-  | 'tree'
-  | 'scrap'
-  | 'crystal'
-  | 'remains';
 
 // Configuração de cada recurso
 interface ResourceDefinition {
@@ -40,7 +52,8 @@ interface ResourceDefinition {
 
 // Objeto existente no mapa
 interface ResourceNode {
-  kind: NodeKind;
+  kind: ResourceNodeKind;
+  zone: ExpeditionZone;
   x: number;
   y: number;
   hp: number;
@@ -52,7 +65,7 @@ interface ResourceNode {
 // 2. DADOS DOS RECURSOS
 // ======================================
 
-const RESOURCE_DATA: Record<NodeKind, ResourceDefinition> = {
+const RESOURCE_DATA: Record<ResourceNodeKind, ResourceDefinition> = {
   tree: {
     name: 'Arvore de Carvalho',
     resource: 'wood',
@@ -90,33 +103,12 @@ const RESOURCE_DATA: Record<NodeKind, ResourceDefinition> = {
   },
 };
 
-// Objetos espalhados pelo mapa
-const RESOURCE_POSITIONS: {
-  kind: NodeKind;
-  x: number;
-  y: number;
-}[] = [
-  { kind: 'tree', x: 185, y: 180 },
-  { kind: 'tree', x: 345, y: 310 },
-  { kind: 'tree', x: 740, y: 175 },
-  { kind: 'tree', x: 805, y: 365 },
-
-  { kind: 'scrap', x: 310, y: 200 },
-  { kind: 'scrap', x: 600, y: 335 },
-  { kind: 'scrap', x: 825, y: 455 },
-
-  { kind: 'crystal', x: 545, y: 145 },
-  { kind: 'crystal', x: 895, y: 170 },
-
-  { kind: 'remains', x: 480, y: 310 },
-  { kind: 'remains', x: 690, y: 435 },
-];
-
 // ======================================
 // 3. CLASSE DA FLORESTA
 // ======================================
 
 export class ForestScene implements Scene {
+  private layers!: SceneLayers;
   private player!: Graphics;
 
   private hud!: Text;
@@ -133,20 +125,44 @@ export class ForestScene implements Scene {
   private hitEffectTime = 0;
 
   private notificationTime = 0;
+  private currentZone: ExpeditionZone = 'safe';
+  private warningShown = false;
 
   // ====================================
   // 4. CRIAÇÃO DO CENÁRIO
   // ====================================
 
   enter(game: Game): void {
-    const stage = game.app.stage;
+    this.layers = createSceneLayers(game.app.stage);
+    const stage = this.layers.entities;
 
     // Fundo da floresta
-    drawRect(stage, 0, 0, WIDTH, HEIGHT, 0x345b40);
+    drawRect(this.layers.ground, 0, 0, WIDTH, HEIGHT, 0x223b31);
+
+    // As três zonas deixam distância, raridade e risco legíveis.
+    for (const zone of [
+      EXPEDITION_ZONES.safe,
+      EXPEDITION_ZONES.intermediate,
+      EXPEDITION_ZONES.depths,
+    ]) {
+      this.layers.groundDecals.addChild(
+        new Graphics()
+          .rect(zone.minX, 95, zone.maxX - zone.minX, HEIGHT - 95)
+          .fill({ color: zone.color, alpha: 0.16 })
+      );
+      drawText(
+        this.layers.worldUi,
+        `${zone.name} | RISCO ${zone.risk}`,
+        zone.minX + 14,
+        104,
+        12,
+        0xe7e6c9
+      );
+    }
 
     // Caminhos de terra
-    drawRect(stage, 0, 420, WIDTH, 85, 0x756849);
-    drawRect(stage, 420, 90, 95, 350, 0x756849);
+    drawRect(this.layers.ground, 0, 420, WIDTH, 85, 0x5f523d);
+    drawRect(this.layers.ground, 420, 90, 95, 350, 0x5f523d);
 
     // Vegetação decorativa
     const trees = [
@@ -174,16 +190,18 @@ export class ForestScene implements Scene {
     }
 
     // Portal de retorno
-    drawRect(stage, 20, 435, 92, 62, 0x4878b5);
-    drawText(stage, 'VOLTAR', 27, 452, 17);
+    drawRect(stage, 15, 430, 100, 70, 0x4878b5);
+    drawText(stage, 'PORTAL', 29, 440, 16);
+    drawText(stage, 'VOLTAR', 27, 466, 14, 0xdcecff);
 
     // Criação dos objetos extraíveis
     this.nodes = [];
 
-    for (const position of RESOURCE_POSITIONS) {
+    for (const position of EXPEDITION_NODES) {
       this.createResourceNode(
         game,
         position.kind,
+        position.zone,
         position.x,
         position.y
       );
@@ -196,29 +214,33 @@ export class ForestScene implements Scene {
       .circle(4, -4, 3)
       .fill(0x202020);
 
-    this.player.position.set(470, 460);
+    this.player.position.set(135, 460);
     stage.addChild(this.player);
+    this.currentZone = 'safe';
+    this.warningShown = false;
+    visitExpeditionZone(game.state, this.currentZone);
 
     // Efeito de impacto
     this.hitEffect = new Graphics();
     this.hitEffect.eventMode = 'none';
     this.hitEffect.visible = false;
-    stage.addChild(this.hitEffect);
+    this.layers.vfx.addChild(this.hitEffect);
 
     // HUD
-    this.hud = drawText(stage, '', 20, 12, 16);
+    drawHudPanel(this.layers.hud, 8, 6, 944, 84, 0.92);
+    this.hud = drawText(this.layers.hud, '', 22, 17, 15);
 
     this.clockText = drawText(
-      stage,
+      this.layers.hud,
       '',
-      750,
-      12,
-      18,
-      0xffd38a
+      762,
+      13,
+      22,
+      THEME.colors.sanctuaryGlow
     );
 
     this.instructions = drawText(
-      stage,
+      this.layers.hud,
       '',
       20,
       49,
@@ -227,7 +249,7 @@ export class ForestScene implements Scene {
     );
 
     this.notification = drawText(
-      stage,
+      this.layers.hud,
       '',
       20,
       78,
@@ -243,8 +265,9 @@ export class ForestScene implements Scene {
   // ====================================
 
   private createResourceNode(
-    game: Game,
-    kind: NodeKind,
+    _game: Game,
+    kind: ResourceNodeKind,
+    zone: ExpeditionZone,
     x: number,
     y: number
   ): void {
@@ -297,15 +320,16 @@ export class ForestScene implements Scene {
     }
 
     graphic.position.set(x, y);
-    game.app.stage.addChild(graphic);
+    this.layers.entities.addChild(graphic);
 
     // Barra de resistência
     const healthBar = new Graphics();
     healthBar.eventMode = 'none';
-    game.app.stage.addChild(healthBar);
+    this.layers.worldUi.addChild(healthBar);
 
     const node: ResourceNode = {
       kind,
+      zone,
       x,
       y,
       hp: definition.hits,
@@ -398,10 +422,16 @@ export class ForestScene implements Scene {
     // Adiciona ao inventário global
     game.state.inventory[definition.resource] +=
       definition.quantity;
+    recordExpeditionCollection(
+      game.state,
+      definition.resource,
+      definition.quantity,
+      node.zone
+    );
 
     // Remove o objeto coletado
-    game.app.stage.removeChild(node.graphic);
-    game.app.stage.removeChild(node.healthBar);
+    node.graphic.removeFromParent();
+    node.healthBar.removeFromParent();
 
     node.graphic.destroy();
     node.healthBar.destroy();
@@ -416,6 +446,7 @@ export class ForestScene implements Scene {
     // Notificação de coleta
     this.notification.text =
       `+${definition.quantity} | ${definition.name}`;
+    this.notification.tint = 0xa0ffb2;
 
     this.notificationTime = 1.6;
 
@@ -431,6 +462,7 @@ export class ForestScene implements Scene {
     dtSeconds: number
   ): void {
     const nearby = this.findNearbyNode();
+    const zoneName = EXPEDITION_ZONES[this.currentZone].name;
 
     // Mudou de recurso? Reinicia o golpe.
     if (nearby !== this.target) {
@@ -440,7 +472,7 @@ export class ForestScene implements Scene {
 
     if (!nearby) {
       this.instructions.text =
-        'WASD: mover | Aproxime-se de um recurso | Portal azul: voltar';
+        `${zoneName} | WASD: mover | Recurso: segure E | Portal: voltar`;
       return;
     }
 
@@ -450,7 +482,7 @@ export class ForestScene implements Scene {
       this.hitProgress = 0;
 
       this.instructions.text =
-        `Segure E para extrair: ${definition.name}` +
+        `${zoneName} | Segure E: ${definition.name}` +
         ` (${nearby.hp} golpes restantes)`;
 
       return;
@@ -482,7 +514,9 @@ export class ForestScene implements Scene {
       `Madeira: ${inventory.wood}` +
       ` | Ferro: ${inventory.iron}` +
       ` | Eter: ${inventory.ether}` +
-      ` | Quitina: ${inventory.chitin}`;
+      ` | Quitina: ${inventory.chitin}` +
+      ` | Nos: ${game.state.expedition.telemetry.nodesCollected}` +
+      `/${game.state.expedition.telemetry.totalNodes}`;
   }
 
   // ====================================
@@ -521,6 +555,16 @@ export class ForestScene implements Scene {
       Math.min(HEIGHT - 15, this.player.y)
     );
 
+    const zone = getExpeditionZone(this.player.x);
+    if (zone !== this.currentZone) {
+      this.currentZone = zone;
+      visitExpeditionZone(game.state, zone);
+      this.notification.text =
+        `${EXPEDITION_ZONES[zone].name} | RISCO ${EXPEDITION_ZONES[zone].risk}`;
+      this.notification.tint = EXPEDITION_ZONES[zone].color;
+      this.notificationTime = 1.8;
+    }
+
     // Atualiza o cronômetro
     const remaining =
       game.state.expedition.remainingSeconds;
@@ -529,7 +573,19 @@ export class ForestScene implements Scene {
       `ANOITECER: ${formatClock(remaining)}`;
 
     this.clockText.tint =
-      remaining <= 30 ? 0xff7777 : 0xffffff;
+      remaining <= DAYLIGHT_WARNING_SECONDS ? 0xff7777 : 0xffffff;
+
+    if (
+      remaining <= DAYLIGHT_WARNING_SECONDS &&
+      remaining > 0 &&
+      !this.warningShown
+    ) {
+      this.warningShown = true;
+      this.notification.text =
+        '15 SEGUNDOS! Volte pelo portal ou a retirada sera automatica.';
+      this.notification.tint = 0xff7777;
+      this.notificationTime = 4;
+    }
 
     // Atualiza efeito de impacto
     if (this.hitEffectTime > 0) {
@@ -557,6 +613,7 @@ export class ForestScene implements Scene {
       this.player.x < 115 &&
       this.player.y > 425
     ) {
+      beginExpeditionReturn(game.state);
       game.changeScene('platform-back');
     }
   }

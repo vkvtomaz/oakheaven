@@ -1,5 +1,9 @@
 
-import { DAYLIGHT_SECONDS } from '../systems/ExpeditionSystem';
+import { DAYLIGHT_SECONDS } from '../systems/ExpeditionSystem.ts';
+import {
+  EXPEDITION_NODE_COUNT,
+  type ExpeditionZone,
+} from '../data/expedition.ts';
 
 export type ResourceType =
   | 'wood'
@@ -35,6 +39,25 @@ export interface CharacterState {
 export interface ExpeditionState {
   remainingSeconds: number;
   forcedRetreat: boolean;
+  telemetry: ExpeditionTelemetry;
+}
+
+export type ExpeditionOutcome =
+  | 'exploring'
+  | 'returning'
+  | 'voluntary'
+  | 'forced';
+
+export interface ExpeditionTelemetry {
+  nodesCollected: number;
+  totalNodes: number;
+  resourcesCollected: Record<ResourceType, number>;
+  nodesByZone: Record<ExpeditionZone, number>;
+  deepestZone: ExpeditionZone;
+  outcome: ExpeditionOutcome;
+  remainingSecondsAtExit: number | null;
+  traversalBonusWood: number;
+  highRouteFalls: number;
 }
 
 export interface GameState {
@@ -70,6 +93,26 @@ export function createInitialState(): GameState {
     expedition: {
       remainingSeconds: DAYLIGHT_SECONDS,
       forcedRetreat: false,
+      telemetry: {
+        nodesCollected: 0,
+        totalNodes: EXPEDITION_NODE_COUNT,
+        resourcesCollected: {
+          wood: 0,
+          iron: 0,
+          ether: 0,
+          chitin: 0,
+        },
+        nodesByZone: {
+          safe: 0,
+          intermediate: 0,
+          depths: 0,
+        },
+        deepestZone: 'safe',
+        outcome: 'exploring',
+        remainingSecondsAtExit: null,
+        traversalBonusWood: 0,
+        highRouteFalls: 0,
+      },
     },
 
     kaelen: {
