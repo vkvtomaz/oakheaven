@@ -55,6 +55,7 @@ import {
   type AlphaDamageSource,
 } from '../systems/alphaBoss';
 import { VISUAL_ASSETS } from '../visual/assets';
+import { createActor, paintArena } from '../visual/art';
 import {
   createSceneLayers,
   type SceneLayers,
@@ -70,10 +71,8 @@ import {
   FLANK_ROUTES,
   HUD_HEIGHT,
   KAELEN_START,
-  MAIN_ROAD_DRAW_POINTS,
   MAIN_ROAD_WAYPOINTS,
   ROAD_SPAWN,
-  ROAD_WIDTH,
   SANCTUARY,
   type ArenaPoint as Point,
 } from '../data/arena';
@@ -158,42 +157,7 @@ export class LastStandScene implements Scene {
     this.layers = createSceneLayers(game.app.stage);
     const stage = this.layers.entities;
 
-    this.layers.ground.addChild(
-      new Graphics().rect(0, 0, WIDTH, HEIGHT).fill(0x294638)
-    );
-    this.layers.ground.addChild(
-      new Graphics()
-        .rect(0, HUD_HEIGHT, WIDTH, HEIGHT - HUD_HEIGHT)
-        .fill(0x355b45)
-    );
-
-    const roadBorder = new Graphics().moveTo(
-      MAIN_ROAD_DRAW_POINTS[0].x,
-      MAIN_ROAD_DRAW_POINTS[0].y
-    );
-    const road = new Graphics().moveTo(
-      MAIN_ROAD_DRAW_POINTS[0].x,
-      MAIN_ROAD_DRAW_POINTS[0].y
-    );
-    for (const point of MAIN_ROAD_DRAW_POINTS.slice(1)) {
-      roadBorder.lineTo(point.x, point.y);
-      road.lineTo(point.x, point.y);
-    }
-    roadBorder.stroke({ color: 0x6f5c43, width: ROAD_WIDTH + 10 });
-    road.stroke({ color: 0x897354, width: ROAD_WIDTH });
-    this.layers.ground.addChild(roadBorder, road);
-
-    for (const [x, y] of [
-      [235, 155], [430, 430], [690, 150], [850, 440],
-    ]) {
-      this.layers.ground.addChild(
-        new Graphics()
-          .circle(x, y, 26)
-          .fill(0x234b34)
-          .circle(x - 8, y - 5, 14)
-          .fill(0x2d5d40)
-      );
-    }
+    paintArena(this.layers);
 
     this.layers.worldUi.addChild(
       new Graphics()
@@ -223,14 +187,9 @@ export class LastStandScene implements Scene {
       this.drawTower(game, tower);
     }
 
-    this.player = new Graphics()
-      .circle(0, 0, PLAYER_RADIUS)
-      .fill(0xc59768)
-      .circle(0, -3, 8)
-      .fill(0xead0ad)
-      .rect(9, -3, 18, 6)
-      .fill(0x9da5ad);
+    this.player = createActor('hero', 58);
     this.player.position.set(KAELEN_START.x, KAELEN_START.y);
+    this.player.zIndex = this.player.y;
     stage.addChild(this.player);
 
     this.chargeIndicator = new Graphics();
@@ -294,25 +253,7 @@ export class LastStandScene implements Scene {
   }
 
   private drawTower(_game: Game, tower: TowerState): void {
-    const definition = getTowerDefinition(tower.type);
-    const graphic = new Graphics();
-
-    if (tower.type === 'spike_barricade') {
-      graphic
-        .roundRect(-22, -14, 44, 28, 4)
-        .fill(definition.color)
-        .rect(-15, -19, 7, 13)
-        .rect(2, -19, 7, 13)
-        .fill(0x59452e);
-    } else {
-      graphic
-        .circle(0, 0, 21)
-        .fill(0x574532)
-        .circle(0, -4, 16)
-        .fill(definition.color)
-        .rect(-5, -22, 10, 17)
-        .fill(0x424a52);
-    }
+    const graphic = createActor(tower.type, tower.type === 'spike_barricade' ? 48 : 76);
 
     if (tower.tier >= 2) {
       if (tower.type === 'spike_barricade') {
@@ -331,6 +272,7 @@ export class LastStandScene implements Scene {
     }
 
     graphic.position.set(tower.x, tower.y);
+    graphic.zIndex = tower.y;
     graphic.eventMode = 'none';
     this.layers.entities.addChild(graphic);
 
@@ -350,9 +292,9 @@ export class LastStandScene implements Scene {
     const ratio = Math.max(0, Math.min(1, tower.hp / tower.maxHp));
     bar
       .clear()
-      .rect(tower.x - 22, tower.y - 37, 44, 6)
+      .rect(tower.x - 22, tower.y - (tower.type === 'spike_barricade' ? 56 : 84), 44, 6)
       .fill(0x172029)
-      .rect(tower.x - 22, tower.y - 37, 44 * ratio, 6)
+      .rect(tower.x - 22, tower.y - (tower.type === 'spike_barricade' ? 56 : 84), 44 * ratio, 6)
       .fill(ratio > 0.5 ? 0x76dc8f : 0xe4a35d);
     const suppressed = (this.towerSuppression.get(tower.id) ?? 0) > 0;
     graphic.tint = tower.hp <= 0
@@ -425,19 +367,17 @@ export class LastStandScene implements Scene {
       ? MAIN_ROAD_WAYPOINTS.map((point) => ({ ...point }))
       : (flankRoute?.waypoints ?? []).map((point) => ({ ...point }));
 
-    const graphic = new Graphics()
-      .circle(0, 0, values.radius)
-      .fill(values.color)
-      .circle(-4, -3, 3)
-      .fill(0xffffff);
+    const artHeight = kind === 'alpha' ? 94 : kind === 'brute' ? 58 : 44;
+    const graphic = createActor(kind, artHeight);
     if (role === 'flanker') {
       graphic
-        .moveTo(-7, -values.radius - 5)
-        .lineTo(0, -values.radius - 12)
-        .lineTo(7, -values.radius - 5)
+        .moveTo(-7, -artHeight - 5)
+        .lineTo(0, -artHeight - 12)
+        .lineTo(7, -artHeight - 5)
         .stroke({ color: 0x70e4ff, width: 3 });
     }
     graphic.position.set(spawn.x, spawn.y);
+    graphic.zIndex = spawn.y;
     graphic.eventMode = 'none';
     this.layers.entities.addChild(graphic);
 
@@ -493,14 +433,14 @@ export class LastStandScene implements Scene {
       .clear()
       .rect(
         enemy.x - width / 2,
-        enemy.y - enemy.radius - 13,
+        enemy.y - (enemy.kind === 'alpha' ? 102 : enemy.kind === 'brute' ? 66 : 52),
         width,
         4
       )
       .fill(0x271b22)
       .rect(
         enemy.x - width / 2,
-        enemy.y - enemy.radius - 13,
+        enemy.y - (enemy.kind === 'alpha' ? 102 : enemy.kind === 'brute' ? 66 : 52),
         width * ratio,
         4
       )
@@ -513,7 +453,7 @@ export class LastStandScene implements Scene {
     this.enemies.splice(index, 1);
     enemy.graphic.removeFromParent();
     enemy.healthBar.removeFromParent();
-    enemy.graphic.destroy();
+    enemy.graphic.destroy({ children: true, context: true });
     enemy.healthBar.destroy();
   }
 
@@ -760,6 +700,7 @@ export class LastStandScene implements Scene {
         );
       } else {
         enemy.graphic.position.set(enemy.x, enemy.y);
+        enemy.graphic.zIndex = enemy.y;
         this.refreshEnemyHealth(enemy);
         return;
       }
@@ -853,6 +794,8 @@ export class LastStandScene implements Scene {
     }
 
     enemy.graphic.position.set(enemy.x, enemy.y);
+
+    enemy.graphic.zIndex = enemy.y;
     this.refreshEnemyHealth(enemy);
     if (
       Math.hypot(
@@ -896,6 +839,7 @@ export class LastStandScene implements Scene {
 
     for (const enemy of this.enemies) {
       enemy.graphic.position.set(enemy.x, enemy.y);
+      enemy.graphic.zIndex = enemy.y;
       this.refreshEnemyHealth(enemy);
     }
   }
@@ -978,6 +922,7 @@ export class LastStandScene implements Scene {
           Math.min(HEIGHT - 10, target.y + dy / magnitude * push)
         );
         target.graphic.position.set(target.x, target.y);
+        target.graphic.zIndex = target.y;
         this.refreshEnemyHealth(target);
       }
       this.addEffect(
@@ -1056,6 +1001,7 @@ export class LastStandScene implements Scene {
       Math.min(HEIGHT - PLAYER_RADIUS, this.player.y)
     );
     this.resolvePlayerCollisions(game);
+    this.player.zIndex = this.player.y;
 
     this.playerInvulnerability = Math.max(
       0,
@@ -1323,6 +1269,7 @@ export class LastStandScene implements Scene {
       Math.min(HEIGHT - enemy.radius, enemy.y + dy * distance)
     );
     enemy.graphic.position.set(enemy.x, enemy.y);
+    enemy.graphic.zIndex = enemy.y;
     this.refreshEnemyHealth(enemy);
   }
 
@@ -1429,7 +1376,7 @@ export class LastStandScene implements Scene {
       effect.life -= dt;
       if (effect.life <= 0) {
         effect.graphic.removeFromParent();
-        effect.graphic.destroy();
+        effect.graphic.destroy({ children: true, context: true });
         this.effects.splice(this.effects.indexOf(effect), 1);
       }
     }

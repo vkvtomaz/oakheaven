@@ -11,8 +11,8 @@ export class TitleScene implements Scene {
   enter(game: Game): void {
     const stage = game.app.stage;
     const background = Sprite.from(VISUAL_ASSETS.cover);
-    background.width = 960;
-    background.height = 540;
+    background.scale.set(Math.max(960 / background.texture.width, 540 / background.texture.height));
+    background.position.set((960 - background.width) / 2, (540 - background.height) / 2);
     stage.addChild(background);
 
     stage.addChild(

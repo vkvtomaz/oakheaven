@@ -12,7 +12,7 @@ import type {
   TowerType,
 } from '../core/GameState';
 
-import { drawRect, drawCircle, drawText } from '../core/draw';
+import { drawRect } from '../core/draw';
 import {
   TOWERS,
   getTowerDefinition,
@@ -42,7 +42,6 @@ import {
   ARENA_HEIGHT as HEIGHT,
   ARENA_WIDTH as WIDTH,
   BUILD_PANEL_WIDTH as MENU_WIDTH,
-  MAIN_ROAD_DRAW_POINTS,
   MAIN_ROAD_WAYPOINTS,
   ROAD_SPAWN,
   ROAD_WIDTH,
@@ -50,14 +49,12 @@ import {
   distanceToMainRoad,
   isInsideBuildArea,
 } from '../data/arena';
-import { VISUAL_ASSETS } from '../visual/assets';
+import { ARENA_TOWER_HEIGHT, ARENA_TOWER_NAME, arenaActor, arenaSprite, arenaPanel, arenaText as drawText, paintMainArena, mainArenaSanctuary } from '../visual/arenaArt';
 import {
   createSceneLayers,
   type SceneLayers,
 } from '../visual/layers';
-import { drawSanctuary } from '../visual/sanctuary';
 import { THEME } from '../visual/theme';
-import { addFramedImage, drawHudPanel } from '../visual/ui';
 import { createVoltaicBeam } from '../visual/vfx';
 
 
@@ -92,6 +89,8 @@ export class DefenseScene implements Scene {
 
   private hud!: Text;
   private status!: Text;
+  private phaseLabel!: Text;
+  private waveButton!: Graphics;
   private preview!: Graphics;
 
   private pointerX = 0;
@@ -119,45 +118,16 @@ export class DefenseScene implements Scene {
 
     game.state.wave = 1;
 
-    drawRect(this.layers.ground, 0, 0, WIDTH, HEIGHT, 0x263e35);
-
-    // Estrada compartilhada pelas três waves
-    const roadBorder = new Graphics().moveTo(
-      MAIN_ROAD_DRAW_POINTS[0].x,
-      MAIN_ROAD_DRAW_POINTS[0].y
-    );
-    const road = new Graphics().moveTo(
-      MAIN_ROAD_DRAW_POINTS[0].x,
-      MAIN_ROAD_DRAW_POINTS[0].y
-    );
-
-    for (const point of MAIN_ROAD_DRAW_POINTS.slice(1)) {
-      roadBorder.lineTo(point.x, point.y);
-      road.lineTo(point.x, point.y);
-    }
-
-    roadBorder.stroke({ color: 0x6f5c43, width: ROAD_WIDTH + 10 });
-    road.stroke({ color: 0x897354, width: ROAD_WIDTH });
-    this.layers.ground.addChild(roadBorder, road);
-
-    // Árvores decorativas
-    for (const [x, y] of [
-      [305, 145],
-      [490, 450],
-      [765, 150],
-      [870, 430],
-    ]) {
-      drawCircle(this.layers.ground, x, y, 27, 0x1d402f);
-    }
+    paintMainArena(this.layers);
 
     // Santuário
-    drawSanctuary(stage, SANCTUARY.x, SANCTUARY.y, 0.82);
+    mainArenaSanctuary(stage);
     drawText(
       this.layers.worldUi,
       'SANTUARIO',
-      SANCTUARY.x - 42,
-      SANCTUARY.y + 52,
-      13,
+      SANCTUARY.x - 33,
+      SANCTUARY.y + 46,
+      10,
       THEME.colors.sanctuaryGlow
     );
 
@@ -204,60 +174,29 @@ export class DefenseScene implements Scene {
       }
     );
 
-    // Painel lateral
-    drawHudPanel(this.layers.hud, 0, 0, MENU_WIDTH, HEIGHT, 1);
-    drawHudPanel(
-      this.layers.hud,
-      MENU_WIDTH + 5,
-      5,
-      WIDTH - MENU_WIDTH - 10,
-      84,
-      0.94
-    );
-
-    drawText(
-      this.layers.hud,
-      'FORJA DE KAELEN',
-      15,
-      17,
-      19,
-      THEME.colors.sanctuaryGlow
-    );
-
-    drawText(
-      this.layers.hud,
-      'Selecione uma estrutura',
-      15,
-      53,
-      14,
-      0xc1d2db
-    );
-
-    TOWERS.forEach((tower, index) => {
-      this.createButton(game, tower.type, index);
-    });
-
-    // Interface
-    this.hud = drawText(this.layers.hud, '', 252, 15, 16);
-
-    this.status = drawText(
-      this.layers.hud,
-      `Expedicao: ${game.state.expedition.telemetry.nodesCollected}` +
-        `/${game.state.expedition.telemetry.totalNodes} nos coletados.`,
-      252,
-      48,
-      14,
-      0xe2e3bb
-    );
-
-    drawText(
-      this.layers.hud,
-      'ENTER: iniciar | Clique: reparar | SHIFT+clique: upgrade',
-      252,
-      75,
-      12,
-      0xd1d9d8
-    );
+    // Compact overlay; logical build bounds remain x >= 270, y >= 115.
+    arenaPanel(this.layers.hud, 12, 12, 936, 58);
+    const title = drawText(this.layers.hud, 'OAKHEAVEN', 27, 18, 22, 0xe5d8ac);
+    title.style.fontFamily = 'IM Fell English, Georgia, serif';
+    drawText(this.layers.hud, 'O ÚLTIMO JURAMENTO', 29, 47, 9, 0x8d9b8a);
+    arenaPanel(this.layers.hud, 12, 94, 208, 358);
+    this.phaseLabel = drawText(this.layers.hud, 'PREPARAÇÃO', 28, 109, 11, 0xb2b99a);
+    drawText(this.layers.hud, 'Defesas da forja', 28, 127, 17, 0xdfd8bc);
+    TOWERS.forEach((tower, index) => this.createButton(game, tower.type, index));
+    this.hud = drawText(this.layers.hud, '', 252, 23, 13, 0xe0ddc9);
+    this.status = drawText(this.layers.hud,
+      `Expedição: ${game.state.expedition.telemetry.nodesCollected}/${game.state.expedition.telemetry.totalNodes} recursos coletados.`,
+      252, 46, 11, 0x9ca992);
+    this.status.style.wordWrap = true;
+    this.status.style.wordWrapWidth = 670;
+    // Thin help rail sits below the original build area, never over placement.
+    drawText(this.layers.hud, '1–5 selecionar  ·  ESC cancelar  ·  clique reparar  ·  SHIFT + clique aprimorar', 270, 520, 10, 0x9da58c);
+    this.waveButton = new Graphics().roundRect(24, 468, 184, 36, 4)
+      .fill(0x394431).stroke({ color: 0xb8aa70, width: 1 });
+    this.waveButton.eventMode = 'static'; this.waveButton.cursor = 'pointer';
+    this.waveButton.on('pointerdown', () => { if(this.waves.phase === 'preparation') this.startWave(game); });
+    this.layers.hud.addChild(this.waveButton);
+    drawText(this.waveButton, 'INICIAR ONDA  [ENTER]', 43, 479, 12, 0xe6d8a0);
 
     // Pré-visualização da construção
     this.preview = new Graphics();
@@ -286,7 +225,7 @@ export class DefenseScene implements Scene {
   ): void {
     const stage = this.layers.hud;
     const definition = getTowerDefinition(type);
-    const y = 95 + index * 73;
+    const y = 159 + index * 57;
 
     const button = new Graphics();
 
@@ -310,39 +249,11 @@ export class DefenseScene implements Scene {
 
     stage.addChild(button);
 
-    drawCircle(
-      stage,
-      34,
-      y + 24,
-      11,
-      definition.color
-    ).eventMode = 'none';
-
-    addFramedImage(
-      stage,
-      VISUAL_ASSETS.towers[type],
-      14,
-      y + 5,
-      40,
-      48
-    ).eventMode = 'none';
-
-    drawText(
-      stage,
-      `${index + 1}. ${definition.name}`,
-      62,
-      y + 6,
-      13
-    ).eventMode = 'none';
-
-    drawText(
-      stage,
-      formatTowerCost(definition),
-      62,
-      y + 29,
-      12,
-      0xc8d4ce
-    ).eventMode = 'none';
+    const thumbnail = arenaSprite(type, type === 'spike_barricade' ? 25 : 40);
+    thumbnail.position.set(51, y + 43);
+    stage.addChild(thumbnail);
+    drawText(stage, `${index + 1}  ${ARENA_TOWER_NAME[type]}`, 78, y + 8, 11, 0xdad9c3);
+    drawText(stage, formatTowerCost(definition), 78, y + 27, 10, 0x95a18e);
 
     this.buttons.push({
       type,
@@ -352,16 +263,17 @@ export class DefenseScene implements Scene {
 
   private refreshButtons(): void {
     this.buttons.forEach((button, index) => {
-      const y = 95 + index * 73;
+      const y = 159 + index * 57;
       const active = button.type === this.selected;
 
       button.graphic
         .clear()
-        .roundRect(10, y, 218, 59, 8)
-        .fill(active ? 0x34516b : 0x253847)
+        .roundRect(22, y, 188, 50, 4)
+        .fill({color: active ? 0x394837 : 0x16241f, alpha: active ? 1 : .45})
         .stroke({
-          color: active ? 0x91c2e7 : 0x476071,
-          width: active ? 2 : 1,
+          color: active ? 0xc5b876 : 0x485342,
+          width: 1,
+          alpha: active ? .9 : .45,
         });
     });
   }
@@ -674,28 +586,10 @@ export class DefenseScene implements Scene {
     tower: TowerState
   ): void {
     const stage = this.layers.entities;
-    const definition = getTowerDefinition(tower.type);
-
-    const graphic = new Graphics();
+    const graphic = arenaActor(tower.type);
     graphic.position.set(tower.x, tower.y);
+    graphic.zIndex = tower.y;
     graphic.eventMode = 'none';
-
-    if (tower.type === 'spike_barricade') {
-      graphic
-        .roundRect(-22, -14, 44, 28, 4)
-        .fill(definition.color)
-        .rect(-15, -19, 7, 13)
-        .rect(2, -19, 7, 13)
-        .fill(0x59452e);
-    } else {
-      graphic
-        .circle(0, 0, 21)
-        .fill(0x574532)
-        .circle(0, -4, 16)
-        .fill(definition.color)
-        .rect(-5, -22, 10, 17)
-        .fill(0x424a52);
-    }
 
     this.drawTierMark(graphic, tower);
 
@@ -744,13 +638,14 @@ export class DefenseScene implements Scene {
       Math.min(1, tower.hp / tower.maxHp)
     );
 
+    bar.visible = ratio < 1;
     bar
       .clear()
-      .rect(tower.x - 22, tower.y - 37, 44, 6)
+      .rect(tower.x - 22, tower.y - ARENA_TOWER_HEIGHT[tower.type] - 4, 44, 6)
       .fill(0x172029)
       .rect(
         tower.x - 22,
-        tower.y - 37,
+        tower.y - ARENA_TOWER_HEIGHT[tower.type] - 4,
         44 * ratio,
         6
       )
@@ -799,13 +694,10 @@ export class DefenseScene implements Scene {
         : ((this.waves.spawned % 3) - 1) * 15;
     const y = ROAD_SPAWN.y + pathOffsetY;
 
-    const graphic = new Graphics()
-      .circle(0, 0, values.radius)
-      .fill(values.color)
-      .circle(-4, -3, 3)
-      .fill(0xffffff);
+    const graphic = arenaActor(kind, kind === 'alpha' ? 94 : kind === 'brute' ? 52 : 37);
 
     graphic.position.set(ROAD_SPAWN.x, y);
+    graphic.zIndex = y;
     graphic.eventMode = 'none';
 
     this.layers.entities.addChild(graphic);
@@ -837,7 +729,7 @@ export class DefenseScene implements Scene {
     this.enemies.splice(index, 1);
 
     enemy.graphic.removeFromParent();
-    enemy.graphic.destroy();
+    enemy.graphic.destroy({ children: true, context: true });
   }
 
   private damageEnemy(
@@ -1127,6 +1019,7 @@ export class DefenseScene implements Scene {
       }
 
       enemy.graphic.position.set(enemy.x, enemy.y);
+      enemy.graphic.zIndex = enemy.y;
 
       // Unidades maiores atacam torres próximas
       if (
@@ -1263,7 +1156,7 @@ private startWave(game: Game): void {
 
       if (effect.life <= 0) {
         effect.graphic.removeFromParent();
-        effect.graphic.destroy();
+        effect.graphic.destroy({ children: true, context: true });
 
         this.effects.splice(
           this.effects.indexOf(effect),
@@ -1312,13 +1205,10 @@ private startWave(game: Game): void {
     const state = game.state;
 
     this.hud.text =
-      `ATO ${state.act} | NOITE ${state.night}` +
-      ` | W${this.waves.currentWave}/3` +
-      ` | M:${state.inventory.wood}` +
-      ` F:${state.inventory.iron}` +
-      ` E:${state.inventory.ether}` +
-      ` Q:${state.inventory.chitin}` +
-      ` | BASE:${state.sanctuary.hp}`;
+      `MADEIRA ${state.inventory.wood}    FERRO ${state.inventory.iron}    ÉTER ${state.inventory.ether}    QUITINA ${state.inventory.chitin}       SANTUÁRIO ${state.sanctuary.hp}/${state.sanctuary.maxHp}`;
+    this.phaseLabel.text = `NOITE ${state.night}  /  ONDA ${this.waves.currentWave} DE 3`;
+    this.waveButton.alpha = this.waves.phase === 'preparation' ? 1 : .4;
+    this.waveButton.eventMode = this.waves.phase === 'preparation' ? 'static' : 'none';
 
     if (this.waves.phase === 'combat') {
       const total = this.waves.config.enemyCount;

@@ -88,7 +88,7 @@ export class Game {
     this.currentSceneId = sceneId;
 
     for (const child of this.app.stage.removeChildren()) {
-      child.destroy({ children: true });
+      child.destroy({ children: true, context: true });
     }
 
     switch (sceneId) {

@@ -1,4 +1,5 @@
 import { Graphics } from 'pixi.js';
+import { artSprite } from './art';
 
 export function createVoltaicBeam(
   x1: number,
@@ -31,5 +32,14 @@ export function createVoltaicBeam(
   beam.moveTo(points[0].x, points[0].y);
   for (const point of points.slice(1)) beam.lineTo(point.x, point.y);
   beam.stroke({ color, width: 3, alpha: 0.95 });
+  // Real crystal fragments from itens-3d, over the procedural electrical arc.
+  for (let index = 0; index < 3; index++) {
+    const spark = artSprite('crystal', 11 + index * 3);
+    spark.position.set(x2 + (index - 1) * 8, y2 + 7 - index * 4);
+    spark.rotation = (index - 1) * .7;
+    spark.tint = color;
+    spark.blendMode = 'add';
+    beam.addChild(spark);
+  }
   return beam;
 }

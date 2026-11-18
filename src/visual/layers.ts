@@ -18,6 +18,7 @@ export function createSceneLayers(root: Container): SceneLayers {
     worldUi: new Container(),
     hud: new Container(),
   };
+  layers.entities.sortableChildren = true;
 
   root.addChild(
     layers.ground,

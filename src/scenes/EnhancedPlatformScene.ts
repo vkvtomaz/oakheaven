@@ -27,6 +27,7 @@ import {
 } from '../visual/layers';
 import { THEME } from '../visual/theme';
 import { drawHudPanel } from '../visual/ui';
+import { createActor, paintTraversal, platformArt } from '../visual/art';
 
 const WIDTH = 960;
 const GRAVITY = 0.6;
@@ -60,28 +61,7 @@ export class EnhancedPlatformScene implements Scene {
     this.layers = createSceneLayers(game.app.stage);
     const stage = this.layers.entities;
 
-    drawRect(this.layers.ground, 0, 0, WIDTH, 540, 0x111a29);
-    drawCircle(this.layers.ground, 780, 105, 46, 0xd7c98f);
-    for (const x of [70, 245, 450, 675, 885]) {
-      drawRect(this.layers.ground, x, 275, 16, 180, 0x49372d);
-      drawCircle(this.layers.ground, x + 8, 290, 55, 0x1d4034);
-    }
-    drawRect(
-      this.layers.ground,
-      0,
-      TRAVERSAL_GROUND,
-      WIDTH,
-      85,
-      0x2b4939
-    );
-    drawRect(
-      this.layers.ground,
-      0,
-      TRAVERSAL_GROUND,
-      WIDTH,
-      12,
-      0x657d55
-    );
+    paintTraversal(this.layers);
 
     const first = HIGH_ROUTE_PLATFORMS[0];
     const highGuide = new Graphics().moveTo(
@@ -102,22 +82,7 @@ export class EnhancedPlatformScene implements Scene {
     this.layers.groundDecals.addChild(highGuide);
 
     for (const platform of HIGH_ROUTE_PLATFORMS) {
-      drawRect(
-        this.layers.ground,
-        platform.x,
-        platform.y,
-        platform.width,
-        platform.height,
-        0x76583f
-      );
-      drawRect(
-        this.layers.ground,
-        platform.x,
-        platform.y,
-        platform.width,
-        5,
-        THEME.colors.sanctuaryGlow
-      );
+      platformArt(this.layers.groundDecals, platform.x, platform.y, platform.width);
     }
 
     for (const mud of LOW_ROUTE_MUD) {
@@ -151,24 +116,19 @@ export class EnhancedPlatformScene implements Scene {
       THEME.colors.textMuted
     );
 
-    drawRect(stage, 20, 380, 45, 75, 0x4878b5);
-    drawText(stage, 'BASE', 21, 357, 16);
-    drawRect(stage, 895, 380, 45, 75, 0x4c9f68);
-    drawText(stage, 'MATA', 895, 357, 16);
+    drawText(this.layers.worldUi, 'BASE', 21, 465, 13);
+    drawText(this.layers.worldUi, 'MATA', 895, 465, 13);
 
     if (
       !this.goingBack &&
       game.state.expedition.telemetry.traversalBonusWood === 0
     ) {
-      this.bonusGraphic = new Graphics()
-        .roundRect(-15, -12, 30, 24, 5)
-        .fill(0x76583f)
-        .roundRect(-11, -8, 22, 16, 4)
-        .stroke({ color: THEME.colors.sanctuaryGlow, width: 3 });
+      this.bonusGraphic = createActor('wood', 28, 0);
       this.bonusGraphic.position.set(
         HIGH_ROUTE_BONUS.x,
         HIGH_ROUTE_BONUS.y
       );
+      this.bonusGraphic.zIndex = HIGH_ROUTE_BONUS.y;
       this.layers.entities.addChild(this.bonusGraphic);
       drawText(
         this.layers.worldUi,
@@ -180,21 +140,12 @@ export class EnhancedPlatformScene implements Scene {
       );
     }
 
-    this.player = new Graphics()
-      .roundRect(
-        -PLAYER_HALF_WIDTH,
-        -PLAYER_HEIGHT,
-        28,
-        PLAYER_HEIGHT,
-        5
-      )
-      .fill(0xf5d69b)
-      .circle(5, -28, 3)
-      .fill(0x252525);
+    this.player = createActor('hero', 58, 0);
     this.player.position.set(
       this.goingBack ? 870 : 90,
       TRAVERSAL_GROUND
     );
+    this.player.zIndex = this.player.y;
     stage.addChild(this.player);
 
     drawHudPanel(this.layers.hud, 8, 7, 944, 92, 0.92);
@@ -270,7 +221,7 @@ export class EnhancedPlatformScene implements Scene {
     );
     if (distance > 32 || !claimHighRouteBonus(game.state)) return;
     this.bonusGraphic.removeFromParent();
-    this.bonusGraphic.destroy();
+    this.bonusGraphic.destroy({ children: true, context: true });
     this.bonusGraphic = null;
     this.setStatus('Atalho dominado: +1 madeira para as defesas!', 180);
   }
@@ -356,6 +307,7 @@ export class EnhancedPlatformScene implements Scene {
       }
     }
 
+    this.player.zIndex = this.player.y;
     this.player.alpha = this.stumbleTicks > 0 ? 0.58 : 1;
     this.routeText.text = this.stumbleTicks > 0
       ? 'ROTA: RECUPERANDO'

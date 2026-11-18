@@ -1,4 +1,6 @@
+import './fonts.css';
 import './portal.css';
+import './identity.css';
 
 import {
   BESTIARY,

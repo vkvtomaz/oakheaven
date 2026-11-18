@@ -1,7 +1,10 @@
+import { loadInterfaceFonts } from './visual/fonts';
 
 import { Application } from 'pixi.js';
 import { Game } from './core/Game';
 import { setupPortal } from './portal/portal';
+import { loadGameArt } from './visual/art';
+import { loadArenaArt } from './visual/arenaArt';
 
 const container = document.querySelector<HTMLDivElement>('#app');
 
@@ -17,7 +20,10 @@ function startGame(): Promise<void> {
   if (startPromise) return startPromise;
 
   startPromise = (async () => {
+    await loadInterfaceFonts();
     const app = new Application();
+    await loadGameArt();
+    await loadArenaArt();
     await app.init({
       width: 960,
       height: 540,

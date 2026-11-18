@@ -1,7 +1,7 @@
 export const THEME = {
   colors: {
-    slate: 0x161822,
-    slateLight: 0x3a3f54,
+    slate: 0x171a17,
+    slateLight: 0x555347,
     oak: 0x2c1e16,
     oakLight: 0x593e2e,
     sanctuary: 0xf5b942,
@@ -18,7 +18,7 @@ export const THEME = {
     health: 0x69c56f,
   },
   fonts: {
-    display: 'Georgia, Times New Roman, serif',
-    body: 'Arial, sans-serif',
+    display: 'IM Fell English, Georgia, serif',
+    body: 'Alegreya Sans, Arial, sans-serif',
   },
 } as const;

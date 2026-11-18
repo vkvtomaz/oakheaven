@@ -13,9 +13,9 @@ export function drawHudPanel(
   const panel = new Graphics()
     .roundRect(x, y, width, height, 8)
     .fill({ color: THEME.colors.slate, alpha })
-    .stroke({ color: THEME.colors.slateLight, width: 3 })
+    .stroke({ color: THEME.colors.slateLight, width: 1, alpha: 0.55 })
     .roundRect(x + 5, y + 5, width - 10, height - 10, 5)
-    .stroke({ color: THEME.colors.oakLight, width: 1 });
+    .stroke({ color: THEME.colors.oakLight, width: 1, alpha: 0.15 });
   parent.addChild(panel);
   return panel;
 }
@@ -42,8 +42,9 @@ export function addFramedImage(
   frame.addChild(fallback);
 
   const image = Sprite.from(source);
-  image.width = width;
-  image.height = height;
+  const scale = Math.max(width / image.texture.width, height / image.texture.height);
+  image.scale.set(scale);
+  image.position.set((width - image.width) / 2, (height - image.height) / 2);
 
   const mask = new Graphics();
   if (circle) {
@@ -59,7 +60,7 @@ export function addFramedImage(
   if (circle) {
     border
       .circle(width / 2, height / 2, Math.min(width, height) / 2)
-      .stroke({ color: THEME.colors.sanctuary, width: 3 });
+      .stroke({ color: THEME.colors.sanctuary, width: 1, alpha: 0.55 });
   } else {
     border
       .roundRect(0, 0, width, height, 5)

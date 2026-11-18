@@ -44,10 +44,10 @@ export function drawText(
   const text = new Text({
     text: content,
     style: {
-      fontFamily: THEME.fonts.display,
+      fontFamily: size >= 24 ? THEME.fonts.display : THEME.fonts.body,
       fontSize: size,
       fill: color,
-      fontWeight: 'bold',
+      fontWeight: 'normal',
     },
   });
 

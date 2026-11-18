@@ -12,11 +12,7 @@ import {
   type ResourceNodeKind,
 } from '../data/expedition';
 
-import {
-  drawRect,
-  drawCircle,
-  drawText,
-} from '../core/draw';
+import { drawText } from '../core/draw';
 
 import {
   DAYLIGHT_WARNING_SECONDS,
@@ -31,6 +27,7 @@ import {
 } from '../visual/layers';
 import { THEME } from '../visual/theme';
 import { drawHudPanel } from '../visual/ui';
+import { createActor, paintForest, placeArt } from '../visual/art';
 
 // ======================================
 // 1. CONFIGURAÇÕES DA FLORESTA
@@ -137,7 +134,7 @@ export class ForestScene implements Scene {
     const stage = this.layers.entities;
 
     // Fundo da floresta
-    drawRect(this.layers.ground, 0, 0, WIDTH, HEIGHT, 0x223b31);
+    paintForest(this.layers);
 
     // As três zonas deixam distância, raridade e risco legíveis.
     for (const zone of [
@@ -160,39 +157,9 @@ export class ForestScene implements Scene {
       );
     }
 
-    // Caminhos de terra
-    drawRect(this.layers.ground, 0, 420, WIDTH, 85, 0x5f523d);
-    drawRect(this.layers.ground, 420, 90, 95, 350, 0x5f523d);
-
-    // Vegetação decorativa
-    const trees = [
-      [130, 100],
-      [295, 115],
-      [680, 115],
-      [890, 370],
-      [135, 330],
-      [700, 440],
-    ];
-
-    for (const [x, y] of trees) {
-      drawCircle(stage, x, y, 30, 0x244a35);
-
-      drawRect(
-        stage,
-        x - 5,
-        y - 3,
-        12,
-        24,
-        0x684b32
-      );
-
-      drawCircle(stage, x, y - 15, 32, 0x286947);
-    }
-
-    // Portal de retorno
-    drawRect(stage, 15, 430, 100, 70, 0x4878b5);
-    drawText(stage, 'PORTAL', 29, 440, 16);
-    drawText(stage, 'VOLTAR', 27, 466, 14, 0xdcecff);
+    // Portal remains at the original return trigger.
+    placeArt(stage, 'pad', 65, 490, 65);
+    drawText(this.layers.worldUi, 'VOLTAR', 32, 500, 13, 0x90e0ef);
 
     // Criação dos objetos extraíveis
     this.nodes = [];
@@ -207,12 +174,8 @@ export class ForestScene implements Scene {
       );
     }
 
-    // Kaelen - representação provisória
-    this.player = new Graphics()
-      .circle(0, 0, 15)
-      .fill(0xf5d69b)
-      .circle(4, -4, 3)
-      .fill(0x202020);
+    // Kaelen: visual independente da posição lógica de coleta.
+    this.player = createActor('hero', 58);
 
     this.player.position.set(135, 460);
     stage.addChild(this.player);
@@ -273,52 +236,11 @@ export class ForestScene implements Scene {
   ): void {
     const definition = RESOURCE_DATA[kind];
 
-    const graphic = new Graphics();
-
-    switch (kind) {
-      case 'tree':
-        graphic
-          .rect(-7, -7, 14, 32)
-          .fill(0x765039)
-          .circle(0, -16, 26)
-          .fill(0x34774d)
-          .circle(-11, -24, 16)
-          .fill(0x479a59);
-        break;
-
-      case 'scrap':
-        graphic
-          .roundRect(-19, -13, 38, 26, 4)
-          .fill(0x8994a2)
-          .rect(-10, -22, 12, 28)
-          .fill(0x505966)
-          .circle(10, 4, 5)
-          .fill(0x333b43);
-        break;
-
-      case 'crystal':
-        graphic
-          .moveTo(0, -28)
-          .lineTo(20, -5)
-          .lineTo(8, 22)
-          .lineTo(-17, 11)
-          .lineTo(-12, -13)
-          .closePath()
-          .fill(0xa450d6);
-        break;
-
-      case 'remains':
-        graphic
-          .roundRect(-23, -10, 46, 20, 9)
-          .fill(0x855d88)
-          .circle(-14, -7, 9)
-          .circle(12, 7, 9)
-          .fill(0xc790b4)
-          .circle(0, 0, 7)
-          .fill(0x643b73);
-        break;
-    }
-
+    const asset = kind === 'tree' ? 'wood' : kind === 'scrap' ? 'scrap'
+      : kind === 'crystal' ? 'crystal' : 'scout';
+    const graphic = createActor(asset, kind === 'crystal' ? 58 : 45);
+    if (kind === 'remains') { graphic.angle = -18; graphic.tint = 0x94849d; }
+    graphic.zIndex = y;
     graphic.position.set(x, y);
     this.layers.entities.addChild(graphic);
 
@@ -355,11 +277,11 @@ export class ForestScene implements Scene {
 
     node.healthBar
       .clear()
-      .rect(node.x - 22, node.y - 49, 44, 6)
+      .rect(node.x - 22, node.y - 58, 44, 6)
       .fill(0x182a27)
       .rect(
         node.x - 22,
-        node.y - 49,
+        node.y - 58,
         44 * ratio,
         6
       )
@@ -433,7 +355,7 @@ export class ForestScene implements Scene {
     node.graphic.removeFromParent();
     node.healthBar.removeFromParent();
 
-    node.graphic.destroy();
+    node.graphic.destroy({ children: true, context: true });
     node.healthBar.destroy();
 
     this.nodes = this.nodes.filter(
@@ -545,6 +467,7 @@ export class ForestScene implements Scene {
     this.player.x += dx * SPEED * dt;
     this.player.y += dy * SPEED * dt;
 
+    this.player.zIndex = this.player.y;
     this.player.x = Math.max(
       15,
       Math.min(WIDTH - 15, this.player.x)
