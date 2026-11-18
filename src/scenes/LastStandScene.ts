@@ -7,6 +7,8 @@ import { drawText } from '../core/draw';
 import {
   ENEMY_STATS,
   getFlankSide,
+  getLastStandHpMultiplier,
+  getTowerDamageMultiplier,
   getWaveThreeRole,
   type EnemyRole,
   type FlankSide,
@@ -44,6 +46,8 @@ interface Point {
   x: number;
   y: number;
 }
+
+type DamageSource = 'tower' | 'kaelen';
 
 interface Enemy {
   kind: EnemyKind;
@@ -298,8 +302,8 @@ export class LastStandScene implements Scene {
       );
       this.setStatus(
         side === 'upper'
-          ? 'Alerta: flanqueador pelo norte!'
-          : 'Alerta: flanqueador pelo sul!',
+          ? 'Flanqueador ao norte: Kaelen causa dano total!'
+          : 'Flanqueador ao sul: Kaelen causa dano total!',
         FLANK_WARNING_DURATION + 24
       );
     }
@@ -319,6 +323,8 @@ export class LastStandScene implements Scene {
     side: FlankSide | null
   ): void {
     const values = ENEMY_STATS[kind];
+    const hpMultiplier = getLastStandHpMultiplier(kind, role);
+    const maxHp = Math.ceil(values.hp * hpMultiplier);
     const upperFlank = side === 'upper';
     const spawnY = role === 'route'
       ? SANCTUARY.y
@@ -359,11 +365,12 @@ export class LastStandScene implements Scene {
       role,
       x: 975,
       y: spawnY,
-      hp: values.hp,
-      maxHp: values.hp,
-      speed: values.speed,
+      hp: maxHp,
+      maxHp,
+      speed: values.speed * (role === 'flanker' ? 1.12 : 1),
       radius: values.radius,
-      baseDamage: values.damage,
+      baseDamage:
+        values.damage * (role === 'flanker' ? 1.25 : 1),
       slowTicks: 0,
       attackCooldown: 0,
       path,
@@ -426,9 +433,17 @@ export class LastStandScene implements Scene {
     enemy.healthBar.destroy();
   }
 
-  private damageEnemy(game: Game, enemy: Enemy, damage: number): void {
+  private damageEnemy(
+    game: Game,
+    enemy: Enemy,
+    damage: number,
+    source: DamageSource = 'tower'
+  ): void {
     if (!this.enemies.includes(enemy)) return;
-    enemy.hp -= damage;
+    const effectiveDamage = source === 'tower'
+      ? damage * getTowerDamageMultiplier(enemy.role)
+      : damage;
+    enemy.hp -= effectiveDamage;
     if (enemy.hp <= 0) {
       this.addEffect(
         game,
@@ -580,9 +595,9 @@ export class LastStandScene implements Scene {
           if (enemy.attackCooldown <= 0) {
             this.damageTower(
               target,
-              enemy.kind === 'brute' ? 14 : 9
+              enemy.kind === 'brute' ? 18 : 12
             );
-            enemy.attackCooldown = 48;
+            enemy.attackCooldown = 42;
           }
         } else {
           this.moveToward(enemy, target, step);
@@ -841,7 +856,8 @@ export class LastStandScene implements Scene {
         this.damageEnemy(
           game,
           enemy,
-          enemy.kind === 'alpha' ? ATTACK_DAMAGE * 0.8 : ATTACK_DAMAGE
+          enemy.kind === 'alpha' ? ATTACK_DAMAGE * 0.8 : ATTACK_DAMAGE,
+          'kaelen'
         );
         hits++;
       }

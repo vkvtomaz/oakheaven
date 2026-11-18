@@ -3,17 +3,20 @@ import test from 'node:test';
 
 import {
   getFlankSide,
+  getLastStandHpMultiplier,
+  getTowerDamageMultiplier,
   getWaveThreeRole,
 } from '../src/data/enemies.ts';
 import type { TowerState } from '../src/core/GameState.ts';
 import { repairTower } from '../src/systems/repair.ts';
 import { selectTargetsInRange } from '../src/systems/towerCombat.ts';
 import {
+  WAVES,
   WaveSystem,
   type EnemyKind,
 } from '../src/systems/WaveSystem.ts';
 
-test('wave 3 tem 16 inimigos, 3 brutos e 1 Alpha', () => {
+test('wave 3 tem 32 inimigos, 8 brutos e 1 Alpha', () => {
   const waves = new WaveSystem();
   waves.currentWave = 3;
 
@@ -21,8 +24,8 @@ test('wave 3 tem 16 inimigos, 3 brutos e 1 Alpha', () => {
 
   const schedule = waves.update(10_000);
 
-  assert.equal(schedule.length, 16);
-  assert.equal(schedule.filter((kind) => kind === 'brute').length, 3);
+  assert.equal(schedule.length, 32);
+  assert.equal(schedule.filter((kind) => kind === 'brute').length, 8);
   assert.equal(schedule.filter((kind) => kind === 'alpha').length, 1);
   assert.equal(waves.isComplete(0), true);
 
@@ -32,7 +35,7 @@ test('wave 3 tem 16 inimigos, 3 brutos e 1 Alpha', () => {
 
 test('flanqueadores somam 25% e alternam norte e sul', () => {
   const kinds: EnemyKind[] = Array.from(
-    { length: 15 },
+    { length: 31 },
     () => 'scout'
   );
   kinds.push('alpha');
@@ -41,10 +44,31 @@ test('flanqueadores somam 25% e alternam norte e sul', () => {
     .map((kind, index) => getWaveThreeRole(index, kind))
     .filter((role) => role === 'flanker');
 
-  assert.equal(flankers.length, 4);
+  assert.equal(flankers.length, 8);
   assert.deepEqual(
     flankers.map((_, index) => getFlankSide(index)),
-    ['upper', 'lower', 'upper', 'lower']
+    [
+      'upper', 'lower', 'upper', 'lower',
+      'upper', 'lower', 'upper', 'lower',
+    ]
+  );
+});
+
+test('wave 3 mantem mais de 45 segundos de janela de spawn', () => {
+  const totalDelay = WAVES[3].spawnDelays?.reduce(
+    (total, delay) => total + delay,
+    0
+  ) ?? 0;
+
+  assert.ok(totalDelay >= 2_700);
+});
+
+test('flanqueadores exigem Kaelen e recebem menos dano das torres', () => {
+  assert.equal(getTowerDamageMultiplier('route'), 1);
+  assert.equal(getTowerDamageMultiplier('flanker'), 0.45);
+  assert.ok(
+    getLastStandHpMultiplier('scout', 'flanker') >
+    getLastStandHpMultiplier('scout', 'route')
   );
 });
 

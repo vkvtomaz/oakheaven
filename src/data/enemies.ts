@@ -49,3 +49,19 @@ export function getFlankSide(
 ): FlankSide {
   return flankerSequence % 2 === 0 ? 'upper' : 'lower';
 }
+
+export function getLastStandHpMultiplier(
+  kind: EnemyKind,
+  role: EnemyRole
+): number {
+  if (kind === 'alpha') return 1.9;
+  if (role === 'flanker') return 1.8;
+  if (kind === 'brute') return 1.55;
+  return 1.45;
+}
+
+export function getTowerDamageMultiplier(
+  role: EnemyRole
+): number {
+  return role === 'flanker' ? 0.45 : 1;
+}
