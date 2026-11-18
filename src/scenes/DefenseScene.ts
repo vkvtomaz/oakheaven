@@ -1001,7 +1001,7 @@ private startWave(game: Game): void {
   game.state.wave = this.waves.currentWave;
 
   // =====================================
-  // WAVE 3 — TRANSIÇÃO PARA VISÃO LATERAL
+  // WAVE 3 — TRANSIÇÃO PARA A ARENA TOP-DOWN
   // =====================================
 
   if (this.waves.currentWave === 3) {

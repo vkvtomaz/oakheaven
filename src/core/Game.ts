@@ -11,7 +11,7 @@ import {
 import type { Scene } from './Scene';
 import type { WaveSystem } from '../systems/WaveSystem';
 import { updateDaylight } from '../systems/ExpeditionSystem';
-import { LastStandArenaScene } from '../scenes/LastStandArenaScene';
+import { LastStandScene } from '../scenes/LastStandScene';
 import { PlatformScene } from '../scenes/PlatformScene';
 import { ForestScene } from '../scenes/ForestScene';
 import { DefenseScene } from '../scenes/DefenseScene';
@@ -98,7 +98,7 @@ export class Game {
           );
         }
 
-        this.scene = new LastStandArenaScene(waves);
+        this.scene = new LastStandScene(waves);
         break;
     }
 
