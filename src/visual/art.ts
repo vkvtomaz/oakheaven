@@ -4,6 +4,8 @@ import type { SceneLayers } from './layers';
 import { VISUAL_ASSETS } from './assets';
 import { loadKaelenArt } from './kaelenArt';
 import { prepareForestEnvironment, paintForestEnvironment } from './forestEnvironment';
+import { prepareForestResourceArt } from './forestResourceArt';
+import { prepareTraversalArt } from './traversalArt';
 
 const keys = ['hero', 'scout', 'brute', 'alpha', 'arc_ballista', 'slag_forge',
   'repulsor', 'chitin_cannon', 'spike_barricade', 'stone', 'roof', 'bridge',
@@ -13,6 +15,8 @@ const urls = Object.fromEntries(keys.map(key => [key, `${import.meta.env.BASE_UR
 const panorama = new URL('../../img/praca-de-oakheaven-2-5d.jfif', import.meta.url).href;
 const woodland = new URL('../../img/exploracao-floresta.jpg', import.meta.url).href;
 const props = new URL('../../img/itens-3d.jpg', import.meta.url).href;
+const traversalEnvironment = `${import.meta.env.BASE_URL}art/traversal/dusk-environment.png`;
+const traversalForeground = `${import.meta.env.BASE_URL}art/traversal/foreground.png`;
 const textures = new Map<ArtKey, Texture>();
 let landscape: Texture;
 let arenaFloor: Texture;
@@ -31,8 +35,12 @@ function imageSource(url: string): CanvasImageSource {
 export async function loadGameArt(): Promise<void> {
   if (ready) return;
   await Assets.load([...Object.values(urls), { src: panorama, parser: 'texture' }, woodland, props,
+    traversalEnvironment, traversalForeground,
     VISUAL_ASSETS.cover, VISUAL_ASSETS.kaelen, ...Object.values(VISUAL_ASSETS.towers)]);
   await loadKaelenArt();
+  prepareTraversalArt(imageSource(traversalEnvironment), imageSource(urls.wood), imageSource(urls.stone),
+    { foreground: imageSource(traversalForeground) });
+  prepareForestResourceArt(imageSource(woodland), Assets.get<Texture>(urls.ore));
   for (const key of keys) textures.set(key, Assets.get<Texture>(urls[key]));
   const sky = canvas(960, 455);
   // Only architecture/sky: excludes the painted character in the lower concept.

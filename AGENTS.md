@@ -54,3 +54,48 @@ This instruction supplements, not replaces, any existing project instructions ab
 `Use $cgs-dev-story for a small feature while a cgs_gameplay_programmer implements it, with independent QA validation. Avoid changing unrelated scenes.`
 
 <!-- OAK-CODEX-STUDIO:END -->
+
+<!-- OAKHEAVEN-STUDIO-SESSION-GUARD:START -->
+## OAKHEAVEN Studio v5.1 — protocolo de sessões curtas
+
+**Objetivo:** entregar melhorias reais ao jogo SEM expandir uma sessão indefinidamente.
+Este bloco prevalece sobre instruções anteriores do Studio v3/v5 que exijam
+"auditoria completa", "overhaul de todo o jogo" ou delegação ampla para
+uma solicitação pequena. Instruções explícitas do usuário continuam prioritárias.
+
+### Execução obrigatória
+1. Comece por `STUDIO-HANDOFF.md` (se existir) e `git status --short`;
+   leia APENAS os arquivos relacionados à tarefa atual. Não inventarie `img/`,
+   os 49 perfis, as 78 Skills ou todas as cenas sem pedido específico.
+2. Realize **UMA microentrega** por conversa: um defeito ou subsistema, preferencialmente
+   em uma cena e até quatro arquivos de produção. Se a solicitação for maior,
+   faça primeiro a mudança de maior impacto possível, sem começar auditoria global.
+3. Por padrão, **não use subagentes**. Use no máximo UM quando houver trabalho
+   paralelo realmente independente e justificativa clara; não encadeie subagentes.
+   Agentes/Skills do Studio v5 continuam disponíveis para uso sob demanda.
+4. Consulte no máximo a Skill e o perfil especializados estritamente relevantes.
+   Evite carregar upstream, frameworks completos, templates e relatórios longos.
+5. Depois da primeira implementação verificável, execute testes FOCADOS,
+   TypeScript ou build conforme impacto e tempo da sessão. Uma única tentativa
+   por ferramenta bloqueada; navegador/HTTP indisponível -> relatar bloqueio,
+   sem tentativas repetidas nem contorno de segurança.
+6. Faça no máximo uma rodada curta de correção após falha de teste.
+   Se houver problemas adicionais, documente-os como pendências e finalize.
+7. Ao encerrar, atualize sucintamente `STUDIO-HANDOFF.md` (estado confirmado,
+   arquivos alterados, teste executado, próximo micro-passo). Não reescreva o
+   histórico inteiro nem gere grandes relatórios a cada tarefa.
+8. Preserve `src/`, `img/`, gameplay, mudanças locais e documentos já existentes.
+   Não faça commit, push, deploy ou ações destrutivas sem autorização.
+9. Não declare validação visual sem observar jogo/screenshots reais. O objetivo
+   desta política é evitar loops, não reduzir a honestidade da validação.
+
+### Modelo de conclusão
+- Alterei: arquivos e efeito observável.
+- Validei: comandos com resultados reais.
+- Pendente: o que não foi observado/testado.
+- Próxima microtarefa: instrução curta para nova conversa.
+
+**Regra anti-loop:** se perceber que a tarefa exige reexaminar o projeto inteiro,
+encerrar com uma entrega parcial concreta e um handoff. Não iniciar outra cadeia
+longa de investigação, execução e correção na mesma conversa.
+<!-- OAKHEAVEN-STUDIO-SESSION-GUARD:END -->

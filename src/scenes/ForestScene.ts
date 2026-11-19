@@ -30,6 +30,7 @@ import { drawHudPanel } from '../visual/ui';
 import { createActor, paintForest, placeArt } from '../visual/art';
 import { animateKaelenActor } from '../visual/kaelenArt';
 import type { KaelenAnimation } from '../visual/kaelenAnimation';
+import { createForestResource } from '../visual/forestResourceArt';
 
 // ======================================
 // 1. CONFIGURAÇÕES DA FLORESTA
@@ -76,7 +77,7 @@ const RESOURCE_DATA: Record<ResourceNodeKind, ResourceDefinition> = {
   },
 
   scrap: {
-    name: 'Destrocos Metalicos',
+    name: 'Veio de Ferro',
     resource: 'iron',
     quantity: 2,
     hits: 8,
@@ -262,10 +263,7 @@ export class ForestScene implements Scene {
   ): void {
     const definition = RESOURCE_DATA[kind];
 
-    const asset = kind === 'tree' ? 'wood' : kind === 'scrap' ? 'scrap'
-      : kind === 'crystal' ? 'crystal' : 'scout';
-    const graphic = createActor(asset, kind === 'crystal' ? 58 : 45);
-    if (kind === 'remains') { graphic.angle = -18; graphic.tint = 0x94849d; }
+    const graphic = createForestResource(kind, x, y);
     const light = kind === 'crystal' ? new Graphics()
       .ellipse(0, 0, 28, 11).fill({ color: 0xa377e2, alpha: .12 })
       .ellipse(0, 0, 17, 7).fill({ color: 0xd2a0ff, alpha: .18 }) : null;
@@ -309,13 +307,13 @@ export class ForestScene implements Scene {
 
     node.healthBar
       .clear()
-      .rect(node.x - 22, node.y - 58, 44, 6)
+      .rect(node.x - 16, node.y + 17, 32, 3)
       .fill(0x182a27)
       .rect(
-        node.x - 22,
-        node.y - 58,
-        44 * ratio,
-        6
+        node.x - 16,
+        node.y + 17,
+        32 * ratio,
+        3
       )
       .fill(definition.color);
   }
@@ -426,7 +424,7 @@ export class ForestScene implements Scene {
     this.zoneLabel.text = `${zone.name} | RISCO ${zone.risk}`;
     this.harvestIndicator.clear();
     for (const node of this.nodes) {
-      node.healthBar.visible = node === nearby || node.hp < RESOURCE_DATA[node.kind].hits;
+      node.healthBar.visible = node === nearby;
     }
 
     // Mudou de recurso? Reinicia o golpe.
@@ -444,7 +442,7 @@ export class ForestScene implements Scene {
     const definition = RESOURCE_DATA[nearby.kind];
     this.harvestIndicator
       .ellipse(nearby.x, nearby.y, 29, 12)
-      .stroke({ color: definition.color, width: 1.5, alpha: 0.7 });
+      .stroke({ color: definition.color, width: 1, alpha: 0.4 });
 
     if (!game.input.isDown('KeyE')) {
       this.hitProgress = 0;
@@ -459,10 +457,9 @@ export class ForestScene implements Scene {
     // Acumula o tempo enquanto E é pressionado
     this.hitProgress += dtSeconds;
     this.harvestIndicator
-      .moveTo(nearby.x, nearby.y - 53)
-      .arc(nearby.x, nearby.y - 36, 17, -Math.PI / 2,
-        -Math.PI / 2 + Math.min(1, this.hitProgress / definition.secondsPerHit) * Math.PI * 2)
-      .stroke({ color: definition.color, width: 2.5, alpha: 0.85 });
+      .moveTo(nearby.x - 16, nearby.y + 23)
+      .lineTo(nearby.x - 16 + 32 * Math.min(1, this.hitProgress / definition.secondsPerHit), nearby.y + 23)
+      .stroke({ color: definition.color, width: 2, alpha: 0.65 });
 
     this.instructions.text =
       `Extraindo ${definition.name}...` +

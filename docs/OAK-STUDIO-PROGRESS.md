@@ -20,3 +20,13 @@ Validação final observada: npm test 52/52; npm run build exit 0 (786 módulos)
 ## 2026-11-18 — Validação do overhaul
 
 57/57 testes aprovados, incluindo a separação dos intervalos de contato/dano da barricada. TypeScript e build aprovados (789 módulos). Nenhuma nova correção em produção necessária. Revisão offline recompilada; abertura bloqueada pela política do navegador (file:// não permitido), sem contorno. Travessia, floresta, ondas 1–2, Última Linha e retorno continuam sem observação visual nesta retomada. Relatório e roteiro manual em docs/visual/overhaul-validation.md; estado vigente no topo e final de docs/STUDIO-HANDOFF.md. Modificações anteriores preservadas. Sem dependências, commit, push ou deploy.
+
+
+## 2026-11-19 — Travessia
+Integrados cenário de entardecer, plataformas apoiadas com material de madeira, foreground RGBA, luz/fumaça/brasas limitadas, HUD compacto e pose transparente de Kaelen. Dados de gameplay preservados. TypeScript, build, 8 testes focados e verificação da classe real de travessia passaram. Navegador bloqueado por vínculo da sessão; sem screenshot. Referência 2 não pôde ser inspecionada; fidelidade artística não certificada. Detalhes e próximo passo em STUDIO-HANDOFF.md. Sem commit/push/deploy.
+
+## 2026-11-19 - Travessia: Game Feel A/B
+Coyote110ms/buffer100ms, recuperação visual e impacto breve com movimento reduzido; lama texturizada/feedback, cordas, saída e HUD contextual da travessia. Entregas sequenciais,28 testes focados + classe real/DOM-model PASS, TypeScript/build/diff-check aprovados. Aparência/resoluções ainda não observadas: navegador já bloqueado. Estado e pendências em STUDIO-HANDOFF.md. Sem commit/push/deploy.
+
+## 2026-11-19 - Portal cinematográfico A-E
+Reformulados header/Hero (wordmark aprovado preservado), arena/manual, Crônica/História, Forja/Bestiário e polimento responsivo; dados/canvas/cenas preservados. Direção cgs_art_director e integração pelo coordenador, sem apoio engine necessário. 72 testes + modelo DOM portal, tsc/build/diff-check aprovados. Navegador bloqueado previamente: aparência e interações nativas ainda exigem conferência manual. Estado em STUDIO-HANDOFF.md; sem commit/push/deploy.

@@ -18,6 +18,8 @@ tmp/
 .oak-studio-backups/
 OAKHEAVEN-Codex-Full-Studio-Installer/
 OAKHEAVEN-QA-Visual-*/
+OAKHEAVEN-Studio-v5.1-Session-Guard/
+img/oakheaven-hero-original.mp4
 
 # Editor directories and files
 .vscode/*
