@@ -20,6 +20,8 @@ import { ForestScene } from '../scenes/ForestScene';
 import { DefenseScene } from '../scenes/DefenseScene';
 import { TitleScene } from '../scenes/TitleScene';
 import { SoundFX } from '../audio/SoundFX';
+import { createAtmosphere } from '../visual/atmosphere';
+import { createSceneTransition } from '../visual/sceneTransition';
 
 export type SceneId =
   | 'title'
@@ -38,6 +40,8 @@ export class Game {
 
   private scene: Scene | null = null;
   private currentSceneId!: SceneId;
+  private atmosphere: ReturnType<typeof createAtmosphere> | null = null;
+  private transition: ReturnType<typeof createSceneTransition> | null = null;
 
   constructor(app: Application, initialSceneId: SceneId = 'title') {
     this.app = app;
@@ -79,12 +83,17 @@ export class Game {
       }
 
       this.scene?.update(this, dt);
+      // These run in preparation as well as combat; no gameplay timer is paused.
+      this.atmosphere?.update(dt);
+      this.transition?.update(dt);
       this.input.endFrame();
     });
   }
 
   changeScene(sceneId: SceneId, waves?: WaveSystem): void {
     this.scene?.exit?.(this);
+    this.atmosphere = null;
+    this.transition = null;
     this.currentSceneId = sceneId;
 
     for (const child of this.app.stage.removeChildren()) {
@@ -124,6 +133,10 @@ export class Game {
     }
 
     this.scene.enter(this);
+    if (sceneId !== 'title') {
+      this.atmosphere = createAtmosphere(this.app.stage, sceneId);
+      this.transition = createSceneTransition(this.app.stage, this.app.screen.width, this.app.screen.height);
+    }
   }
 
   restart(): void {

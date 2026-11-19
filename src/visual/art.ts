@@ -2,6 +2,8 @@ import { Assets, Container, Graphics, Sprite, Texture } from 'pixi.js';
 import { MAIN_ROAD_DRAW_POINTS, ROAD_WIDTH, distanceToMainRoad } from '../data/arena';
 import type { SceneLayers } from './layers';
 import { VISUAL_ASSETS } from './assets';
+import { loadKaelenArt } from './kaelenArt';
+import { prepareForestEnvironment, paintForestEnvironment } from './forestEnvironment';
 
 const keys = ['hero', 'scout', 'brute', 'alpha', 'arc_ballista', 'slag_forge',
   'repulsor', 'chitin_cannon', 'spike_barricade', 'stone', 'roof', 'bridge',
@@ -30,6 +32,7 @@ export async function loadGameArt(): Promise<void> {
   if (ready) return;
   await Assets.load([...Object.values(urls), { src: panorama, parser: 'texture' }, woodland, props,
     VISUAL_ASSETS.cover, VISUAL_ASSETS.kaelen, ...Object.values(VISUAL_ASSETS.towers)]);
+  await loadKaelenArt();
   for (const key of keys) textures.set(key, Assets.get<Texture>(urls[key]));
   const sky = canvas(960, 455);
   // Only architecture/sky: excludes the painted character in the lower concept.
@@ -41,24 +44,67 @@ export async function loadGameArt(): Promise<void> {
   stripContext.fillStyle = stripContext.createPattern(tile, 'repeat')!;
   stripContext.fillRect(0, 0, 960, 85);
   stripContext.fillStyle = '#15201f55'; stripContext.fillRect(0, 0, 960, 85);
+  const depth = stripContext.createLinearGradient(0, 0, 0, 85);
+  depth.addColorStop(0, '#b3a17c22'); depth.addColorStop(.18, '#302e2466');
+  depth.addColorStop(1, '#080f13ee');
+  stripContext.fillStyle = depth; stripContext.fillRect(0, 0, 960, 85);
+  for (let i=0;i<550;i++) {
+    const x=(i*137)%960, y=(i*47)%85;
+    stripContext.fillStyle=i%3?'#14211c66':'#bfac7933';
+    stripContext.fillRect(x,y,1+i%4,1+i%2);
+  }
   traversalFloor = Texture.from(strip);
-  for (const forest of [false, true]) {
-    const floor = canvas(960, 540); const ctx = floor.getContext('2d')!;
-    const moss = canvas(110, 90);
-    moss.getContext('2d')!.drawImage(imageSource(woodland), 290, 335, 110, 90, 0, 0, 110, 90);
-    ctx.fillStyle = ctx.createPattern(moss, 'repeat')!; ctx.fillRect(0, 0, 960, 540);
-    ctx.fillStyle = forest ? '#132c27bb' : '#19251fe0'; ctx.fillRect(0, 0, 960, 540);
-    const glow = ctx.createRadialGradient(340, 280, 20, 520, 300, 650);
-    glow.addColorStop(0, '#54775b40'); glow.addColorStop(1, '#030912aa');
-    ctx.fillStyle = glow; ctx.fillRect(0, 0, 960, 540);
+  // Arena generation stays unchanged; forest has its own material/composition.
+  for (const forest of [false]) {
+    const floor = canvas(1920, 1080); const ctx = floor.getContext('2d')!;
+    ctx.scale(2, 2);
+    let seed = 4317;
+    const random = () => ((seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296);
+    ctx.fillStyle = forest ? '#263d30' : '#26362c'; ctx.fillRect(0, 0, 960, 540);
+    // Feather a material-only sample: no painted labels, characters or map geometry.
+    const moss = canvas(220, 180); const material = moss.getContext('2d')!;
+    material.drawImage(imageSource(woodland), 290, 335, 110, 90, 0, 0, 220, 180);
+    material.globalCompositeOperation = 'destination-in';
+    const feather = material.createRadialGradient(110, 90, 12, 110, 90, 108);
+    feather.addColorStop(0, '#ffffff'); feather.addColorStop(1, '#ffffff00');
+    material.fillStyle = feather; material.fillRect(0, 0, 220, 180);
+    ctx.globalAlpha = .22;
+    for (let i = 0; i < 150; i++) {
+      ctx.save(); ctx.translate(random() * 960, random() * 540); ctx.rotate(random() * Math.PI * 2);
+      ctx.drawImage(moss, -110, -90); ctx.restore();
+    }
+    ctx.globalAlpha = 1;
+    for (let i = 0; i < 5500; i++) {
+      const x = random() * 960, y = random() * 540;
+      ctx.fillStyle = i % 3 ? '#89936a22' : '#081b1a33';
+      ctx.fillRect(x, y, .6 + random() * 2, .5 + random());
+    }
     ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.beginPath();
     if (forest) {ctx.moveTo(0, 460); ctx.lineTo(960, 460); ctx.moveTo(465, 460); ctx.lineTo(465, 90);}
     else MAIN_ROAD_DRAW_POINTS.forEach((p, i) => i ? ctx.lineTo(p.x,p.y) : ctx.moveTo(p.x,p.y));
-    ctx.strokeStyle = '#171813'; ctx.lineWidth = ROAD_WIDTH + 12; ctx.stroke();
-    ctx.strokeStyle = ctx.createPattern(tile, 'repeat')!; ctx.lineWidth = ROAD_WIDTH; ctx.stroke();
-    ctx.strokeStyle = '#63543c55'; ctx.lineWidth = ROAD_WIDTH - 5; ctx.stroke();
-    if (forest) forestFloor = Texture.from(floor); else arenaFloor = Texture.from(floor);
+    ctx.strokeStyle = '#15261e66'; ctx.lineWidth = ROAD_WIDTH + 22; ctx.stroke();
+    ctx.strokeStyle = '#71644b55'; ctx.lineWidth = ROAD_WIDTH + 8; ctx.stroke();
+    ctx.strokeStyle = '#615a43aa'; ctx.lineWidth = ROAD_WIDTH - 8; ctx.stroke();
+    // Broken stones leave dirt between them; samples retain their natural scale.
+    const segments = forest ? [[0,460,960,460],[465,460,465,90]] :
+      MAIN_ROAD_DRAW_POINTS.slice(1).map((p,i) => [MAIN_ROAD_DRAW_POINTS[i]!.x,MAIN_ROAD_DRAW_POINTS[i]!.y,p.x,p.y]);
+    for (const [ax,ay,bx,by] of segments) {
+      const length = Math.hypot(bx!-ax!,by!-ay!), angle = Math.atan2(by!-ay!,bx!-ax!);
+      for (let step=0;step<length;step+=17) for(let row=-1;row<=1;row++) {
+        const d=step+random()*7, offset=row*17+(random()-.5)*5;
+        ctx.save(); ctx.translate(ax!+Math.cos(angle)*d-Math.sin(angle)*offset,ay!+Math.sin(angle)*d+Math.cos(angle)*offset);
+        ctx.rotate(angle+(random()-.5)*.25);
+        ctx.fillStyle=ctx.createPattern(tile,'repeat')!;ctx.fillRect(-5,-5,10+random()*3,9+random()*3);
+        ctx.fillStyle='#4c574077';ctx.fillRect(-5,-5,13,12);ctx.restore();
+      }
+    }
+    const glow = ctx.createRadialGradient(300, 270, 70, 520, 300, 650);
+    glow.addColorStop(0, '#76936518'); glow.addColorStop(1, '#030912bb');
+    ctx.fillStyle = glow; ctx.fillRect(0, 0, 960, 540);
+    const texture = Texture.from({ resource: floor, resolution: 2 });
+    arenaFloor = texture;
   }
+  forestFloor = prepareForestEnvironment(imageSource(woodland));
   ready = true;
 }
 
@@ -97,8 +143,7 @@ export function paintArena(layers: SceneLayers): void {
 
 export function paintForest(layers: SceneLayers): void {
   layers.ground.addChild(new Sprite(forestFloor));
-  for (const [x,y] of [[100,185],[285,160],[650,175],[915,365],[200,390],[715,510]])
-    placeArt(layers.entities,'ore',x!,y!,35);
+  paintForestEnvironment(layers);
 }
 
 export function paintTraversal(layers: SceneLayers): void {
@@ -107,12 +152,22 @@ export function paintTraversal(layers: SceneLayers): void {
   const floor = new Sprite(traversalFloor); floor.position.set(0,455); layers.ground.addChild(floor);
   placeArt(layers.groundDecals, 'bridge', 190, 455, 100);
   placeArt(layers.groundDecals, 'bridge', 835, 455, 100);
-  placeArt(layers.entities,'forge',38,455,140);
-  placeArt(layers.entities,'sanctuary',930,455,140);
+  placeArt(layers.entities,'forge',38,455,110).tint=0x969b8a;
+  placeArt(layers.entities,'sanctuary',930,455,110).tint=0x969b8a;
 }
 
 export function platformArt(parent: Container, x:number,y:number,width:number): void {
-  const beam = artSprite('wood',width * 215 / 330); beam.position.set(x+width/2,y+22);
-  parent.addChild(beam);
-  parent.addChild(new Graphics().moveTo(x,y).lineTo(x+width,y).stroke({color:0xc6b78a,width:2}));
+  // Short timber segments keep their authored proportions and exact landing edge.
+  const support = new Graphics().moveTo(x+9,y+9).lineTo(x+25,y+29)
+    .moveTo(x+width-9,y+9).lineTo(x+width-25,y+29)
+    .stroke({color:0x282b25,width:5});
+  parent.addChild(support);
+  const count = Math.ceil(width / 25);
+  for (let index=0;index<count;index++) {
+    const beam = artSprite('wood', 18);
+    beam.position.set(x + (index+.5)*width/count, y+17);
+    beam.tint=0xb3ac89; parent.addChild(beam);
+  }
+  parent.addChild(new Graphics().moveTo(x,y).lineTo(x+width,y)
+    .stroke({color:0xc6b78a,width:2,alpha:.8}));
 }

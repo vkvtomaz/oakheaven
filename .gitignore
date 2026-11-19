@@ -13,6 +13,12 @@ dist-ssr
 build-check
 *.local
 
+# Local Codex/Oak Studio working artifacts
+tmp/
+.oak-studio-backups/
+OAKHEAVEN-Codex-Full-Studio-Installer/
+OAKHEAVEN-QA-Visual-*/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

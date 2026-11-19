@@ -1,0 +1,774 @@
+{
+  "isolated_home": true,
+  "initialize": {
+    "id": 1,
+    "result": {
+      "userAgent": "codex_work_desktop/0.169.0-alpha.11.1 (Windows 10.0.26300; x86_64) dumb (oak-studio-audit; 1.0)",
+      "codexHome": "C:\\Users\\ACER\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\AC\\#!sandbox.{4c7d0962-8f35-4c72-98ca-587e6bcb287d}\\Temp\\oak-studio-isolated-probe",
+      "platformFamily": "windows",
+      "platformOs": "windows"
+    }
+  },
+  "skills": {
+    "id": 2,
+    "result": {
+      "data": [
+        {
+          "cwd": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven",
+          "skills": [
+            {
+              "name": "cgs-adopt",
+              "description": "CCGS: Brownfield audit \u2014 do existing artifacts actually work? Numbered migration plan. Unlike /project-s",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-adopt\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-architecture-decision",
+              "description": "CCGS: Create an ADR documenting a technical decision: context, alternatives considered, consequences.",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-architecture-decision\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-architecture-review",
+              "description": "CCGS: Traceability matrix mapping GDD requirements to ADRs. Finds gaps, cross-ADR conflicts, engine comp",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-architecture-review\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-art-bible",
+              "description": "CCGS: Author the Art Bible \u2014 visual identity gating asset production. Run before /map-systems.",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-art-bible\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-asset-audit",
+              "description": "CCGS: Audit assets against naming conventions, file size budgets, format standards. Finds orphaned asset",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-asset-audit\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-asset-spec",
+              "description": "CCGS: Per-asset visual specs plus AI generation prompts from GDDs and character profiles. After the art",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-asset-spec\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-balance-check",
+              "description": "CCGS: Find balance outliers, broken progressions, degenerate strategies, economy imbalances in formulas",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-balance-check\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-brainstorm",
+              "description": "CCGS: Guides the user through finding and choosing a game concept. Use when the user wants game ideas, a",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-brainstorm\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-bug-report",
+              "description": "CCGS: Structured bug report from a description, or analyze code for potential bugs. Reproduction steps",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-bug-report\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-bug-triage",
+              "description": "CCGS: Re-evaluate open bugs \u2014 priority vs severity, assign to sprints, surface systemic trends. Run when",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-bug-triage\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-changelog",
+              "description": "CCGS: Old name of /write-changelog. Prints one line, then runs /write-changelog.",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-changelog\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-code-review",
+              "description": "CCGS: Architectural review of written code: coding standards, SOLID, testability, performance.",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-code-review\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-consistency-check",
+              "description": "CCGS: Scan GDDs against the entity registry for cross-document conflicts. Grep-first approach targets co",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-consistency-check\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-content-audit",
+              "description": "CCGS: Audit GDD content counts against what's implemented \u2014 planned vs built.",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-content-audit\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-create-architecture",
+              "description": "CCGS: Author the architecture blueprint before code is written. Validates decisions against the pinned e",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-create-architecture\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-create-control-manifest",
+              "description": "CCGS: Builds a short list of must-do and never-do coding rules per system from accepted ADRs. Use when t",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-create-control-manifest\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-create-epics",
+              "description": "CCGS: Turns the GDDs and architecture into epics, one per architectural module. Use when the user wants",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-create-epics\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-create-stories",
+              "description": "CCGS: Breaks one epic into implementable stories with acceptance criteria. Use when the user wants stori",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-create-stories\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-cut",
+              "description": "CCGS: Proposes cuts and a polish list to finish the game from its brief and what is built; the person pi",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-cut\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-day-one-patch",
+              "description": "CCGS: Day-one launch patch \u2014 focused fix for known issues found after gold master. Mini-sprint with QA g",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-day-one-patch\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-design-review",
+              "description": "CCGS: Reviews one design document for completeness, internal consistency, implementability, and design s",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-design-review\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-design-system",
+              "description": "CCGS: Section-by-section GDD authoring for one system \u2014 walks through each required section, cross-refer",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-design-system\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-dev-story",
+              "description": "CCGS: Implements one story in code with tests, following its ADRs. Use when the user says to build, impl",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-dev-story\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-estimate",
+              "description": "CCGS: Estimate task effort from complexity, dependencies, velocity, risk. Structured estimate with confi",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-estimate\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-gate-check",
+              "description": "CCGS: Ready to advance between development stages? PASS/CONCERNS/NOT ASSESSED/FAIL with blockers and req",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-gate-check\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-help",
+              "description": "CCGS: Old name of /next-step. Prints one line, then runs /next-step.",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-help\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-hotfix",
+              "description": "CCGS: Emergency fix bypassing normal sprint process \u2014 hotfix branch, approvals tracked, backport verifie",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-hotfix\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-launch-checklist",
+              "description": "CCGS: Launch readiness across every department: code, content, store, marketing, community, infrastructu",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-launch-checklist\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-localize",
+              "description": "CCGS: Localization pipeline \u2014 find hardcoded strings, extract string tables, cultural review, VO, RTL, e",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-localize\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-map-systems",
+              "description": "CCGS: Decompose a concept into individual systems, map dependencies, prioritize design order, create the",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-map-systems\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-milestone-review",
+              "description": "CCGS: Milestone progress review \u2014 completeness, quality metrics, risk, go/no-go recommendation. At check",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-milestone-review\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-next-step",
+              "description": "CCGS: Names the one next step: make a game, change it after play, grow it, or the next studio-mode step.",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-next-step\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-onboard",
+              "description": "CCGS: Onboarding doc for a new contributor or agent \u2014 project state, conventions, priorities relevant to",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-onboard\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-patch-notes",
+              "description": "CCGS: Player-facing patch notes from git history and changelogs. Translates developer language into play",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-patch-notes\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-perf-profile",
+              "description": "CCGS: Performance profiling \u2014 find bottlenecks, measure against budgets, produce ranked optimization rec",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-perf-profile\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-playtest-report",
+              "description": "CCGS: Structured playtest report template, or turn existing playtest notes into structured feedback.",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-playtest-report\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-project-settings",
+              "description": "CCGS: Shows or changes a project setting and where its value comes from. Use to check or set one.",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-project-settings\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-project-stage-detect",
+              "description": "CCGS: Analyze project state, detect stage, identify gaps, recommend next steps. 'Where are we in develop",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-project-stage-detect\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-propagate-design-change",
+              "description": "CCGS: Finds architecture decisions (ADRs) made stale by a changed GDD and walks through resolving each.",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-propagate-design-change\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-prototype",
+              "description": "CCGS: Asks a few questions, writes a one-page brief, builds a playable browser game as one HTML folder i",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-prototype\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-qa-plan",
+              "description": "CCGS: QA test plan for a sprint \u2014 classifies stories by Logic/Integration/Visual/UI, covers automated te",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-qa-plan\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-quick-design",
+              "description": "CCGS: Lightweight spec for small changes \u2014 tuning adjustments, minor mechanics. Embeds directly into sto",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-quick-design\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-regression-suite",
+              "description": "CCGS: Map test coverage to GDD critical paths, find fixed bugs lacking regression tests, flag drift from",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-regression-suite\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-release-checklist",
+              "description": "CCGS: Pre-release checklist \u2014 build verification, certification requirements, store metadata, launch rea",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-release-checklist\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-retrospective",
+              "description": "CCGS: Sprint or milestone retrospective from completed work, velocity, blockers. Actionable insights for",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-retrospective\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-reverse-document",
+              "description": "CCGS: Writes missing design or architecture docs, or a game's brief, from code. Use when code or prototy",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-reverse-document\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-review-all-gdds",
+              "description": "CCGS: Holistic cross-GDD review \u2014 contradictions between systems, dominant strategies, economic imbalanc",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-review-all-gdds\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-scope-check",
+              "description": "CCGS: Scope creep check \u2014 current scope versus the original plan. Flags additions, quantifies bloat, rec",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-scope-check\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-security-audit",
+              "description": "CCGS: Security audit \u2014 save tampering, cheat vectors, network exploits, data exposure, input validation.",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-security-audit\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-settings",
+              "description": "CCGS: Old name of /project-settings. Prints one line, then runs /project-settings.",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-settings\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-setup-engine",
+              "description": "CCGS: Sets up and pins the engine version: web for a new project unless Godot, Unity or Unreal is named.",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-setup-engine\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-skill-improve",
+              "description": "CCGS: Improve a skill via a test-fix-retest loop \u2014 static checks, targeted fixes, keep or revert on scor",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-skill-improve\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-skill-test",
+              "description": "CCGS: Validate skill files for structural compliance and behavioral correctness. Four modes: static lint",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-skill-test\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-smoke-check",
+              "description": "CCGS: Critical-path smoke gate before QA hand-off \u2014 runs the automated suite. A failed check means the b",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-smoke-check\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-soak-test",
+              "description": "CCGS: Soak test protocol for extended play \u2014 what to observe and log for slow leaks, fatigue, late-appea",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-soak-test\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-sprint-plan",
+              "description": "CCGS: New or updated sprint plan from the current milestone, completed work, and available capacity.",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-sprint-plan\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-sprint-status",
+              "description": "CCGS: Fast, concise sprint snapshot \u2014 burndown and emerging risks for situational awareness. 'How is the",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-sprint-status\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-start",
+              "description": "CCGS: Guides a first-time user through onboarding and picks the right workflow. Use when the user is new",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-start\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-story-done",
+              "description": "CCGS: Closes a finished story: verifies each acceptance criterion, checks for design or ADR deviations a",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-story-done\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-story-readiness",
+              "description": "CCGS: Checks whether a story is ready to implement: clear acceptance criteria, no open questions, valid",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-story-readiness\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-team-audio",
+              "description": "CCGS: Orchestrate the audio team \u2014 audio-director, sound-designer, technical-artist, gameplay-programmer",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-team-audio\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-team-combat",
+              "description": "CCGS: Orchestrate the combat team \u2014 game-designer, gameplay-programmer, ai-programmer, technical-artist",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-team-combat\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-team-level",
+              "description": "CCGS: Orchestrate the level team \u2014 level-designer, narrative-director, world-builder, art-director, syst",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-team-level\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-team-live-ops",
+              "description": "CCGS: Orchestrate the live-ops team \u2014 live-ops-designer, economy-designer, analytics-engineer, community",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-team-live-ops\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-team-narrative",
+              "description": "CCGS: Orchestrate the narrative team \u2014 narrative-director, writer, world-builder, level-designer \u2014 for s",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-team-narrative\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-team-polish",
+              "description": "CCGS: Orchestrate the polish team \u2014 performance-analyst, technical-artist, sound-designer, qa-tester \u2014 t",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-team-polish\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-team-qa",
+              "description": "CCGS: Orchestrate the QA team through a full testing cycle \u2014 qa-lead strategy and test plan, qa-tester c",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-team-qa\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-team-release",
+              "description": "CCGS: Orchestrate the release team \u2014 release-manager, qa-lead, devops-engineer, producer \u2014 to execute a",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-team-release\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-team-ui",
+              "description": "CCGS: Orchestrate the UI team through the UX pipeline \u2014 authoring, visual design, implementation, review",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-team-ui\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-tech-debt",
+              "description": "CCGS: Track, categorize and prioritize technical debt across the codebase \u2014 scans for debt indicators, m",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-tech-debt\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-test-evidence-review",
+              "description": "CCGS: Quality review of test files and evidence \u2014 goes beyond existence, evaluates assertion coverage. A",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-test-evidence-review\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-test-flakiness",
+              "description": "CCGS: Find flaky tests from CI logs \u2014 aggregates pass rates, spots intermittent failures, recommends qua",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-test-flakiness\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-test-helpers",
+              "description": "CCGS: Generate engine-specific test helper libraries \u2014 assertion utilities, factory functions, mocks in",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-test-helpers\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-test-setup",
+              "description": "CCGS: Sets up the test framework and CI: tests/ directory, engine runner, GitHub Actions workflow. Use o",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-test-setup\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-ux-design",
+              "description": "CCGS: Section-by-section UX spec authoring for a screen, flow or HUD. Reads the player journey to provid",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-ux-design\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-ux-review",
+              "description": "CCGS: Validate a UX spec, HUD design or pattern library \u2014 accessibility, GDD alignment, readiness. APPRO",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-ux-review\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-vertical-slice",
+              "description": "CCGS: Pre-production validation \u2014 end-to-end build to confirm the full loop is achievable before committ",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-vertical-slice\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "cgs-write-changelog",
+              "description": "CCGS: Writes a changelog from git commits and sprint data. Use for an internal or player-facing one.",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\cgs-write-changelog\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "oak-asset-audit",
+              "description": "Encontrar, classificar e mapear imagens reais de img para elementos existentes no OAKHEAVEN antes de integrar sprites.",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\oak-asset-audit\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "oak-pixi-integration",
+              "description": "Converter assets utiliz\u00e1veis de img em sprites, cen\u00e1rios e efeitos no motor 2D existente de OAKHEAVEN, mantendo a l\u00f3gica atual.",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\oak-pixi-integration\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "oak-ship-visual",
+              "description": "Implementar AGORA o overhaul visual do OAKHEAVEN com as imagens reais de img, entregando primeiro mapa jog\u00e1vel, sem ficar s\u00f3 em plano ou auditoria.",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\oak-ship-visual\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "oak-visual-qa",
+              "description": "Validar se os assets do overhaul do OAKHEAVEN aparecem no jogo rodando e se as mec\u00e2nicas continuam funcionais.",
+              "path": "C:\\Users\\ACER\\Desktop\\PROJETOS\\oakheaven\\oakheaven\\.agents\\skills\\oak-visual-qa\\SKILL.md",
+              "scope": "repo",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "imagegen",
+              "description": "Generate or edit raster images when the task benefits from AI-created bitmap visuals such as photos, illustrations, textures, sprites, mockups, or transparent-background cutouts. Use when Codex should create a brand-new image, transform an existing image, or derive visual variants from references, and the output should be a bitmap asset rather than repo-native code or vector. Do not use when the task is better handled by editing existing SVG/vector/code-native assets, extending an established icon or logo system, or building the visual directly in HTML/CSS/canvas.",
+              "interface": {
+                "displayName": "Image Gen",
+                "shortDescription": "Generate or edit images for websites, games, and more",
+                "iconSmall": "C:\\Users\\ACER\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\AC\\#!sandbox.{4c7d0962-8f35-4c72-98ca-587e6bcb287d}\\Temp\\oak-studio-isolated-probe\\skills\\.system\\imagegen\\assets\\imagegen-small.svg",
+                "iconLarge": "C:\\Users\\ACER\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\AC\\#!sandbox.{4c7d0962-8f35-4c72-98ca-587e6bcb287d}\\Temp\\oak-studio-isolated-probe\\skills\\.system\\imagegen\\assets\\imagegen.png",
+                "iconSmallUrl": null,
+                "iconLargeUrl": null,
+                "brandColor": null,
+                "defaultPrompt": "Use $imagegen to make or edit an image for this project."
+              },
+              "path": "C:\\Users\\ACER\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\AC\\#!sandbox.{4c7d0962-8f35-4c72-98ca-587e6bcb287d}\\Temp\\oak-studio-isolated-probe\\skills\\.system\\imagegen\\SKILL.md",
+              "scope": "system",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "openai-docs",
+              "description": "API first-timers, Codex/Work Q&A. If the user already has an OpenAI API integration, skip this skill for API questions and use the developer docs. Read this skill before answering how Codex or ChatGPT Work behaves, where to find a feature, or how to configure or troubleshoot this app or coding agent. This includes conversation history, model and cache behavior, instruction precedence, permissions, and tool availability. Use for API onboarding only when the user is connecting to the OpenAI API for the first time. Skip action requests, such as scheduling an automation, and tasks fully answered by supplied text or data.",
+              "interface": {
+                "displayName": "OpenAI Docs",
+                "shortDescription": "Codex and ChatGPT Work Q&A, plus first-time API setup",
+                "iconSmall": "C:\\Users\\ACER\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\AC\\#!sandbox.{4c7d0962-8f35-4c72-98ca-587e6bcb287d}\\Temp\\oak-studio-isolated-probe\\skills\\.system\\openai-docs\\assets\\openai-small.svg",
+                "iconLarge": "C:\\Users\\ACER\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\AC\\#!sandbox.{4c7d0962-8f35-4c72-98ca-587e6bcb287d}\\Temp\\oak-studio-isolated-probe\\skills\\.system\\openai-docs\\assets\\openai.png",
+                "iconSmallUrl": null,
+                "iconLargeUrl": null,
+                "brandColor": null,
+                "defaultPrompt": "Use $openai-docs to explain a Codex or ChatGPT Work feature, help with my first OpenAI API integration, or migrate a request to my chosen model."
+              },
+              "path": "C:\\Users\\ACER\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\AC\\#!sandbox.{4c7d0962-8f35-4c72-98ca-587e6bcb287d}\\Temp\\oak-studio-isolated-probe\\skills\\.system\\openai-docs\\SKILL.md",
+              "scope": "system",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "review-agent",
+              "description": "Perform a read-only, defect-first review of a specified code change and return every actionable finding. Use when another agent delegates review of uncommitted changes, a base-branch diff, a commit, or custom review instructions.",
+              "interface": {
+                "displayName": "Review Agent",
+                "shortDescription": "Find actionable bugs in code changes",
+                "iconSmall": null,
+                "iconLarge": null,
+                "iconSmallUrl": null,
+                "iconLargeUrl": null,
+                "brandColor": null,
+                "defaultPrompt": "Use $review-agent to review the requested code changes and return actionable findings."
+              },
+              "path": "C:\\Users\\ACER\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\AC\\#!sandbox.{4c7d0962-8f35-4c72-98ca-587e6bcb287d}\\Temp\\oak-studio-isolated-probe\\skills\\.system\\review-agent\\SKILL.md",
+              "scope": "system",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "skill-creator",
+              "description": "Create or update a Codex skill with appropriately scoped instructions and any needed supporting resources.",
+              "shortDescription": "Create or update a skill",
+              "interface": {
+                "displayName": "Skill Creator",
+                "shortDescription": "Create or update a skill",
+                "iconSmall": "C:\\Users\\ACER\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\AC\\#!sandbox.{4c7d0962-8f35-4c72-98ca-587e6bcb287d}\\Temp\\oak-studio-isolated-probe\\skills\\.system\\skill-creator\\assets\\skill-creator-small.svg",
+                "iconLarge": "C:\\Users\\ACER\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\AC\\#!sandbox.{4c7d0962-8f35-4c72-98ca-587e6bcb287d}\\Temp\\oak-studio-isolated-probe\\skills\\.system\\skill-creator\\assets\\skill-creator.png",
+                "iconSmallUrl": null,
+                "iconLargeUrl": null,
+                "brandColor": null,
+                "defaultPrompt": null
+              },
+              "path": "C:\\Users\\ACER\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\AC\\#!sandbox.{4c7d0962-8f35-4c72-98ca-587e6bcb287d}\\Temp\\oak-studio-isolated-probe\\skills\\.system\\skill-creator\\SKILL.md",
+              "scope": "system",
+              "enabled": true,
+              "pluginId": null
+            },
+            {
+              "name": "skill-installer",
+              "description": "Install Codex skills into $CODEX_HOME/skills from a curated list or a GitHub repo path. Use when a user asks to list installable skills, install a curated skill, or install a skill from another repo (including private repos).",
+              "shortDescription": "Install curated skills from openai/skills or other repos",
+              "interface": {
+                "displayName": "Skill Installer",
+                "shortDescription": "Install curated skills from openai/skills or other repos",
+                "iconSmall": "C:\\Users\\ACER\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\AC\\#!sandbox.{4c7d0962-8f35-4c72-98ca-587e6bcb287d}\\Temp\\oak-studio-isolated-probe\\skills\\.system\\skill-installer\\assets\\skill-installer-small.svg",
+                "iconLarge": "C:\\Users\\ACER\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\AC\\#!sandbox.{4c7d0962-8f35-4c72-98ca-587e6bcb287d}\\Temp\\oak-studio-isolated-probe\\skills\\.system\\skill-installer\\assets\\skill-installer.png",
+                "iconSmallUrl": null,
+                "iconLargeUrl": null,
+                "brandColor": null,
+                "defaultPrompt": null
+              },
+              "path": "C:\\Users\\ACER\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\AC\\#!sandbox.{4c7d0962-8f35-4c72-98ca-587e6bcb287d}\\Temp\\oak-studio-isolated-probe\\skills\\.system\\skill-installer\\SKILL.md",
+              "scope": "system",
+              "enabled": true,
+              "pluginId": null
+            }
+          ],
+          "errors": []
+        }
+      ]
+    }
+  },
+  "stderr": "\"sandboxed\":false,\"name\":\"fs.get_metadata\"},\"spans\":[{\"app_server.api_version\":\"v2\",\"app_server.client_name\":\"oak-studio-audit\",\"app_server.client_version\":\"1.0\",\"app_server.connection_id\":\"0\",\"otel.kind\":\"server\",\"otel.name\":\"skills/list\",\"rpc.method\":\"skills/list\",\"rpc.request_id\":\"2\",\"rpc.system\":\"jsonrpc\",\"rpc.transport\":\"stdio\",\"name\":\"app_server.request\"}]}\n{\"timestamp\":\"2026-11-18T16:14:05.557091Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"close\",\"time.busy\":\"10.5\u00b5s\",\"time.idle\":\"119\u00b5s\"},\"target\":\"codex_exec_server::local_file_system\",\"span\":{\"sandboxed\":false,\"name\":\"fs.get_metadata\"},\"spans\":[{\"app_server.api_version\":\"v2\",\"app_server.client_name\":\"oak-studio-audit\",\"app_server.client_version\":\"1.0\",\"app_server.connection_id\":\"0\",\"otel.kind\":\"server\",\"otel.name\":\"skills/list\",\"rpc.method\":\"skills/list\",\"rpc.request_id\":\"2\",\"rpc.system\":\"jsonrpc\",\"rpc.transport\":\"stdio\",\"name\":\"app_server.request\"}]}\n{\"timestamp\":\"2026-11-18T16:14:05.557110Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"new\"},\"target\":\"codex_exec_server::local_file_system\",\"span\":{\"sandboxed\":false,\"name\":\"fs.get_metadata\"},\"spans\":[{\"app_server.api_version\":\"v2\",\"app_server.client_name\":\"oak-studio-audit\",\"app_server.client_version\":\"1.0\",\"app_server.connection_id\":\"0\",\"otel.kind\":\"server\",\"otel.name\":\"skills/list\",\"rpc.method\":\"skills/list\",\"rpc.request_id\":\"2\",\"rpc.system\":\"jsonrpc\",\"rpc.transport\":\"stdio\",\"name\":\"app_server.request\"}]}\n{\"timestamp\":\"2026-11-18T16:14:05.557200Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"close\",\"time.busy\":\"8.80\u00b5s\",\"time.idle\":\"81.0\u00b5s\"},\"target\":\"codex_exec_server::local_file_system\",\"span\":{\"sandboxed\":false,\"name\":\"fs.get_metadata\"},\"spans\":[{\"app_server.api_version\":\"v2\",\"app_server.client_name\":\"oak-studio-audit\",\"app_server.client_version\":\"1.0\",\"app_server.connection_id\":\"0\",\"otel.kind\":\"server\",\"otel.name\":\"skills/list\",\"rpc.method\":\"skills/list\",\"rpc.request_id\":\"2\",\"rpc.system\":\"jsonrpc\",\"rpc.transport\":\"stdio\",\"name\":\"app_server.request\"}]}\n{\"timestamp\":\"2026-11-18T16:14:05.557225Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"new\"},\"target\":\"codex_exec_server::local_file_system\",\"span\":{\"sandboxed\":false,\"name\":\"fs.get_metadata\"},\"spans\":[{\"app_server.api_version\":\"v2\",\"app_server.client_name\":\"oak-studio-audit\",\"app_server.client_version\":\"1.0\",\"app_server.connection_id\":\"0\",\"otel.kind\":\"server\",\"otel.name\":\"skills/list\",\"rpc.method\":\"skills/list\",\"rpc.request_id\":\"2\",\"rpc.system\":\"jsonrpc\",\"rpc.transport\":\"stdio\",\"name\":\"app_server.request\"}]}\n{\"timestamp\":\"2026-11-18T16:14:05.557350Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"close\",\"time.busy\":\"9.30\u00b5s\",\"time.idle\":\"116\u00b5s\"},\"target\":\"codex_exec_server::local_file_system\",\"span\":{\"sandboxed\":false,\"name\":\"fs.get_metadata\"},\"spans\":[{\"app_server.api_version\":\"v2\",\"app_server.client_name\":\"oak-studio-audit\",\"app_server.client_version\":\"1.0\",\"app_server.connection_id\":\"0\",\"otel.kind\":\"server\",\"otel.name\":\"skills/list\",\"rpc.method\":\"skills/list\",\"rpc.request_id\":\"2\",\"rpc.system\":\"jsonrpc\",\"rpc.transport\":\"stdio\",\"name\":\"app_server.request\"}]}\n{\"timestamp\":\"2026-11-18T16:14:05.557371Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"new\"},\"target\":\"codex_exec_server::local_file_system\",\"span\":{\"sandboxed\":false,\"name\":\"fs.get_metadata\"},\"spans\":[{\"app_server.api_version\":\"v2\",\"app_server.client_name\":\"oak-studio-audit\",\"app_server.client_version\":\"1.0\",\"app_server.connection_id\":\"0\",\"otel.kind\":\"server\",\"otel.name\":\"skills/list\",\"rpc.method\":\"skills/list\",\"rpc.request_id\":\"2\",\"rpc.system\":\"jsonrpc\",\"rpc.transport\":\"stdio\",\"name\":\"app_server.request\"}]}\n{\"timestamp\":\"2026-11-18T16:14:05.557460Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"close\",\"time.busy\":\"9.90\u00b5s\",\"time.idle\":\"78.4\u00b5s\"},\"target\":\"codex_exec_server::local_file_system\",\"span\":{\"sandboxed\":false,\"name\":\"fs.get_metadata\"},\"spans\":[{\"app_server.api_version\":\"v2\",\"app_server.client_name\":\"oak-studio-audit\",\"app_server.client_version\":\"1.0\",\"app_server.connection_id\":\"0\",\"otel.kind\":\"server\",\"otel.name\":\"skills/list\",\"rpc.method\":\"skills/list\",\"rpc.request_id\":\"2\",\"rpc.system\":\"jsonrpc\",\"rpc.transport\":\"stdio\",\"name\":\"app_server.request\"}]}\n{\"timestamp\":\"2026-11-18T16:14:05.557479Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"new\"},\"target\":\"codex_exec_server::local_file_system\",\"span\":{\"sandboxed\":false,\"name\":\"fs.get_metadata\"},\"spans\":[{\"app_server.api_version\":\"v2\",\"app_server.client_name\":\"oak-studio-audit\",\"app_server.client_version\":\"1.0\",\"app_server.connection_id\":\"0\",\"otel.kind\":\"server\",\"otel.name\":\"skills/list\",\"rpc.method\":\"skills/list\",\"rpc.request_id\":\"2\",\"rpc.system\":\"jsonrpc\",\"rpc.transport\":\"stdio\",\"name\":\"app_server.request\"}]}\n{\"timestamp\":\"2026-11-18T16:14:05.557581Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"close\",\"time.busy\":\"8.80\u00b5s\",\"time.idle\":\"93.6\u00b5s\"},\"target\":\"codex_exec_server::local_file_system\",\"span\":{\"sandboxed\":false,\"name\":\"fs.get_metadata\"},\"spans\":[{\"app_server.api_version\":\"v2\",\"app_server.client_name\":\"oak-studio-audit\",\"app_server.client_version\":\"1.0\",\"app_server.connection_id\":\"0\",\"otel.kind\":\"server\",\"otel.name\":\"skills/list\",\"rpc.method\":\"skills/list\",\"rpc.request_id\":\"2\",\"rpc.system\":\"jsonrpc\",\"rpc.transport\":\"stdio\",\"name\":\"app_server.request\"}]}\n{\"timestamp\":\"2026-11-18T16:14:05.557604Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"new\"},\"target\":\"codex_exec_server::local_file_system\",\"span\":{\"sandboxed\":false,\"name\":\"fs.get_metadata\"},\"spans\":[{\"app_server.api_version\":\"v2\",\"app_server.client_name\":\"oak-studio-audit\",\"app_server.client_version\":\"1.0\",\"app_server.connection_id\":\"0\",\"otel.kind\":\"server\",\"otel.name\":\"skills/list\",\"rpc.method\":\"skills/list\",\"rpc.request_id\":\"2\",\"rpc.system\":\"jsonrpc\",\"rpc.transport\":\"stdio\",\"name\":\"app_server.request\"}]}\n{\"timestamp\":\"2026-11-18T16:14:05.557689Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"close\",\"time.busy\":\"9.00\u00b5s\",\"time.idle\":\"76.1\u00b5s\"},\"target\":\"codex_exec_server::local_file_system\",\"span\":{\"sandboxed\":false,\"name\":\"fs.get_metadata\"},\"spans\":[{\"app_server.api_version\":\"v2\",\"app_server.client_name\":\"oak-studio-audit\",\"app_server.client_version\":\"1.0\",\"app_server.connection_id\":\"0\",\"otel.kind\":\"server\",\"otel.name\":\"skills/list\",\"rpc.method\":\"skills/list\",\"rpc.request_id\":\"2\",\"rpc.system\":\"jsonrpc\",\"rpc.transport\":\"stdio\",\"name\":\"app_server.request\"}]}\n{\"timestamp\":\"2026-11-18T16:14:05.557710Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"new\"},\"target\":\"codex_exec_server::local_file_system\",\"span\":{\"sandboxed\":false,\"name\":\"fs.get_metadata\"},\"spans\":[{\"app_server.api_version\":\"v2\",\"app_server.client_name\":\"oak-studio-audit\",\"app_server.client_version\":\"1.0\",\"app_server.connection_id\":\"0\",\"otel.kind\":\"server\",\"otel.name\":\"skills/list\",\"rpc.method\":\"skills/list\",\"rpc.request_id\":\"2\",\"rpc.system\":\"jsonrpc\",\"rpc.transport\":\"stdio\",\"name\":\"app_server.request\"}]}\n{\"timestamp\":\"2026-11-18T16:14:05.557846Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"close\",\"time.busy\":\"8.80\u00b5s\",\"time.idle\":\"127\u00b5s\"},\"target\":\"codex_exec_server::local_file_system\",\"span\":{\"sandboxed\":false,\"name\":\"fs.get_metadata\"},\"spans\":[{\"app_server.api_version\":\"v2\",\"app_server.client_name\":\"oak-studio-audit\",\"app_server.client_version\":\"1.0\",\"app_server.connection_id\":\"0\",\"otel.kind\":\"server\",\"otel.name\":\"skills/list\",\"rpc.method\":\"skills/list\",\"rpc.request_id\":\"2\",\"rpc.system\":\"jsonrpc\",\"rpc.transport\":\"stdio\",\"name\":\"app_server.request\"}]}\n{\"timestamp\":\"2026-11-18T16:14:05.557865Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"new\"},\"target\":\"codex_exec_server::local_file_system\",\"span\":{\"sandboxed\":false,\"name\":\"fs.get_metadata\"},\"spans\":[{\"app_server.api_version\":\"v2\",\"app_server.client_name\":\"oak-studio-audit\",\"app_server.client_version\":\"1.0\",\"app_server.connection_id\":\"0\",\"otel.kind\":\"server\",\"otel.name\":\"skills/list\",\"rpc.method\":\"skills/list\",\"rpc.request_id\":\"2\",\"rpc.system\":\"jsonrpc\",\"rpc.transport\":\"stdio\",\"name\":\"app_server.request\"}]}\n{\"timestamp\":\"2026-11-18T16:14:05.557944Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"close\",\"time.busy\":\"7.80\u00b5s\",\"time.idle\":\"71.1\u00b5s\"},\"target\":\"codex_exec_server::local_file_system\",\"span\":{\"sandboxed\":false,\"name\":\"fs.get_metadata\"},\"spans\":[{\"app_server.api_version\":\"v2\",\"app_server.client_name\":\"oak-studio-audit\",\"app_server.client_version\":\"1.0\",\"app_server.connection_id\":\"0\",\"otel.kind\":\"server\",\"otel.name\":\"skills/list\",\"rpc.method\":\"skills/list\",\"rpc.request_id\":\"2\",\"rpc.system\":\"jsonrpc\",\"rpc.transport\":\"stdio\",\"name\":\"app_server.request\"}]}\n{\"timestamp\":\"2026-11-18T16:14:05.557975Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"new\"},\"target\":\"codex_exec_server::local_file_system\",\"span\":{\"sandboxed\":false,\"name\":\"fs.get_metadata\"},\"spans\":[{\"app_server.api_version\":\"v2\",\"app_server.client_name\":\"oak-studio-audit\",\"app_server.client_version\":\"1.0\",\"app_server.connection_id\":\"0\",\"otel.kind\":\"server\",\"otel.name\":\"skills/list\",\"rpc.method\":\"skills/list\",\"rpc.request_id\":\"2\",\"rpc.system\":\"jsonrpc\",\"rpc.transport\":\"stdio\",\"name\":\"app_server.request\"}]}\n{\"timestamp\":\"2026-11-18T16:14:05.558106Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"close\",\"time.busy\":\"8.50\u00b5s\",\"time.idle\":\"123\u00b5s\"},\"target\":\"codex_exec_server::local_file_system\",\"span\":{\"sandboxed\":false,\"name\":\"fs.get_metadata\"},\"spans\":[{\"app_server.api_version\":\"v2\",\"app_server.client_name\":\"oak-studio-audit\",\"app_server.client_version\":\"1.0\",\"app_server.connection_id\":\"0\",\"otel.kind\":\"server\",\"otel.name\":\"skills/list\",\"rpc.method\":\"skills/list\",\"rpc.request_id\":\"2\",\"rpc.system\":\"jsonrpc\",\"rpc.transport\":\"stdio\",\"name\":\"app_server.request\"}]}\n{\"timestamp\":\"2026-11-18T16:14:05.558129Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"new\"},\"target\":\"codex_exec_server::local_file_system\",\"span\":{\"sandboxed\":false,\"name\":\"fs.get_metadata\"},\"spans\":[{\"app_server.api_version\":\"v2\",\"app_server.client_name\":\"oak-studio-audit\",\"app_server.client_version\":\"1.0\",\"app_server.connection_id\":\"0\",\"otel.kind\":\"server\",\"otel.name\":\"skills/list\",\"rpc.method\":\"skills/list\",\"rpc.request_id\":\"2\",\"rpc.system\":\"jsonrpc\",\"rpc.transport\":\"stdio\",\"name\":\"app_server.request\"}]}\n{\"timestamp\":\"2026-11-18T16:14:05.558221Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"close\",\"time.busy\":\"8.40\u00b5s\",\"time.idle\":\"84.0\u00b5s\"},\"target\":\"codex_exec_server::local_file_system\",\"span\":{\"sandboxed\":false,\"name\":\"fs.get_metadata\"},\"spans\":[{\"app_server.api_version\":\"v2\",\"app_server.client_name\":\"oak-studio-audit\",\"app_server.client_version\":\"1.0\",\"app_server.connection_id\":\"0\",\"otel.kind\":\"server\",\"otel.name\":\"skills/list\",\"rpc.method\":\"skills/list\",\"rpc.request_id\":\"2\",\"rpc.system\":\"jsonrpc\",\"rpc.transport\":\"stdio\",\"name\":\"app_server.request\"}]}\n{\"timestamp\":\"2026-11-18T16:14:05.558240Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"new\"},\"target\":\"codex_exec_server::local_file_system\",\"span\":{\"sandboxed\":false,\"name\":\"fs.get_metadata\"},\"spans\":[{\"app_server.api_version\":\"v2\",\"app_server.client_name\":\"oak-studio-audit\",\"app_server.client_version\":\"1.0\",\"app_server.connection_id\":\"0\",\"otel.kind\":\"server\",\"otel.name\":\"skills/list\",\"rpc.method\":\"skills/list\",\"rpc.request_id\":\"2\",\"rpc.system\":\"jsonrpc\",\"rpc.transport\":\"stdio\",\"name\":\"app_server.request\"}]}\n{\"timestamp\":\"2026-11-18T16:14:05.558340Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"close\",\"time.busy\":\"7.70\u00b5s\",\"time.idle\":\"92.6\u00b5s\"},\"target\":\"codex_exec_server::local_file_system\",\"span\":{\"sandboxed\":false,\"name\":\"fs.get_metadata\"},\"spans\":[{\"app_server.api_version\":\"v2\",\"app_server.client_name\":\"oak-studio-audit\",\"app_server.client_version\":\"1.0\",\"app_server.connection_id\":\"0\",\"otel.kind\":\"server\",\"otel.name\":\"skills/list\",\"rpc.method\":\"skills/list\",\"rpc.request_id\":\"2\",\"rpc.system\":\"jsonrpc\",\"rpc.transport\":\"stdio\",\"name\":\"app_server.request\"}]}\n{\"timestamp\":\"2026-11-18T16:14:05.574147Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"close\",\"time.busy\":\"65.7ms\",\"time.idle\":\"52.6ms\"},\"target\":\"codex_app_server::app_server_tracing\",\"span\":{\"app_server.api_version\":\"v2\",\"app_server.client_name\":\"oak-studio-audit\",\"app_server.client_version\":\"1.0\",\"app_server.connection_id\":\"0\",\"otel.kind\":\"server\",\"otel.name\":\"skills/list\",\"rpc.method\":\"skills/list\",\"rpc.request_id\":\"2\",\"rpc.system\":\"jsonrpc\",\"rpc.transport\":\"stdio\",\"name\":\"app_server.request\"},\"spans\":[]}\n"
+}

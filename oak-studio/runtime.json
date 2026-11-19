@@ -1,0 +1,12 @@
+{
+  "workflow": "minimal",
+  "automation": "collaborative",
+  "qa": {"level": "standard"},
+  "engine": {"name": "web", "renderer": "pixi.js"},
+  "specialists": {"primary": "cgs_lead_programmer"},
+  "hooks_enabled": false,
+  "commands": {
+    "test": ["node", "--test", "tests/*.test.ts"],
+    "typecheck": ["node", "node_modules/typescript/bin/tsc", "--noEmit"]
+  }
+}

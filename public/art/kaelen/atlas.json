@@ -1,0 +1,582 @@
+{
+  "image": "kaelen-se.png",
+  "cell": {
+    "width": 256,
+    "height": 256
+  },
+  "pivot": {
+    "x": 128,
+    "y": 240
+  },
+  "bodyHeight": 215,
+  "direction": "SE",
+  "source": "img/kaelen-animation-source.png",
+  "sourceSha256": "55e2606ac002366cc6f573e9486dc971251d808a7651060ba68b904e12cd8b3b",
+  "preparation": "Connected alpha silhouettes with original antialias fringe; disconnected source VFX/noise omitted. Explicit boot pivots, fixed Y plane per clip, one scale; no per-frame bounding-box centering.",
+  "rejected": [
+    "idle source column 2: hair clipped by original image edge",
+    "attack source column 0: impact crosses into next row",
+    "death: not integrated"
+  ],
+  "limitations": [
+    "Single SE direction; no mirroring",
+    "Small pose/foot/proportion variation remains",
+    "Colored source edge halos remain; runtime visual review pending"
+  ],
+  "clips": {
+    "idle": {
+      "frameTicks": 10,
+      "loop": true,
+      "frames": [
+        {
+          "x": 0,
+          "y": 0,
+          "width": 256,
+          "height": 256,
+          "sourceColumn": 0,
+          "sourceRect": {
+            "x": 36,
+            "y": 10,
+            "width": 179,
+            "height": 225
+          },
+          "sourcePivot": {
+            "x": 144,
+            "y": 232
+          },
+          "pixelSha256": "199b4e5e829929c42eee57b6d7c140ae2e2211361f98edc28e8575f5b433f4a2"
+        },
+        {
+          "x": 256,
+          "y": 0,
+          "width": 256,
+          "height": 256,
+          "sourceColumn": 1,
+          "sourceRect": {
+            "x": 267,
+            "y": 9,
+            "width": 179,
+            "height": 225
+          },
+          "sourcePivot": {
+            "x": 374,
+            "y": 232
+          },
+          "pixelSha256": "5e4d0a9b783b14ab06cc721b6eae6222f2d46d969e25b91169c50c9c1ed0e29d"
+        },
+        {
+          "x": 512,
+          "y": 0,
+          "width": 256,
+          "height": 256,
+          "sourceColumn": 3,
+          "sourceRect": {
+            "x": 702,
+            "y": 8,
+            "width": 179,
+            "height": 225
+          },
+          "sourcePivot": {
+            "x": 810,
+            "y": 232
+          },
+          "pixelSha256": "c1226aaefcc96ba29cd4ae6842ddda6a6d0e6be99bfbcddd49322484d142f1f2"
+        },
+        {
+          "x": 768,
+          "y": 0,
+          "width": 256,
+          "height": 256,
+          "sourceColumn": 4,
+          "sourceRect": {
+            "x": 921,
+            "y": 13,
+            "width": 179,
+            "height": 219
+          },
+          "sourcePivot": {
+            "x": 1032,
+            "y": 232
+          },
+          "pixelSha256": "ff790948e653ce427c8071b50c6d96f19f3caf2ba31a4cb8c977c43a42aa259a"
+        },
+        {
+          "x": 1024,
+          "y": 0,
+          "width": 256,
+          "height": 256,
+          "sourceColumn": 5,
+          "sourceRect": {
+            "x": 1135,
+            "y": 15,
+            "width": 191,
+            "height": 219
+          },
+          "sourcePivot": {
+            "x": 1252,
+            "y": 232
+          },
+          "pixelSha256": "f7b567d469451947b944385f6a96f237f82b2b75b507a9402dddaea4565eea32"
+        }
+      ]
+    },
+    "walk": {
+      "frameTicks": 5,
+      "loop": true,
+      "frames": [
+        {
+          "x": 0,
+          "y": 256,
+          "width": 256,
+          "height": 256,
+          "sourceColumn": 0,
+          "sourceRect": {
+            "x": 23,
+            "y": 245,
+            "width": 188,
+            "height": 221
+          },
+          "sourcePivot": {
+            "x": 134,
+            "y": 464
+          },
+          "pixelSha256": "167a160cfdbc6620683cc6d684e6e6cdfc827dde638d89e6da4a920265d130ad"
+        },
+        {
+          "x": 256,
+          "y": 256,
+          "width": 256,
+          "height": 256,
+          "sourceColumn": 1,
+          "sourceRect": {
+            "x": 246,
+            "y": 242,
+            "width": 197,
+            "height": 225
+          },
+          "sourcePivot": {
+            "x": 361,
+            "y": 464
+          },
+          "pixelSha256": "5a30f62cacf1d19076769e7c08bd49aeaf3a67cac47acffb4b5e7625ed5afc40"
+        },
+        {
+          "x": 512,
+          "y": 256,
+          "width": 256,
+          "height": 256,
+          "sourceColumn": 2,
+          "sourceRect": {
+            "x": 471,
+            "y": 241,
+            "width": 170,
+            "height": 224
+          },
+          "sourcePivot": {
+            "x": 586,
+            "y": 464
+          },
+          "pixelSha256": "d7a982afeaca1b9a5a6d91a5442ff1bb51a00efeee31098eac1bded4449aea5c"
+        },
+        {
+          "x": 768,
+          "y": 256,
+          "width": 256,
+          "height": 256,
+          "sourceColumn": 3,
+          "sourceRect": {
+            "x": 705,
+            "y": 245,
+            "width": 178,
+            "height": 214
+          },
+          "sourcePivot": {
+            "x": 811,
+            "y": 464
+          },
+          "pixelSha256": "b7b5cbfc78b827b42479fe2a2a5f3fa108cf5d804b04a8364a79cc8551c8500f"
+        },
+        {
+          "x": 1024,
+          "y": 256,
+          "width": 256,
+          "height": 256,
+          "sourceColumn": 4,
+          "sourceRect": {
+            "x": 938,
+            "y": 246,
+            "width": 166,
+            "height": 218
+          },
+          "sourcePivot": {
+            "x": 1037,
+            "y": 464
+          },
+          "pixelSha256": "2f946d38c4cdae22978bcfd3e6cf8819fc6fb5ae7a57a9ea1a880032ee03ae3f"
+        },
+        {
+          "x": 1280,
+          "y": 256,
+          "width": 256,
+          "height": 256,
+          "sourceColumn": 5,
+          "sourceRect": {
+            "x": 1161,
+            "y": 243,
+            "width": 188,
+            "height": 223
+          },
+          "sourcePivot": {
+            "x": 1261,
+            "y": 464
+          },
+          "pixelSha256": "299c8dd41993b6e33c18b6a05b35a1ebc8153ad95bc4868cb643b27a729755a0"
+        }
+      ]
+    },
+    "attack": {
+      "frameTicks": 2,
+      "loop": false,
+      "frames": [
+        {
+          "x": 0,
+          "y": 512,
+          "width": 256,
+          "height": 256,
+          "sourceColumn": 1,
+          "sourceRect": {
+            "x": 271,
+            "y": 485,
+            "width": 196,
+            "height": 191
+          },
+          "sourcePivot": {
+            "x": 365,
+            "y": 681
+          },
+          "pixelSha256": "4c71eb2640b102a7f3a268cfe034a4a05ae0e649f63724757ca9205bf8de0bc4"
+        },
+        {
+          "x": 256,
+          "y": 512,
+          "width": 256,
+          "height": 256,
+          "sourceColumn": 2,
+          "sourceRect": {
+            "x": 503,
+            "y": 473,
+            "width": 179,
+            "height": 201
+          },
+          "sourcePivot": {
+            "x": 590,
+            "y": 681
+          },
+          "pixelSha256": "6979770531551a770d4ae647c4304656238009e337dae26a59897deb62159e0d"
+        },
+        {
+          "x": 512,
+          "y": 512,
+          "width": 256,
+          "height": 256,
+          "sourceColumn": 3,
+          "sourceRect": {
+            "x": 713,
+            "y": 473,
+            "width": 188,
+            "height": 205
+          },
+          "sourcePivot": {
+            "x": 816,
+            "y": 681
+          },
+          "pixelSha256": "061a8ffcccf21e0aae4074ce93e2513dfff36ad793f57aae59aea26865bc5a8e"
+        },
+        {
+          "x": 768,
+          "y": 512,
+          "width": 256,
+          "height": 256,
+          "sourceColumn": 4,
+          "sourceRect": {
+            "x": 935,
+            "y": 467,
+            "width": 186,
+            "height": 216
+          },
+          "sourcePivot": {
+            "x": 1039,
+            "y": 681
+          },
+          "pixelSha256": "69e3cc8b6c1f6adbae4457f30d1c34e2d322b17f92442e6ab3b0f4e3f0a3bcf8"
+        },
+        {
+          "x": 1024,
+          "y": 512,
+          "width": 256,
+          "height": 256,
+          "sourceColumn": 5,
+          "sourceRect": {
+            "x": 1143,
+            "y": 469,
+            "width": 191,
+            "height": 216
+          },
+          "sourcePivot": {
+            "x": 1260,
+            "y": 681
+          },
+          "pixelSha256": "8684ec8ce2c9bb9ea527a433e9f67d314b07e4d01f60a816c7d6c71f14b4cccd"
+        }
+      ]
+    },
+    "hurt": {
+      "frameTicks": 2,
+      "loop": false,
+      "frames": [
+        {
+          "x": 0,
+          "y": 768,
+          "width": 256,
+          "height": 256,
+          "sourceColumn": 0,
+          "sourceRect": {
+            "x": 15,
+            "y": 697,
+            "width": 205,
+            "height": 218
+          },
+          "sourcePivot": {
+            "x": 123,
+            "y": 914
+          },
+          "pixelSha256": "e3182e5074a7b3c91a25be7e05ac0df5f6baf05c1005f050c41805605240f45e"
+        },
+        {
+          "x": 256,
+          "y": 768,
+          "width": 256,
+          "height": 256,
+          "sourceColumn": 1,
+          "sourceRect": {
+            "x": 242,
+            "y": 692,
+            "width": 189,
+            "height": 223
+          },
+          "sourcePivot": {
+            "x": 347,
+            "y": 914
+          },
+          "pixelSha256": "0fc8031128557fdb32380ff288f8ad785f4eb2251abe277f163233729e5709ed"
+        },
+        {
+          "x": 512,
+          "y": 768,
+          "width": 256,
+          "height": 256,
+          "sourceColumn": 2,
+          "sourceRect": {
+            "x": 454,
+            "y": 696,
+            "width": 210,
+            "height": 218
+          },
+          "sourcePivot": {
+            "x": 568,
+            "y": 914
+          },
+          "pixelSha256": "ad2290311f21175d677b0888d1299d1969707bafb0744fe3116cd471d6c18b0f"
+        },
+        {
+          "x": 768,
+          "y": 768,
+          "width": 256,
+          "height": 256,
+          "sourceColumn": 3,
+          "sourceRect": {
+            "x": 681,
+            "y": 700,
+            "width": 203,
+            "height": 215
+          },
+          "sourcePivot": {
+            "x": 795,
+            "y": 914
+          },
+          "pixelSha256": "0d4d1eb33aaf1c3b3c848c454506b9dac1eff82d76c38317a5a5035b17c37192"
+        },
+        {
+          "x": 1024,
+          "y": 768,
+          "width": 256,
+          "height": 256,
+          "sourceColumn": 4,
+          "sourceRect": {
+            "x": 912,
+            "y": 706,
+            "width": 199,
+            "height": 210
+          },
+          "sourcePivot": {
+            "x": 1021,
+            "y": 914
+          },
+          "pixelSha256": "dd116eb7ae96b9b705a63bf2c03f1d275b324a8e9129c1a82d4286e1786ff82f"
+        },
+        {
+          "x": 1280,
+          "y": 768,
+          "width": 256,
+          "height": 256,
+          "sourceColumn": 5,
+          "sourceRect": {
+            "x": 1140,
+            "y": 698,
+            "width": 200,
+            "height": 221
+          },
+          "sourcePivot": {
+            "x": 1243,
+            "y": 914
+          },
+          "pixelSha256": "84e66b9f53ca5c69ef633ac3b7244f046f503a593fa3800d89a79b6ba92fb644"
+        }
+      ]
+    }
+  },
+  "cropDiagnostics": [
+    {
+      "clip": "idle",
+      "sourceColumn": 0,
+      "selectedPixels": 21459,
+      "clippedPixels": 0
+    },
+    {
+      "clip": "idle",
+      "sourceColumn": 1,
+      "selectedPixels": 21276,
+      "clippedPixels": 0
+    },
+    {
+      "clip": "idle",
+      "sourceColumn": 3,
+      "selectedPixels": 21030,
+      "clippedPixels": 0
+    },
+    {
+      "clip": "idle",
+      "sourceColumn": 4,
+      "selectedPixels": 20575,
+      "clippedPixels": 0
+    },
+    {
+      "clip": "idle",
+      "sourceColumn": 5,
+      "selectedPixels": 20495,
+      "clippedPixels": 0
+    },
+    {
+      "clip": "walk",
+      "sourceColumn": 0,
+      "selectedPixels": 21982,
+      "clippedPixels": 0
+    },
+    {
+      "clip": "walk",
+      "sourceColumn": 1,
+      "selectedPixels": 19981,
+      "clippedPixels": 0
+    },
+    {
+      "clip": "walk",
+      "sourceColumn": 2,
+      "selectedPixels": 20445,
+      "clippedPixels": 0
+    },
+    {
+      "clip": "walk",
+      "sourceColumn": 3,
+      "selectedPixels": 19915,
+      "clippedPixels": 0
+    },
+    {
+      "clip": "walk",
+      "sourceColumn": 4,
+      "selectedPixels": 19071,
+      "clippedPixels": 0
+    },
+    {
+      "clip": "walk",
+      "sourceColumn": 5,
+      "selectedPixels": 20764,
+      "clippedPixels": 0
+    },
+    {
+      "clip": "attack",
+      "sourceColumn": 1,
+      "selectedPixels": 19090,
+      "clippedPixels": 0
+    },
+    {
+      "clip": "attack",
+      "sourceColumn": 2,
+      "selectedPixels": 20288,
+      "clippedPixels": 0
+    },
+    {
+      "clip": "attack",
+      "sourceColumn": 3,
+      "selectedPixels": 21504,
+      "clippedPixels": 0
+    },
+    {
+      "clip": "attack",
+      "sourceColumn": 4,
+      "selectedPixels": 21737,
+      "clippedPixels": 0
+    },
+    {
+      "clip": "attack",
+      "sourceColumn": 5,
+      "selectedPixels": 22165,
+      "clippedPixels": 0
+    },
+    {
+      "clip": "hurt",
+      "sourceColumn": 0,
+      "selectedPixels": 22869,
+      "clippedPixels": 0
+    },
+    {
+      "clip": "hurt",
+      "sourceColumn": 1,
+      "selectedPixels": 23118,
+      "clippedPixels": 0
+    },
+    {
+      "clip": "hurt",
+      "sourceColumn": 2,
+      "selectedPixels": 23635,
+      "clippedPixels": 0
+    },
+    {
+      "clip": "hurt",
+      "sourceColumn": 3,
+      "selectedPixels": 22691,
+      "clippedPixels": 0
+    },
+    {
+      "clip": "hurt",
+      "sourceColumn": 4,
+      "selectedPixels": 22126,
+      "clippedPixels": 0
+    },
+    {
+      "clip": "hurt",
+      "sourceColumn": 5,
+      "selectedPixels": 23009,
+      "clippedPixels": 0
+    }
+  ]
+}

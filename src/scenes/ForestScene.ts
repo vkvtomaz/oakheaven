@@ -28,6 +28,8 @@ import {
 import { THEME } from '../visual/theme';
 import { drawHudPanel } from '../visual/ui';
 import { createActor, paintForest, placeArt } from '../visual/art';
+import { animateKaelenActor } from '../visual/kaelenArt';
+import type { KaelenAnimation } from '../visual/kaelenAnimation';
 
 // ======================================
 // 1. CONFIGURAÇÕES DA FLORESTA
@@ -56,6 +58,7 @@ interface ResourceNode {
   hp: number;
   graphic: Graphics;
   healthBar: Graphics;
+  light: Graphics | null;
 }
 
 // ======================================
@@ -64,7 +67,7 @@ interface ResourceNode {
 
 const RESOURCE_DATA: Record<ResourceNodeKind, ResourceDefinition> = {
   tree: {
-    name: 'Arvore de Carvalho',
+    name: 'Madeira de Carvalho',
     resource: 'wood',
     quantity: 3,
     hits: 6,
@@ -107,9 +110,14 @@ const RESOURCE_DATA: Record<ResourceNodeKind, ResourceDefinition> = {
 export class ForestScene implements Scene {
   private layers!: SceneLayers;
   private player!: Graphics;
+  private playerAnimation!: KaelenAnimation;
+  private harvestIndicator!: Graphics;
+  private returnHalo!: Graphics;
+  private visualClock = 0;
 
   private hud!: Text;
   private clockText!: Text;
+  private zoneLabel!: Text;
   private instructions!: Text;
   private notification!: Text;
 
@@ -136,7 +144,7 @@ export class ForestScene implements Scene {
     // Fundo da floresta
     paintForest(this.layers);
 
-    // As três zonas deixam distância, raridade e risco legíveis.
+    // Quiet zone grading; the active name and risk live in the compact HUD.
     for (const zone of [
       EXPEDITION_ZONES.safe,
       EXPEDITION_ZONES.intermediate,
@@ -145,19 +153,18 @@ export class ForestScene implements Scene {
       this.layers.groundDecals.addChild(
         new Graphics()
           .rect(zone.minX, 95, zone.maxX - zone.minX, HEIGHT - 95)
-          .fill({ color: zone.color, alpha: 0.16 })
-      );
-      drawText(
-        this.layers.worldUi,
-        `${zone.name} | RISCO ${zone.risk}`,
-        zone.minX + 14,
-        104,
-        12,
-        0xe7e6c9
+          .fill({ color: zone.color, alpha: 0.025 })
       );
     }
 
     // Portal remains at the original return trigger.
+    this.returnHalo = new Graphics()
+      .ellipse(65, 490, 43, 15)
+      .stroke({ color: 0xa8b9ba, width: 1, alpha: 0.55 })
+      .ellipse(65, 490, 34, 11)
+      .stroke({ color: THEME.colors.sanctuaryGlow, width: 2, alpha: 0.38 });
+    this.returnHalo.eventMode = 'none';
+    this.layers.groundDecals.addChild(this.returnHalo);
     placeArt(stage, 'pad', 65, 490, 65);
     drawText(this.layers.worldUi, 'VOLTAR', 32, 500, 13, 0x90e0ef);
 
@@ -176,8 +183,12 @@ export class ForestScene implements Scene {
 
     // Kaelen: visual independente da posição lógica de coleta.
     this.player = createActor('hero', 58);
+    // The forest uses the same oblique XY camera as the existing SE animation.
+    // Other facing directions still need authored art; never mirror the hammer.
+    this.playerAnimation = animateKaelenActor(this.player);
 
     this.player.position.set(135, 460);
+    this.player.zIndex = this.player.y;
     stage.addChild(this.player);
     this.currentZone = 'safe';
     this.warningShown = false;
@@ -188,37 +199,52 @@ export class ForestScene implements Scene {
     this.hitEffect.eventMode = 'none';
     this.hitEffect.visible = false;
     this.layers.vfx.addChild(this.hitEffect);
+    this.harvestIndicator = new Graphics();
+    this.harvestIndicator.eventMode = 'none';
+    this.layers.groundDecals.addChild(this.harvestIndicator);
 
     // HUD
-    drawHudPanel(this.layers.hud, 8, 6, 944, 84, 0.92);
-    this.hud = drawText(this.layers.hud, '', 22, 17, 15);
+    drawHudPanel(this.layers.hud, 8, 8, 944, 62, 0.92);
+    this.hud = drawText(this.layers.hud, '', 22, 17, 16);
 
     this.clockText = drawText(
       this.layers.hud,
       '',
-      762,
-      13,
-      22,
+      754,
+      15,
+      20,
       THEME.colors.sanctuaryGlow
+    );
+
+    this.zoneLabel = drawText(
+      this.layers.hud,
+      `${EXPEDITION_ZONES.safe.name} | RISCO ${EXPEDITION_ZONES.safe.risk}`,
+      22,
+      46,
+      13,
+      THEME.colors.textMuted
     );
 
     this.instructions = drawText(
       this.layers.hud,
       '',
-      20,
-      49,
-      16,
+      298,
+      44,
+      14,
       0xe7e6c9
     );
 
     this.notification = drawText(
       this.layers.hud,
       '',
-      20,
-      78,
-      17,
+      22,
+      76,
+      14,
       0xa0ffb2
     );
+    // Keep transient messages away from the top-right resource health bars.
+    this.notification.style.wordWrap = true;
+    this.notification.style.wordWrapWidth = 600;
 
     this.refreshHUD(game);
   }
@@ -240,6 +266,10 @@ export class ForestScene implements Scene {
       : kind === 'crystal' ? 'crystal' : 'scout';
     const graphic = createActor(asset, kind === 'crystal' ? 58 : 45);
     if (kind === 'remains') { graphic.angle = -18; graphic.tint = 0x94849d; }
+    const light = kind === 'crystal' ? new Graphics()
+      .ellipse(0, 0, 28, 11).fill({ color: 0xa377e2, alpha: .12 })
+      .ellipse(0, 0, 17, 7).fill({ color: 0xd2a0ff, alpha: .18 }) : null;
+    if (light) { light.eventMode = 'none'; graphic.addChildAt(light, 0); }
     graphic.zIndex = y;
     graphic.position.set(x, y);
     this.layers.entities.addChild(graphic);
@@ -247,6 +277,7 @@ export class ForestScene implements Scene {
     // Barra de resistência
     const healthBar = new Graphics();
     healthBar.eventMode = 'none';
+    healthBar.visible = false;
     this.layers.worldUi.addChild(healthBar);
 
     const node: ResourceNode = {
@@ -257,6 +288,7 @@ export class ForestScene implements Scene {
       hp: definition.hits,
       graphic,
       healthBar,
+      light,
     };
 
     this.nodes.push(node);
@@ -320,18 +352,24 @@ export class ForestScene implements Scene {
     node: ResourceNode
   ): void {
     node.hp--;
+    this.playerAnimation.attack(node.x - this.player.x, node.y - this.player.y);
 
     // Efeito visual do golpe
     this.hitEffect
       .clear()
-      .moveTo(this.player.x, this.player.y)
-      .lineTo(node.x, node.y)
-      .stroke({
-        color: 0xffe3a2,
-        width: 5,
-      });
+      .ellipse(node.x, node.y, 23, 10)
+      .stroke({ color: RESOURCE_DATA[node.kind].color, width: 2, alpha: 0.75 });
+    // Intentional procedural impact, emitted by the real harvest strike.
+    for (let index = 0; index < 6; index++) {
+      const angle = index * Math.PI / 3;
+      this.hitEffect
+        .moveTo(node.x + Math.cos(angle) * 9, node.y - 15 + Math.sin(angle) * 7)
+        .lineTo(node.x + Math.cos(angle) * 23, node.y - 15 + Math.sin(angle) * 17)
+        .stroke({ color: 0xffe3a2, width: 1.5, alpha: 0.9 });
+    }
 
     this.hitEffect.visible = true;
+    this.hitEffect.alpha = 1;
     this.hitEffectTime = 0.12;
 
     this.drawResourceHealth(node);
@@ -384,7 +422,12 @@ export class ForestScene implements Scene {
     dtSeconds: number
   ): void {
     const nearby = this.findNearbyNode();
-    const zoneName = EXPEDITION_ZONES[this.currentZone].name;
+    const zone = EXPEDITION_ZONES[this.currentZone];
+    this.zoneLabel.text = `${zone.name} | RISCO ${zone.risk}`;
+    this.harvestIndicator.clear();
+    for (const node of this.nodes) {
+      node.healthBar.visible = node === nearby || node.hp < RESOURCE_DATA[node.kind].hits;
+    }
 
     // Mudou de recurso? Reinicia o golpe.
     if (nearby !== this.target) {
@@ -394,24 +437,32 @@ export class ForestScene implements Scene {
 
     if (!nearby) {
       this.instructions.text =
-        `${zoneName} | WASD: mover | Recurso: segure E | Portal: voltar`;
+        'WASD: mover | E: coletar | Portal: voltar';
       return;
     }
 
     const definition = RESOURCE_DATA[nearby.kind];
+    this.harvestIndicator
+      .ellipse(nearby.x, nearby.y, 29, 12)
+      .stroke({ color: definition.color, width: 1.5, alpha: 0.7 });
 
     if (!game.input.isDown('KeyE')) {
       this.hitProgress = 0;
 
       this.instructions.text =
-        `${zoneName} | Segure E: ${definition.name}` +
-        ` (${nearby.hp} golpes restantes)`;
+        `Segure E: ${definition.name}` +
+        ` | ${nearby.hp} golpes`;
 
       return;
     }
 
     // Acumula o tempo enquanto E é pressionado
     this.hitProgress += dtSeconds;
+    this.harvestIndicator
+      .moveTo(nearby.x, nearby.y - 53)
+      .arc(nearby.x, nearby.y - 36, 17, -Math.PI / 2,
+        -Math.PI / 2 + Math.min(1, this.hitProgress / definition.secondsPerHit) * Math.PI * 2)
+      .stroke({ color: definition.color, width: 2.5, alpha: 0.85 });
 
     this.instructions.text =
       `Extraindo ${definition.name}...` +
@@ -447,6 +498,9 @@ export class ForestScene implements Scene {
 
   update(game: Game, dt: number): void {
     const dtSeconds = dt / 60;
+    const previousX = this.player.x;
+    const previousY = this.player.y;
+    this.visualClock = (this.visualClock + dtSeconds) % 60;
 
     // Movimento
     let dx = 0;
@@ -467,7 +521,6 @@ export class ForestScene implements Scene {
     this.player.x += dx * SPEED * dt;
     this.player.y += dy * SPEED * dt;
 
-    this.player.zIndex = this.player.y;
     this.player.x = Math.max(
       15,
       Math.min(WIDTH - 15, this.player.x)
@@ -477,6 +530,11 @@ export class ForestScene implements Scene {
       95,
       Math.min(HEIGHT - 15, this.player.y)
     );
+    this.player.zIndex = this.player.y;
+    this.returnHalo.alpha = 0.65 + Math.sin(this.visualClock * 2) * 0.15;
+    for (const node of this.nodes) {
+      if (node.light) node.light.alpha = .65 + Math.sin(this.visualClock * 2 + node.x) * .25;
+    }
 
     const zone = getExpeditionZone(this.player.x);
     if (zone !== this.currentZone) {
@@ -513,6 +571,7 @@ export class ForestScene implements Scene {
     // Atualiza efeito de impacto
     if (this.hitEffectTime > 0) {
       this.hitEffectTime -= dtSeconds;
+      this.hitEffect.alpha = Math.max(0, this.hitEffectTime / 0.12);
 
       if (this.hitEffectTime <= 0) {
         this.hitEffect.visible = false;
@@ -530,6 +589,11 @@ export class ForestScene implements Scene {
 
     // Extração dos recursos
     this.updateHarvest(game, dtSeconds);
+    this.playerAnimation.update(dt, {
+      moving: Math.hypot(this.player.x - previousX, this.player.y - previousY) > 0.001,
+      directionX: dx,
+      directionY: dy,
+    });
 
     // Retorno voluntário ao acampamento
     if (

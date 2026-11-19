@@ -1,3 +1,4 @@
+import { CombatFeedback } from '../visual/combatFeedback';
 
 import {
   Graphics,
@@ -84,6 +85,7 @@ interface Effect {
 
 export class DefenseScene implements Scene {
   private layers!: SceneLayers;
+  private feedback!: CombatFeedback;
   private waves = new WaveSystem();
   private selected: TowerType | null = null;
 
@@ -114,6 +116,7 @@ export class DefenseScene implements Scene {
 
   enter(game: Game): void {
     this.layers = createSceneLayers(game.app.stage);
+    this.feedback = new CombatFeedback(this.layers.vfx);
     const stage = this.layers.entities;
 
     game.state.wave = 1;
@@ -673,6 +676,8 @@ export class DefenseScene implements Scene {
       tower.hp - damage
     );
 
+    const graphic = this.towerGraphics.get(tower.id);
+    if (graphic) this.feedback.hurt(graphic, 0xf1ac84);
     this.refreshTowerHealth(tower);
   }
 
@@ -740,8 +745,10 @@ export class DefenseScene implements Scene {
     if (!this.enemies.includes(enemy)) return;
 
     enemy.hp -= damage;
+    this.feedback.hurt(enemy.graphic);
 
     if (enemy.hp <= 0) {
+      this.feedback.death(enemy.graphic, ENEMY_STATS[enemy.kind].color);
       this.removeEnemy(game, enemy);
       game.state.defeatedEnemies++;
     }
@@ -805,6 +812,8 @@ export class DefenseScene implements Scene {
     if (targets.length === 0) return;
 
     tower.cooldown = stats.fireInterval;
+    const towerGraphic = this.towerGraphics.get(tower.id);
+    if (towerGraphic) this.feedback.tower(tower.type, towerGraphic, targets[0]!.x, targets[0]!.y);
 
     switch (tower.type) {
       case 'arc_ballista': {
@@ -955,6 +964,8 @@ export class DefenseScene implements Scene {
     dt: number
   ): void {
     for (const enemy of [...this.enemies]) {
+      const previousX = enemy.x;
+      const previousY = enemy.y;
       enemy.attackCooldown -= dt;
 
       const multiplier =
@@ -985,6 +996,9 @@ export class DefenseScene implements Scene {
                 ? 18
                 : 12;
 
+          this.feedback.attack(enemy.graphic, barricade.x, barricade.y);
+          const barricadeGraphic = this.towerGraphics.get(barricade.id);
+          if (barricadeGraphic) this.feedback.tower(barricade.type, barricadeGraphic, enemy.x, enemy.y);
           this.damageTower(barricade, damage);
           this.damageEnemy(
             game,
@@ -1020,6 +1034,7 @@ export class DefenseScene implements Scene {
 
       enemy.graphic.position.set(enemy.x, enemy.y);
       enemy.graphic.zIndex = enemy.y;
+      this.feedback.travel(enemy.graphic, previousX, previousY);
 
       // Unidades maiores atacam torres próximas
       if (
@@ -1038,6 +1053,7 @@ export class DefenseScene implements Scene {
         );
 
         if (nearbyTower) {
+          this.feedback.attack(enemy.graphic, nearbyTower.x, nearbyTower.y);
           this.damageTower(
             nearbyTower,
             enemy.kind === 'alpha' ? 15 : 7
@@ -1275,6 +1291,7 @@ private startWave(game: Game): void {
   // ==================================
 
   update(game: Game, dt: number): void {
+    this.feedback.update(dt);
     if (this.waves.phase === 'preparation') {
       // Selecionar torres por números
       TOWERS.forEach((definition, index) => {

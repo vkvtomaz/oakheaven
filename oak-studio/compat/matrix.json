@@ -1,0 +1,1546 @@
+[
+  {
+    "kind": "Agent",
+    "name": "cgs_accessibility_specialist",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_accessibility_specialist.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_ai_programmer",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_ai_programmer.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_analytics_engineer",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_analytics_engineer.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_art_director",
+    "status": "Validado em runtime",
+    "scope": "Delegação explícita, perfil lido e retorno recebido; seleção nativa não testada",
+    "path": ".codex/agents/cgs_art_director.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_audio_director",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_audio_director.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_community_manager",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_community_manager.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_creative_director",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_creative_director.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_devops_engineer",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_devops_engineer.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_economy_designer",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_economy_designer.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_engine_programmer",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_engine_programmer.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_game_designer",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_game_designer.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_gameplay_programmer",
+    "status": "Validado em runtime",
+    "scope": "Delegação explícita, perfil lido e retorno recebido; seleção nativa não testada",
+    "path": ".codex/agents/cgs_gameplay_programmer.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_godot_csharp_specialist",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_godot_csharp_specialist.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_godot_gdextension_specialist",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_godot_gdextension_specialist.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_godot_gdscript_specialist",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_godot_gdscript_specialist.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_godot_shader_specialist",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_godot_shader_specialist.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_godot_specialist",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_godot_specialist.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_lead_programmer",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_lead_programmer.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_level_designer",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_level_designer.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_live_ops_designer",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_live_ops_designer.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_localization_lead",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_localization_lead.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_narrative_director",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_narrative_director.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_network_programmer",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_network_programmer.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_performance_analyst",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_performance_analyst.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_producer",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_producer.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_prototyper",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_prototyper.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_qa_lead",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_qa_lead.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_qa_tester",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_qa_tester.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_release_manager",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_release_manager.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_security_engineer",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_security_engineer.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_sound_designer",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_sound_designer.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_systems_designer",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_systems_designer.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_technical_artist",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_technical_artist.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_technical_director",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_technical_director.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_tools_programmer",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_tools_programmer.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_ue_blueprint_specialist",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_ue_blueprint_specialist.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_ue_gas_specialist",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_ue_gas_specialist.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_ue_replication_specialist",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_ue_replication_specialist.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_ue_umg_specialist",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_ue_umg_specialist.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_ui_programmer",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_ui_programmer.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_unity_addressables_specialist",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_unity_addressables_specialist.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_unity_dots_specialist",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_unity_dots_specialist.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_unity_shader_specialist",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_unity_shader_specialist.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_unity_specialist",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_unity_specialist.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_unity_ui_specialist",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_unity_ui_specialist.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_unreal_specialist",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_unreal_specialist.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_ux_designer",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_ux_designer.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_world_builder",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_world_builder.toml"
+  },
+  {
+    "kind": "Agent",
+    "name": "cgs_writer",
+    "status": "Convertido, mas ainda não testado",
+    "scope": "Schema TOML verificado; comportamento não exercitado",
+    "path": ".codex/agents/cgs_writer.toml"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-adopt",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 8,
+    "path": ".agents/skills/cgs-adopt/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-architecture-decision",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion"
+    ],
+    "support_files_read": 8,
+    "path": ".agents/skills/cgs-architecture-decision/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-architecture-review",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion"
+    ],
+    "support_files_read": 11,
+    "path": ".agents/skills/cgs-architecture-review/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-art-bible",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 4,
+    "path": ".agents/skills/cgs-art-bible/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-asset-audit",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "AskUserQuestion"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-asset-audit/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-asset-spec",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-asset-spec/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-balance-check",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-balance-check/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-brainstorm",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 2,
+    "path": ".agents/skills/cgs-brainstorm/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-bug-report",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-bug-report/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-bug-triage",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-bug-triage/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-changelog",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "AskUserQuestion"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-changelog/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-code-review",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 2,
+    "path": ".agents/skills/cgs-code-review/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-consistency-check",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-consistency-check/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-content-audit",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-content-audit/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-create-architecture",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion"
+    ],
+    "support_files_read": 10,
+    "path": ".agents/skills/cgs-create-architecture/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-create-control-manifest",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-create-control-manifest/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-create-epics",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion"
+    ],
+    "support_files_read": 3,
+    "path": ".agents/skills/cgs-create-epics/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-create-stories",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion"
+    ],
+    "support_files_read": 3,
+    "path": ".agents/skills/cgs-create-stories/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-cut",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-cut/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-day-one-patch",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-day-one-patch/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-design-review",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-design-review/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-design-system",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion"
+    ],
+    "support_files_read": 10,
+    "path": ".agents/skills/cgs-design-system/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-dev-story",
+    "status": "Validado em runtime",
+    "scope": "Adapter explícito: readiness somente leitura",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 4,
+    "path": "oak-studio/compat/skills/cgs-dev-story/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-estimate",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "AskUserQuestion"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-estimate/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-gate-check",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 14,
+    "path": ".agents/skills/cgs-gate-check/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-help",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "AskUserQuestion"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-help/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-hotfix",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "subagent_type",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-hotfix/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-launch-checklist",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-launch-checklist/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-localize",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-localize/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-map-systems",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-map-systems/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-milestone-review",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-milestone-review/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-next-step",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-next-step/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-onboard",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-onboard/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-patch-notes",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-patch-notes/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-perf-profile",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-perf-profile/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-playtest-report",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-playtest-report/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-project-settings",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-project-settings/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-project-stage-detect",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-project-stage-detect/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-propagate-design-change",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-propagate-design-change/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-prototype",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 19,
+    "path": ".agents/skills/cgs-prototype/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-qa-plan",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-qa-plan/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-quick-design",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-quick-design/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-regression-suite",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-regression-suite/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-release-checklist",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-release-checklist/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-retrospective",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-retrospective/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-reverse-document",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 2,
+    "path": ".agents/skills/cgs-reverse-document/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-review-all-gdds",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "subagent_type",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 8,
+    "path": ".agents/skills/cgs-review-all-gdds/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-scope-check",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "AskUserQuestion"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-scope-check/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-security-audit",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-security-audit/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-settings",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "AskUserQuestion"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-settings/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-setup-engine",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 14,
+    "path": ".agents/skills/cgs-setup-engine/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-skill-improve",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-skill-improve/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-skill-test",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-skill-test/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-smoke-check",
+    "status": "Validado em runtime",
+    "scope": "Adapter explícito: quick somente leitura; automação PASS, gate NOT ASSESSED",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion"
+    ],
+    "support_files_read": 7,
+    "path": "oak-studio/compat/skills/cgs-smoke-check/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-soak-test",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-soak-test/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-sprint-plan",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-sprint-plan/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-sprint-status",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-sprint-status/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-start",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-start/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-story-done",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion"
+    ],
+    "support_files_read": 5,
+    "path": ".agents/skills/cgs-story-done/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-story-readiness",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion"
+    ],
+    "support_files_read": 3,
+    "path": ".agents/skills/cgs-story-readiness/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-team-audio",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "subagent_type",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-team-audio/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-team-combat",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "subagent_type",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-team-combat/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-team-level",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "subagent_type",
+      "AskUserQuestion"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-team-level/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-team-live-ops",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "subagent_type",
+      "AskUserQuestion"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-team-live-ops/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-team-narrative",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "subagent_type",
+      "AskUserQuestion"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-team-narrative/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-team-polish",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "subagent_type",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-team-polish/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-team-qa",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "subagent_type",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-team-qa/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-team-release",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "subagent_type",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-team-release/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-team-ui",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "subagent_type",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-team-ui/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-tech-debt",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-tech-debt/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-test-evidence-review",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-test-evidence-review/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-test-flakiness",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-test-flakiness/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-test-helpers",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-test-helpers/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-test-setup",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 7,
+    "path": ".agents/skills/cgs-test-setup/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-ux-design",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion"
+    ],
+    "support_files_read": 8,
+    "path": ".agents/skills/cgs-ux-design/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-ux-review",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-ux-review/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-vertical-slice",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-vertical-slice/SKILL.md"
+  },
+  {
+    "kind": "Skill",
+    "name": "cgs-write-changelog",
+    "status": "Incompatível ou pendente",
+    "scope": "Descoberta nativa OK; workflow original não portado integralmente",
+    "native_discovered": true,
+    "legacy_dependencies": [
+      "CLAUDE_SKILL_DIR",
+      "yaml-helper.sh",
+      "!`",
+      "AskUserQuestion",
+      "project.yaml"
+    ],
+    "support_files_read": 1,
+    "path": ".agents/skills/cgs-write-changelog/SKILL.md"
+  }
+]

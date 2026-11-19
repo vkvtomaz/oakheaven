@@ -1,0 +1,928 @@
+{
+  "agents": [
+    {
+      "name": "cgs_accessibility_specialist",
+      "path": ".codex\\agents\\cgs_accessibility_specialist.toml",
+      "description": "Accessibility standards and assistive features \u2014 remapping, text scaling, colorblind modes, screen"
+    },
+    {
+      "name": "cgs_ai_programmer",
+      "path": ".codex\\agents\\cgs_ai_programmer.toml",
+      "description": "Implements game AI \u2014 behavior trees, state machines, pathfinding, perception, decision-making, NPC"
+    },
+    {
+      "name": "cgs_analytics_engineer",
+      "path": ".codex\\agents\\cgs_analytics_engineer.toml",
+      "description": "Telemetry and analytics \u2014 event tracking, player behavior, A/B test frameworks, dashboard specific"
+    },
+    {
+      "name": "cgs_art_director",
+      "path": ".codex\\agents\\cgs_art_director.toml",
+      "description": "Owns visual identity \u2014 style guides, art bible, asset standards, color palettes, UI visual directi"
+    },
+    {
+      "name": "cgs_audio_director",
+      "path": ".codex\\agents\\cgs_audio_director.toml",
+      "description": "Owns sonic identity \u2014 music direction, sound palette, audio implementation strategy, mix balance."
+    },
+    {
+      "name": "cgs_community_manager",
+      "path": ".codex\\agents\\cgs_community_manager.toml",
+      "description": "Player-facing communication \u2014 patch notes, social posts, community updates, feedback collection, p"
+    },
+    {
+      "name": "cgs_creative_director",
+      "path": ".codex\\agents\\cgs_creative_director.toml",
+      "description": "Highest creative authority \u2014 vision, tone, aesthetic direction. Use when a decision affects game i"
+    },
+    {
+      "name": "cgs_devops_engineer",
+      "path": ".codex\\agents\\cgs_devops_engineer.toml",
+      "description": "Build pipelines, CI/CD configuration, version control workflow, branching strategy, automated test"
+    },
+    {
+      "name": "cgs_economy_designer",
+      "path": ".codex\\agents\\cgs_economy_designer.toml",
+      "description": "Resource economies \u2014 loot tables, sink/faucet analysis, progression curve calibration, economic ba"
+    },
+    {
+      "name": "cgs_engine_programmer",
+      "path": ".codex\\agents\\cgs_engine_programmer.toml",
+      "description": "Core engine systems \u2014 rendering pipeline, physics, memory, resource loading, scene management, per"
+    },
+    {
+      "name": "cgs_game_designer",
+      "path": ".codex\\agents\\cgs_game_designer.toml",
+      "description": "Mechanical and systems design \u2014 core loops, progression, combat, economy, player-facing rules. Mec"
+    },
+    {
+      "name": "cgs_gameplay_programmer",
+      "path": ".codex\\agents\\cgs_gameplay_programmer.toml",
+      "description": "Implements designed mechanics as code \u2014 player systems, combat, interactive features, gameplay sys"
+    },
+    {
+      "name": "cgs_godot_csharp_specialist",
+      "path": ".codex\\agents\\cgs_godot_csharp_specialist.toml",
+      "description": "Godot 4 C# quality \u2014 .NET patterns, attribute-based exports, signal delegates, async patterns, typ"
+    },
+    {
+      "name": "cgs_godot_gdextension_specialist",
+      "path": ".codex\\agents\\cgs_godot_gdextension_specialist.toml",
+      "description": "Native code integration with Godot \u2014 GDExtension API, godot-cpp and godot-rust bindings, custom no"
+    },
+    {
+      "name": "cgs_godot_gdscript_specialist",
+      "path": ".codex\\agents\\cgs_godot_gdscript_specialist.toml",
+      "description": "GDScript code quality \u2014 static typing enforcement, signal architecture, coroutine patterns, GDScri"
+    },
+    {
+      "name": "cgs_godot_shader_specialist",
+      "path": ".codex\\agents\\cgs_godot_shader_specialist.toml",
+      "description": "Godot rendering customization \u2014 shading language, visual shaders, material setup, particle shaders"
+    },
+    {
+      "name": "cgs_godot_specialist",
+      "path": ".codex\\agents\\cgs_godot_specialist.toml",
+      "description": "Authority on Godot-specific patterns and APIs \u2014 node/scene architecture, signals, resources; guide"
+    },
+    {
+      "name": "cgs_lead_programmer",
+      "path": ".codex\\agents\\cgs_lead_programmer.toml",
+      "description": "Lead programmer \u2014 code-level architecture, coding standards, code review, API design, refactoring"
+    },
+    {
+      "name": "cgs_level_designer",
+      "path": ".codex\\agents\\cgs_level_designer.toml",
+      "description": "Spatial design for levels and areas \u2014 encounter layouts, pacing, difficulty, layout planning, envi"
+    },
+    {
+      "name": "cgs_live_ops_designer",
+      "path": ".codex\\agents\\cgs_live_ops_designer.toml",
+      "description": "Post-launch content \u2014 seasonal events, battle passes, content cadence, retention, engagement analy"
+    },
+    {
+      "name": "cgs_localization_lead",
+      "path": ".codex\\agents\\cgs_localization_lead.toml",
+      "description": "Internationalization architecture \u2014 i18n system design, string extraction workflows, locale testin"
+    },
+    {
+      "name": "cgs_narrative_director",
+      "path": ".codex\\agents\\cgs_narrative_director.toml",
+      "description": "Story architecture, world-building, character design, dialogue strategy. Narrative structure and d"
+    },
+    {
+      "name": "cgs_network_programmer",
+      "path": ".codex\\agents\\cgs_network_programmer.toml",
+      "description": "Multiplayer networking \u2014 state replication, lag compensation, matchmaking, network protocol, netco"
+    },
+    {
+      "name": "cgs_performance_analyst",
+      "path": ".codex\\agents\\cgs_performance_analyst.toml",
+      "description": "Performance analyst \u2014 profiling, bottlenecks, memory analysis, frame time investigation, recommend"
+    },
+    {
+      "name": "cgs_producer",
+      "path": ".codex\\agents\\cgs_producer.toml",
+      "description": "Production concerns \u2014 sprint planning, milestone tracking, risk, scope, cross-department coordinat"
+    },
+    {
+      "name": "cgs_prototyper",
+      "path": ".codex\\agents\\cgs_prototyper.toml",
+      "description": "Throwaway builds \u2014 concept prototypes after brainstorm to test an idea is fun before GDDs; vertica"
+    },
+    {
+      "name": "cgs_qa_lead",
+      "path": ".codex\\agents\\cgs_qa_lead.toml",
+      "description": "Test strategy and process \u2014 test plan creation, bug severity assessment, regression planning, rele"
+    },
+    {
+      "name": "cgs_qa_tester",
+      "path": ".codex\\agents\\cgs_qa_tester.toml",
+      "description": "Writes test cases, bug reports, and checklists \u2014 test case generation, regression checklist creati"
+    },
+    {
+      "name": "cgs_release_manager",
+      "path": ".codex\\agents\\cgs_release_manager.toml",
+      "description": "Release pipeline \u2014 certification checklists, store submissions and page prep, platform requirement"
+    },
+    {
+      "name": "cgs_security_engineer",
+      "path": ".codex\\agents\\cgs_security_engineer.toml",
+      "description": "Protects against cheating, exploits, breaches \u2014 anti-cheat measures, secure save data and network"
+    },
+    {
+      "name": "cgs_sound_designer",
+      "path": ".codex\\agents\\cgs_sound_designer.toml",
+      "description": "SFX specifications and spec sheets \u2014 audio event documentation, mixing parameters, sound category"
+    },
+    {
+      "name": "cgs_systems_designer",
+      "path": ".codex\\agents\\cgs_systems_designer.toml",
+      "description": "Detailed subsystem mechanics \u2014 combat formulas, progression curves, crafting recipes, status effec"
+    },
+    {
+      "name": "cgs_technical_artist",
+      "path": ".codex\\agents\\cgs_technical_artist.toml",
+      "description": "Technical artist bridging art and engineering \u2014 shaders, VFX, rendering optimization, art pipeline"
+    },
+    {
+      "name": "cgs_technical_director",
+      "path": ".codex\\agents\\cgs_technical_director.toml",
+      "description": "High-level technical decisions \u2014 engine architecture, technology choices, performance strategy, te"
+    },
+    {
+      "name": "cgs_tools_programmer",
+      "path": ".codex\\agents\\cgs_tools_programmer.toml",
+      "description": "Internal dev tools \u2014 editor extensions, content authoring tools, debug utilities, pipeline automat"
+    },
+    {
+      "name": "cgs_ue_blueprint_specialist",
+      "path": ".codex\\agents\\cgs_ue_blueprint_specialist.toml",
+      "description": "Blueprint architecture and Blueprint/C++ boundary \u2014 optimization, maintainable graphs. Prevents Bl"
+    },
+    {
+      "name": "cgs_ue_gas_specialist",
+      "path": ".codex\\agents\\cgs_ue_gas_specialist.toml",
+      "description": "Gameplay Ability System \u2014 abilities, gameplay effects, attribute sets, tags, ability tasks, predic"
+    },
+    {
+      "name": "cgs_ue_replication_specialist",
+      "path": ".codex\\agents\\cgs_ue_replication_specialist.toml",
+      "description": "Unreal networking \u2014 property replication, RPCs, client prediction, relevancy, net serialization, b"
+    },
+    {
+      "name": "cgs_ue_umg_specialist",
+      "path": ".codex\\agents\\cgs_ue_umg_specialist.toml",
+      "description": "Unreal UI implementation \u2014 UMG widget hierarchy, data binding, CommonUI input routing, widget styl"
+    },
+    {
+      "name": "cgs_ui_programmer",
+      "path": ".codex\\agents\\cgs_ui_programmer.toml",
+      "description": "Implements user interface systems \u2014 menus, HUDs, inventory screens, dialogue boxes, UI framework c"
+    },
+    {
+      "name": "cgs_unity_addressables_specialist",
+      "path": ".codex\\agents\\cgs_unity_addressables_specialist.toml",
+      "description": "Unity asset management \u2014 Addressable groups, loading/unloading, content catalogs, remote delivery"
+    },
+    {
+      "name": "cgs_unity_dots_specialist",
+      "path": ".codex\\agents\\cgs_unity_dots_specialist.toml",
+      "description": "Unity Data-Oriented Technology Stack \u2014 Entity Component System, Jobs, Burst compiler optimization"
+    },
+    {
+      "name": "cgs_unity_shader_specialist",
+      "path": ".codex\\agents\\cgs_unity_shader_specialist.toml",
+      "description": "Unity rendering \u2014 Shader Graph, custom HLSL, VFX Graph, render pipeline customization (URP/HDRP)"
+    },
+    {
+      "name": "cgs_unity_specialist",
+      "path": ".codex\\agents\\cgs_unity_specialist.toml",
+      "description": "Authority on Unity-specific patterns and APIs \u2014 guides MonoBehaviour vs DOTS/ECS, Unity subsystems"
+    },
+    {
+      "name": "cgs_unity_ui_specialist",
+      "path": ".codex\\agents\\cgs_unity_ui_specialist.toml",
+      "description": "Unity UI implementation \u2014 UI Toolkit (UXML/USS), UGUI Canvas, data binding, runtime UI performance"
+    },
+    {
+      "name": "cgs_unreal_specialist",
+      "path": ".codex\\agents\\cgs_unreal_specialist.toml",
+      "description": "Authority on Unreal-specific patterns and APIs \u2014 guides Blueprint vs C++, UE subsystems (GAS, Enha"
+    },
+    {
+      "name": "cgs_ux_designer",
+      "path": ".codex\\agents\\cgs_ux_designer.toml",
+      "description": "User experience flows, interaction design, information architecture \u2014 user flow mapping, interacti"
+    },
+    {
+      "name": "cgs_world_builder",
+      "path": ".codex\\agents\\cgs_world_builder.toml",
+      "description": "World builder for lore \u2014 factions, cultures, history, geography, ecology, world rules. Faction des"
+    },
+    {
+      "name": "cgs_writer",
+      "path": ".codex\\agents\\cgs_writer.toml",
+      "description": "Writer of player-facing text \u2014 dialogue, lore entries, item and ability descriptions, environmenta"
+    }
+  ],
+  "skills": [
+    {
+      "name": "cgs-adopt",
+      "path": ".agents\\skills\\cgs-adopt\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-architecture-decision",
+      "path": ".agents\\skills\\cgs-architecture-decision\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-architecture-review",
+      "path": ".agents\\skills\\cgs-architecture-review\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-art-bible",
+      "path": ".agents\\skills\\cgs-art-bible\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-asset-audit",
+      "path": ".agents\\skills\\cgs-asset-audit\\SKILL.md",
+      "legacy_dependencies": []
+    },
+    {
+      "name": "cgs-asset-spec",
+      "path": ".agents\\skills\\cgs-asset-spec\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-balance-check",
+      "path": ".agents\\skills\\cgs-balance-check\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-brainstorm",
+      "path": ".agents\\skills\\cgs-brainstorm\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-bug-report",
+      "path": ".agents\\skills\\cgs-bug-report\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-bug-triage",
+      "path": ".agents\\skills\\cgs-bug-triage\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-changelog",
+      "path": ".agents\\skills\\cgs-changelog\\SKILL.md",
+      "legacy_dependencies": []
+    },
+    {
+      "name": "cgs-code-review",
+      "path": ".agents\\skills\\cgs-code-review\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-consistency-check",
+      "path": ".agents\\skills\\cgs-consistency-check\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-content-audit",
+      "path": ".agents\\skills\\cgs-content-audit\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-create-architecture",
+      "path": ".agents\\skills\\cgs-create-architecture\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-create-control-manifest",
+      "path": ".agents\\skills\\cgs-create-control-manifest\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-create-epics",
+      "path": ".agents\\skills\\cgs-create-epics\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-create-stories",
+      "path": ".agents\\skills\\cgs-create-stories\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-cut",
+      "path": ".agents\\skills\\cgs-cut\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-day-one-patch",
+      "path": ".agents\\skills\\cgs-day-one-patch\\SKILL.md",
+      "legacy_dependencies": []
+    },
+    {
+      "name": "cgs-design-review",
+      "path": ".agents\\skills\\cgs-design-review\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-design-system",
+      "path": ".agents\\skills\\cgs-design-system\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-dev-story",
+      "path": ".agents\\skills\\cgs-dev-story\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-estimate",
+      "path": ".agents\\skills\\cgs-estimate\\SKILL.md",
+      "legacy_dependencies": []
+    },
+    {
+      "name": "cgs-gate-check",
+      "path": ".agents\\skills\\cgs-gate-check\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-help",
+      "path": ".agents\\skills\\cgs-help\\SKILL.md",
+      "legacy_dependencies": []
+    },
+    {
+      "name": "cgs-hotfix",
+      "path": ".agents\\skills\\cgs-hotfix\\SKILL.md",
+      "legacy_dependencies": [
+        "subagent_type"
+      ]
+    },
+    {
+      "name": "cgs-launch-checklist",
+      "path": ".agents\\skills\\cgs-launch-checklist\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-localize",
+      "path": ".agents\\skills\\cgs-localize\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-map-systems",
+      "path": ".agents\\skills\\cgs-map-systems\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-milestone-review",
+      "path": ".agents\\skills\\cgs-milestone-review\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-next-step",
+      "path": ".agents\\skills\\cgs-next-step\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-onboard",
+      "path": ".agents\\skills\\cgs-onboard\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-patch-notes",
+      "path": ".agents\\skills\\cgs-patch-notes\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-perf-profile",
+      "path": ".agents\\skills\\cgs-perf-profile\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-playtest-report",
+      "path": ".agents\\skills\\cgs-playtest-report\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-project-settings",
+      "path": ".agents\\skills\\cgs-project-settings\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh"
+      ]
+    },
+    {
+      "name": "cgs-project-stage-detect",
+      "path": ".agents\\skills\\cgs-project-stage-detect\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-propagate-design-change",
+      "path": ".agents\\skills\\cgs-propagate-design-change\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-prototype",
+      "path": ".agents\\skills\\cgs-prototype\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-qa-plan",
+      "path": ".agents\\skills\\cgs-qa-plan\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-quick-design",
+      "path": ".agents\\skills\\cgs-quick-design\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-regression-suite",
+      "path": ".agents\\skills\\cgs-regression-suite\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-release-checklist",
+      "path": ".agents\\skills\\cgs-release-checklist\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-retrospective",
+      "path": ".agents\\skills\\cgs-retrospective\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-reverse-document",
+      "path": ".agents\\skills\\cgs-reverse-document\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-review-all-gdds",
+      "path": ".agents\\skills\\cgs-review-all-gdds\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`",
+        "subagent_type"
+      ]
+    },
+    {
+      "name": "cgs-scope-check",
+      "path": ".agents\\skills\\cgs-scope-check\\SKILL.md",
+      "legacy_dependencies": []
+    },
+    {
+      "name": "cgs-security-audit",
+      "path": ".agents\\skills\\cgs-security-audit\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-settings",
+      "path": ".agents\\skills\\cgs-settings\\SKILL.md",
+      "legacy_dependencies": []
+    },
+    {
+      "name": "cgs-setup-engine",
+      "path": ".agents\\skills\\cgs-setup-engine\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-skill-improve",
+      "path": ".agents\\skills\\cgs-skill-improve\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-skill-test",
+      "path": ".agents\\skills\\cgs-skill-test\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-smoke-check",
+      "path": ".agents\\skills\\cgs-smoke-check\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-soak-test",
+      "path": ".agents\\skills\\cgs-soak-test\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-sprint-plan",
+      "path": ".agents\\skills\\cgs-sprint-plan\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-sprint-status",
+      "path": ".agents\\skills\\cgs-sprint-status\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-start",
+      "path": ".agents\\skills\\cgs-start\\SKILL.md",
+      "legacy_dependencies": []
+    },
+    {
+      "name": "cgs-story-done",
+      "path": ".agents\\skills\\cgs-story-done\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-story-readiness",
+      "path": ".agents\\skills\\cgs-story-readiness\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-team-audio",
+      "path": ".agents\\skills\\cgs-team-audio\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`",
+        "subagent_type"
+      ]
+    },
+    {
+      "name": "cgs-team-combat",
+      "path": ".agents\\skills\\cgs-team-combat\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`",
+        "subagent_type"
+      ]
+    },
+    {
+      "name": "cgs-team-level",
+      "path": ".agents\\skills\\cgs-team-level\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`",
+        "subagent_type"
+      ]
+    },
+    {
+      "name": "cgs-team-live-ops",
+      "path": ".agents\\skills\\cgs-team-live-ops\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`",
+        "subagent_type"
+      ]
+    },
+    {
+      "name": "cgs-team-narrative",
+      "path": ".agents\\skills\\cgs-team-narrative\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`",
+        "subagent_type"
+      ]
+    },
+    {
+      "name": "cgs-team-polish",
+      "path": ".agents\\skills\\cgs-team-polish\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`",
+        "subagent_type"
+      ]
+    },
+    {
+      "name": "cgs-team-qa",
+      "path": ".agents\\skills\\cgs-team-qa\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`",
+        "subagent_type"
+      ]
+    },
+    {
+      "name": "cgs-team-release",
+      "path": ".agents\\skills\\cgs-team-release\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`",
+        "subagent_type"
+      ]
+    },
+    {
+      "name": "cgs-team-ui",
+      "path": ".agents\\skills\\cgs-team-ui\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`",
+        "subagent_type"
+      ]
+    },
+    {
+      "name": "cgs-tech-debt",
+      "path": ".agents\\skills\\cgs-tech-debt\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-test-evidence-review",
+      "path": ".agents\\skills\\cgs-test-evidence-review\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-test-flakiness",
+      "path": ".agents\\skills\\cgs-test-flakiness\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-test-helpers",
+      "path": ".agents\\skills\\cgs-test-helpers\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-test-setup",
+      "path": ".agents\\skills\\cgs-test-setup\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-ux-design",
+      "path": ".agents\\skills\\cgs-ux-design\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-ux-review",
+      "path": ".agents\\skills\\cgs-ux-review\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-vertical-slice",
+      "path": ".agents\\skills\\cgs-vertical-slice\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    },
+    {
+      "name": "cgs-write-changelog",
+      "path": ".agents\\skills\\cgs-write-changelog\\SKILL.md",
+      "legacy_dependencies": [
+        "CLAUDE_SKILL_DIR",
+        "yaml-helper.sh",
+        "!`"
+      ]
+    }
+  ]
+}

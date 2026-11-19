@@ -1,0 +1,4 @@
+{
+  "failure": "app-server exited 1",
+  "stderr": "WARNING: failed to clean up stale arg0 temp dirs: Acesso negado. (os error 5)\nWARNING: proceeding, even though we could not create PATH aliases: Acesso negado. (os error 5) at path \"C:\\\\Users\\\\ACER\\\\.codex\\\\tmp\\\\arg0-windows\\\\codex-arg0zJ6WcO\"\nError: failed to initialize sqlite state runtime under C:\\Users\\ACER\\.codex: failed to initialize state runtime at C:\\Users\\ACER\\.codex: failed to open state DB at C:\\Users\\ACER\\.codex\\state_5.sqlite: error returned from database: (code: 14) unable to open database file: error returned from database: (code: 14) unable to open database file: (code: 14) unable to open database file\n"
+}

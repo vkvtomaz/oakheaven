@@ -2,7 +2,7 @@ import { Graphics, type Text } from 'pixi.js';
 
 import type { Game } from '../core/Game';
 import type { Scene } from '../core/Scene';
-import { drawCircle, drawRect, drawText } from '../core/draw';
+import { drawText } from '../core/draw';
 import {
   DAYLIGHT_WARNING_SECONDS,
   finishExpedition,
@@ -51,6 +51,9 @@ export class EnhancedPlatformScene implements Scene {
   private highRoute = false;
   private stumbleTicks = 0;
   private statusTicks = 0;
+  private landingDust!: Graphics;
+  private landingDustTicks = 0;
+  private airborne = false;
   private readonly goingBack: boolean;
 
   constructor(goingBack: boolean) {
@@ -76,8 +79,8 @@ export class EnhancedPlatformScene implements Scene {
     }
     highGuide.stroke({
       color: THEME.colors.sanctuaryGlow,
-      width: 3,
-      alpha: 0.42,
+      width: 1,
+      alpha: 0.16,
     });
     this.layers.groundDecals.addChild(highGuide);
 
@@ -86,17 +89,22 @@ export class EnhancedPlatformScene implements Scene {
     }
 
     for (const mud of LOW_ROUTE_MUD) {
-      drawRect(
-        this.layers.groundDecals,
-        mud.x,
-        mud.y,
-        mud.width,
-        mud.height,
-        0x49372d
-      );
+      // Readable mud shoulders follow the unchanged slow-zone bounds.
+      const patch = new Graphics()
+        .moveTo(mud.x, mud.y + 5)
+        .lineTo(mud.x + 18, mud.y)
+        .lineTo(mud.x + mud.width * 0.56, mud.y + 2)
+        .lineTo(mud.x + mud.width - 15, mud.y - 1)
+        .lineTo(mud.x + mud.width, mud.y + 6)
+        .lineTo(mud.x + mud.width - 20, mud.y + mud.height + 4)
+        .lineTo(mud.x + 12, mud.y + mud.height + 2)
+        .closePath()
+        .fill({ color: 0x302e25, alpha: 0.82 });
       for (let x = mud.x + 12; x < mud.x + mud.width; x += 24) {
-        drawCircle(this.layers.groundDecals, x, mud.y + 2, 5, 0x30271f);
+        patch.ellipse(x, mud.y + 5, 9, 2)
+          .stroke({ color: 0x8b8770, width: 0.7, alpha: 0.35 });
       }
+      this.layers.groundDecals.addChild(patch);
     }
 
     drawText(
@@ -147,6 +155,12 @@ export class EnhancedPlatformScene implements Scene {
     );
     this.player.zIndex = this.player.y;
     stage.addChild(this.player);
+    // This is landing feedback only: the oblique SE atlas is not a side-view
+    // run/jump cycle. Keep the existing actor until lateral frames are authored.
+    this.landingDust = new Graphics();
+    this.landingDust.eventMode = 'none';
+    this.landingDust.visible = false;
+    this.layers.vfx.addChild(this.landingDust);
 
     drawHudPanel(this.layers.hud, 8, 7, 944, 92, 0.92);
     drawText(
@@ -213,6 +227,21 @@ export class EnhancedPlatformScene implements Scene {
     this.statusTicks = ticks;
   }
 
+  private showLandingDust(color = 0xa89a75): void {
+    this.landingDust.clear().position.set(this.player.x, this.player.y);
+    for (let index = 0; index < 6; index++) {
+      const side = index < 3 ? -1 : 1;
+      const distance = 7 + index % 3 * 5;
+      this.landingDust
+        .ellipse(side * distance, -2 - index % 3 * 2, 5 - index % 3, 1.7)
+        .fill({ color, alpha: 0.42 });
+    }
+    this.landingDust.scale.set(1);
+    this.landingDust.alpha = 1;
+    this.landingDust.visible = true;
+    this.landingDustTicks = 15;
+  }
+
   private collectBonus(game: Game): void {
     if (!this.bonusGraphic) return;
     const distance = Math.hypot(
@@ -223,10 +252,17 @@ export class EnhancedPlatformScene implements Scene {
     this.bonusGraphic.removeFromParent();
     this.bonusGraphic.destroy({ children: true, context: true });
     this.bonusGraphic = null;
+    this.showLandingDust(THEME.colors.sanctuaryGlow);
     this.setStatus('Atalho dominado: +1 madeira para as defesas!', 180);
   }
 
   update(game: Game, dt: number): void {
+    if (this.landingDustTicks > 0) {
+      this.landingDustTicks = Math.max(0, this.landingDustTicks - dt);
+      this.landingDust.alpha = this.landingDustTicks / 15;
+      this.landingDust.scale.set(1 + (1 - this.landingDust.alpha) * 0.45);
+      this.landingDust.visible = this.landingDustTicks > 0;
+    }
     const remaining = game.state.expedition.remainingSeconds;
     this.clockText.text = `ANOITECER: ${formatClock(remaining)}`;
     this.clockText.tint = remaining <= DAYLIGHT_WARNING_SECONDS
@@ -290,6 +326,7 @@ export class EnhancedPlatformScene implements Scene {
     this.player.y = nextY;
 
     if (landed) {
+      if (this.airborne) this.showLandingDust();
       const landedHigh = landed.y < TRAVERSAL_GROUND;
       if (landedHigh) {
         this.highRoute = true;
@@ -306,6 +343,7 @@ export class EnhancedPlatformScene implements Scene {
         this.highRoute = false;
       }
     }
+    this.airborne = !landed && !this.standingSurface();
 
     this.player.zIndex = this.player.y;
     this.player.alpha = this.stumbleTicks > 0 ? 0.58 : 1;

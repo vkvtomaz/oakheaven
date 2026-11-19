@@ -1,3 +1,4 @@
+import { CombatFeedback } from '../visual/combatFeedback';
 import { Graphics, type Text } from 'pixi.js';
 
 import type { Game } from '../core/Game';
@@ -56,6 +57,8 @@ import {
 } from '../systems/alphaBoss';
 import { VISUAL_ASSETS } from '../visual/assets';
 import { createActor, paintArena } from '../visual/art';
+import { animateKaelenActor } from '../visual/kaelenArt';
+import type { KaelenAnimation } from '../visual/kaelenAnimation';
 import {
   createSceneLayers,
   type SceneLayers,
@@ -120,8 +123,11 @@ interface PendingSpawn {
 
 export class LastStandScene implements Scene {
   private layers!: SceneLayers;
+  private feedback!: CombatFeedback;
   private readonly waves: WaveSystem;
   private player!: Graphics;
+  private playerAnimation!: KaelenAnimation;
+  private playerMoved = false;
   private chargeIndicator!: Graphics;
   private hud!: Text;
   private status!: Text;
@@ -155,6 +161,7 @@ export class LastStandScene implements Scene {
 
   enter(game: Game): void {
     this.layers = createSceneLayers(game.app.stage);
+    this.feedback = new CombatFeedback(this.layers.vfx);
     const stage = this.layers.entities;
 
     paintArena(this.layers);
@@ -188,6 +195,7 @@ export class LastStandScene implements Scene {
     }
 
     this.player = createActor('hero', 58);
+    this.playerAnimation = animateKaelenActor(this.player);
     this.player.position.set(KAELEN_START.x, KAELEN_START.y);
     this.player.zIndex = this.player.y;
     stage.addChild(this.player);
@@ -498,14 +506,9 @@ export class LastStandScene implements Scene {
     }
 
     enemy.hp -= effectiveDamage;
+    this.feedback.hurt(enemy.graphic);
     if (enemy.hp <= 0) {
-      this.addEffect(
-        game,
-        new Graphics()
-          .circle(enemy.x, enemy.y, 22)
-          .stroke({ color: ENEMY_STATS[enemy.kind].color, width: 5 }),
-        10
-      );
+      this.feedback.death(enemy.graphic, ENEMY_STATS[enemy.kind].color);
       this.removeEnemy(game, enemy);
       game.state.defeatedEnemies++;
       return;
@@ -635,6 +638,8 @@ export class LastStandScene implements Scene {
 
   private damageTower(tower: TowerState, damage: number): void {
     tower.hp = Math.max(0, tower.hp - damage);
+    const graphic = this.towerGraphics.get(tower.id);
+    if (graphic) this.feedback.hurt(graphic, 0xf1ac84);
     this.refreshTowerHealth(tower);
   }
 
@@ -642,10 +647,16 @@ export class LastStandScene implements Scene {
     const dx = target.x - enemy.x;
     const dy = target.y - enemy.y;
     const magnitude = Math.hypot(dx, dy);
+    const previousX = enemy.x;
+    const previousY = enemy.y;
     if (magnitude > 0) {
       const step = Math.min(distance, magnitude);
       enemy.x += dx / magnitude * step;
       enemy.y += dy / magnitude * step;
+    }
+    // Use logical displacement even before the scene synchronizes the sprite.
+    if (Math.hypot(enemy.x - previousX, enemy.y - previousY) > 0.1) {
+      this.feedback.travel(enemy.graphic, enemy.x, enemy.y);
     }
     return magnitude;
   }
@@ -667,7 +678,9 @@ export class LastStandScene implements Scene {
       0,
       game.state.kaelen.hp - enemy.baseDamage * 3
     );
+    this.feedback.attack(enemy.graphic, this.player.x, this.player.y);
     this.playerInvulnerability = PLAYER_INVULNERABILITY;
+    this.playerAnimation.hurt(this.player.x - enemy.x, this.player.y - enemy.y);
     this.repairProgress = 0;
     this.repairTargetId = null;
     this.repairLockedUntilRelease = true;
@@ -682,6 +695,9 @@ export class LastStandScene implements Scene {
     this.player.y += dy / magnitude * 24;
     enemy.x -= dx / magnitude * 10;
     enemy.y -= dy / magnitude * 10;
+    // Knockback obeys the same boundaries/obstacles immediately, including a fatal hit.
+    this.resolvePlayerCollisions(game);
+    this.player.zIndex = this.player.y;
     this.setStatus('Kaelen foi atingido! Reparo interrompido.', 60);
   }
 
@@ -737,6 +753,7 @@ export class LastStandScene implements Scene {
       );
       if (barricade) {
         if (enemy.attackCooldown <= 0) {
+          this.feedback.attack(enemy.graphic, barricade.x, barricade.y);
           this.damageTower(
             barricade,
             enemy.kind === 'alpha'
@@ -777,6 +794,7 @@ export class LastStandScene implements Scene {
         );
         if (distance <= enemy.radius + 25) {
           if (enemy.attackCooldown <= 0) {
+            this.feedback.attack(enemy.graphic, target.x, target.y);
             this.damageTower(
               target,
               enemy.kind === 'brute' ? 18 : 12
@@ -854,6 +872,8 @@ export class LastStandScene implements Scene {
           Math.hypot(enemy.x - tower.x, enemy.y - tower.y) <=
           enemy.radius + 25
         ) {
+          const graphic = this.towerGraphics.get(tower.id);
+          if (graphic) this.feedback.tower(tower.type, graphic, enemy.x, enemy.y);
           this.damageEnemy(game, enemy, stats.damage * 0.12);
         }
       }
@@ -872,6 +892,8 @@ export class LastStandScene implements Scene {
     );
     if (tower.cooldown > 0 || targets.length === 0) return;
     tower.cooldown = stats.fireInterval;
+    const towerGraphic = this.towerGraphics.get(tower.id);
+    if (towerGraphic) this.feedback.tower(tower.type, towerGraphic, targets[0]!.x, targets[0]!.y);
 
     if (tower.type === 'arc_ballista') {
       game.audio.play('ballista');
@@ -977,6 +999,8 @@ export class LastStandScene implements Scene {
   }
 
   private updatePlayer(game: Game, dt: number): void {
+    const previousX = this.player.x;
+    const previousY = this.player.y;
     let dx = 0;
     let dy = 0;
     if (game.input.isDown('KeyA', 'ArrowLeft')) dx--;
@@ -1002,6 +1026,8 @@ export class LastStandScene implements Scene {
     );
     this.resolvePlayerCollisions(game);
     this.player.zIndex = this.player.y;
+    // Animate actual travel, not held input while blocked by a tower or world edge.
+    this.playerMoved = Math.hypot(this.player.x - previousX, this.player.y - previousY) > 0.001;
 
     this.playerInvulnerability = Math.max(
       0,
@@ -1132,6 +1158,7 @@ export class LastStandScene implements Scene {
 
   private playerAttack(game: Game): void {
     this.attackCooldown = BASIC_ATTACK_COOLDOWN;
+    this.playerAnimation.attack(this.lastDirection.x, this.lastDirection.y);
     game.audio.play('kaelenAttack');
     const angle = Math.atan2(this.lastDirection.y, this.lastDirection.x);
     const cleave = new Graphics()
@@ -1188,6 +1215,7 @@ export class LastStandScene implements Scene {
 
   private playerGroundBreak(game: Game): void {
     this.attackCooldown = BASIC_ATTACK_COOLDOWN;
+    this.playerAnimation.attack(this.lastDirection.x, this.lastDirection.y, true);
     this.groundBreakCooldown = GROUND_BREAK_COOLDOWN;
     game.audio.play('groundBreak');
 
@@ -1494,6 +1522,8 @@ export class LastStandScene implements Scene {
   }
 
   update(game: Game, dt: number): void {
+    this.feedback.update(dt);
+    this.playerMoved = false;
     if (this.waves.phase === 'combat') {
       if (this.introRemaining > 0) {
         this.updateIntro(game, dt);
@@ -1514,6 +1544,12 @@ export class LastStandScene implements Scene {
       this.status.text =
         'Defenda o santuario e intercepte os flanqueadores!';
     }
+    this.playerAnimation.update(dt, {
+      moving: this.playerMoved,
+      directionX: this.lastDirection.x,
+      directionY: this.lastDirection.y,
+      charging: this.attackCharging,
+    });
     this.updateHUD(game);
   }
 }

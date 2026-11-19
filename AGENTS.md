@@ -24,3 +24,33 @@ Transformar o jogo **já existente** em uma versão visualmente apresentável, u
 - Não pedir confirmação a cada alteração reversível e não destrutiva; interromper apenas para bloqueios realmente críticos ou aprovações que o ambiente exigir.
 - Entrega: indicar arquivos alterados, imagens efetivamente usadas, aspectos ainda provisórios, comandos realmente executados, screenshot (se disponível), problemas e como iniciar o jogo.
 <!-- OAK-VISUAL-NIGHT:END -->
+
+<!-- OAK-CODEX-STUDIO:START -->
+## OAKHEAVEN Codex Full Game Studio (ported from Claude Code Game Studios)
+
+The current project is **OAKHEAVEN**, an existing PixiJS/TypeScript dark-fantasy game.
+This instruction supplements, not replaces, any existing project instructions above/below it.
+
+- Full upstream studio source (read-only reference): `oak-studio/upstream/`.
+- Native Codex subagents: `.codex/agents/cgs_*.toml`.
+- Native Codex Skills: `.agents/skills/cgs-*/SKILL.md` (invoke with `$cgs-<workflow>`).
+- Index, limitations and migration status: `oak-studio/MIGRATION-REPORT.md` and `oak-studio/INDEX.md`.
+- Upstream project-specific docs are **templates**, not OAKHEAVEN facts. Analyze real code and `img/` before acting.
+
+### Operating rules
+
+1. Prefer `minimal` mode for small tasks, `standard` for gameplay/visual development, `full` only for major milestones. These are workflow choices, not automatically enforced Codex settings.
+2. Keep max **3 simultaneous subagents**; delegate independent tasks, do not use all roles at once.
+3. Preserve game mechanics (PixiJS, input, economy, towers, enemies, acts, collisions, state progression), website and existing artwork. Never reset the project or replace it with the upstream template.
+4. For visual work, inspect available `img/` assets, implement in the running game, check browser screenshots if accessible; if not, report NOT VALIDATED VISUALLY. No screenshot fabrication.
+5. For gameplay or animation, require an actual movement/state test. A static translated PNG is not an animated sprite sheet.
+6. Keep small edits focused; use existing tests and run build. Only claim test results actually observed.
+7. Existing OAKHEAVEN `AGENTS.md` instructions and explicit user instructions win over contradictory upstream workflow prompts.
+8. Do not execute upstream hooks/scripts without inspecting them for compatibility and safety. Hooks from Claude are **preserved, not enabled** by this port.
+9. Do not commit, push, deploy, delete files or run destructive git commands unless the user specifically authorizes the action.
+10. Keep a durable progress log in `docs/OAK-STUDIO-PROGRESS.md` when an extensive mission ends. Respect existing logs.
+
+### Example mission
+`Use $cgs-dev-story for a small feature while a cgs_gameplay_programmer implements it, with independent QA validation. Avoid changing unrelated scenes.`
+
+<!-- OAK-CODEX-STUDIO:END -->
