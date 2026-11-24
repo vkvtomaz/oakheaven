@@ -118,3 +118,9 @@
 - git ls-remote origin falhou: fatal: unable to access 'https://github.com/vkvtomaz/oakheaven.git/': SSL certificate OpenSSL verify result: self-signed certificate in certificate chain (19). Git usa OpenSSL/ca-bundle.crt do Git e credential.helper=manager. Credenciais/permissoes/protecao da branch nao puderam ser verificadas devido ao TLS; gh indisponivel.
 - Nao encontrados .github/workflows, .vercel ou vercel.json na raiz. Integracao externa de deploy nao confirmada. Sandbox desta sessao mantem .git somente leitura e elevacao desabilitada; nao houve contorno, mudanca de SSL, commit ou push.
 - Validacao: npm test 72/72; npm run build aprovado (inclui tsc). Proxima acao: operador liberar escrita .git/rede GitHub no ambiente e corrigir confianca da cadeia TLS com certificado CA oficial do ambiente; repetir ls-remote, verificar remoto e publicar somente apos liberar esses bloqueios.
+
+## 2026-11-24 - Publicacao oficial retomada
+- Coordenador apenas. Portal, Codice, trailer e videos Hero HD publicados em `origin/main` no commit `06f4d69`; push sem force e sem alterar SSL. `HEAD`, `origin/main` e `git ls-remote origin refs/heads/main` confirmaram `06f4d690c28804aa21d400c45c6c7e3d507555b4`.
+- Validacao repetida antes do commit: `npm.cmd test` 72/72, `npx.cmd tsc --noEmit`, `npm.cmd run build`, verificadores de portal/video/travessia e `git diff --check` aprovados. Aviso Pixi preexistente no harness de travessia permaneceu sem falha.
+- Mecanismo existente: integracao externa Vercel apontada pelo repositorio para `https://oakheaven.vercel.app`; nao ha workflow/configuracao local de deploy versionada. O push em `main` disparou o mecanismo externo.
+- Verificacao HTTP do site publicado nao concluida: Schannel local retornou `SEC_E_NO_CREDENTIALS`. Sem repeticao, contorno de seguranca ou alegacao de validacao visual; confirmar a propagacao no painel/site Vercel continua pendente.
