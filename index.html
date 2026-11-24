@@ -21,17 +21,12 @@
           <path d="M24 39V14m0 10L14 15m10 5 9-9M24 29l-13-5m13 2 13-5M24 36l-9 7m9-7 9 7M10 34h28l-5 5H16Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
           <path d="m24 6 3 4-3 4-3-4Z" fill="currentColor"/>
         </svg>
-        <span>OAKHEAVEN<small>O último juramento</small></span>
+        <span>OAKHEAVEN <small>O último juramento</small></span>
       </a>
       <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="chapter-nav">Capítulos <span aria-hidden="true">☰</span></button>
       <nav class="site-nav" id="chapter-nav" aria-label="Navegação principal">
-        <a href="#arena">Arena</a>
-        <a href="#manual">Guia</a>
-        <a href="#cronica">Crônica</a>
-        <a href="#historia">História</a>
-        <a href="#forja">Forja</a>
-        <a href="#bestiario">Bestiário</a>
-      </nav>
+        <a href="#arena">Arena</a><button type="button" data-open-trailer>Trailer</button><a href="#manual">Guia</a><a href="#cronica">Crônica</a><a href="#codice">Códice</a>
+      </nav><button class="primary-action header-play" type="button" data-start-game>Jogar Agora</button>
     </header>
 
     <main>
@@ -40,26 +35,29 @@
         <div class="hero-embers" aria-hidden="true">
           <i></i><i></i><i></i><i></i><i></i><i></i>
         </div>
-        <div class="hero-copy">
+        <div class="hero-layout"><div class="hero-copy">
           <p class="eyebrow hero-prologue">Uma cidade caída. Uma forja ainda acesa.</p>
-          <h1 id="hero-title">OAK<span>HEAVEN</span></h1>
+          <span class="alpha-badge">Gameplay Pré-Alfa · 2026</span>
+          <h1 id="hero-title">OAK<span>HEAVEN</span></h1><p class="hero-subtitle">O Último Juramento</p>
           <p class="hero-oath">“Nenhuma criatura pisará onde eles descansam.”</p>
           <div class="hero-actions">
-            <button class="primary-action" data-start-game>Jogar agora</button>
-            <a class="text-action" href="#cronica">Abrir a crônica</a>
+            <button class="primary-action" data-start-game>Jogar Pré-Alfa</button>
+            <button class="text-action trailer-action" type="button" data-open-trailer>Assistir Trailer</button>
           </div>
         </div>
+        <button class="trailer-facade" id="trailer" type="button" data-open-trailer aria-label="Assistir Trailer Oficial de OakHeaven"><img id="trailer-thumb" loading="eager" alt="Prévia do trailer oficial de OakHeaven"><span class="trailer-play" aria-hidden="true">▶</span><span class="trailer-caption">TRAILER OFICIAL · 01:00</span></button></div>
         <a class="chapter-invitation" href="#arena">O juramento começa no santuário<span aria-hidden="true">⌁</span></a>
       </section>
 
       <section class="section arena-section" id="arena" aria-labelledby="arena-title">
+
+
+        <div class="arena-shell" id="arena-shell" data-reveal>
         <header class="section-heading arena-heading" data-reveal>
           <p class="eyebrow">O lugar onde a estrada termina</p>
           <h2 id="arena-title">Defenda o Santuário</h2>
           <p>Saia em busca de recursos. Volte antes do anoitecer. Mantenha o juramento.</p>
         </header>
-
-        <div class="arena-shell" id="arena-shell" data-reveal>
           <svg class="arena-corner corner-nw" viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M2 46V2h44M9 35V9h26M3 24l8-8 8-4" stroke="currentColor"/><path d="m7 3 5 5-4 4-5-5Z" fill="currentColor"/></svg>
           <svg class="arena-corner corner-ne" viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M2 46V2h44M9 35V9h26M3 24l8-8 8-4" stroke="currentColor"/></svg>
           <svg class="arena-corner corner-sw" viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M2 46V2h44M9 35V9h26M3 24l8-8 8-4" stroke="currentColor"/></svg>
@@ -84,14 +82,11 @@
               </div>
             </div>
           </div>
-          <div class="command-ribbon" aria-label="Comandos essenciais">
-            <span><kbd>1–5</kbd> Torres</span>
-            <span><kbd>Enter</kbd> Wave</span>
-            <span><kbd>E</kbd> Extrair / Reparar</span>
-            <span><kbd>Espaço</kbd> / <kbd>F</kbd> Atacar</span>
-            <span><kbd>R</kbd> Reiniciar</span>
-            <span><kbd>M</kbd> Áudio</span>
-          </div>
+          <div class="controls-dock" aria-label="Controles das três fases">
+  <section class="phase-card"><h3>I. Travessia &amp; Coleta</h3><div class="command-ribbon" aria-label="Controles contextuais"><span><kbd>A</kbd><kbd>D</kbd> Mover</span><span><kbd>Espaço</kbd> Pular</span></div><p><kbd>WASD</kbd> mover na floresta · <kbd>Segurar E</kbd> extrair</p></section>
+  <section class="phase-card"><h3>II. Defesa &amp; Waves</h3><p><kbd>1–5</kbd> Torres · <kbd>Enter</kbd> Wave</p><p><kbd>Shift</kbd> + clique: aprimorar Balesta/Barricada elegíveis</p></section>
+  <section class="phase-card"><h3>III. Combate Direto</h3><p><kbd>Espaço</kbd>/<kbd>F</kbd> Atacar · segurar para <strong>Quebra-Terra</strong></p><p><kbd>E</kbd> Reparar · <kbd>R</kbd> Reset · <kbd>M</kbd> Áudio</p></section>
+</div>
         </div>
 
         <div class="manual" id="manual" data-reveal>
@@ -126,7 +121,7 @@
       <section class="section chronicle-section" id="cronica" aria-labelledby="chronicle-title">
         <header class="section-heading chronicle-heading" data-reveal>
           <p class="eyebrow">Crônica de uma cidade caída</p>
-          <h2 id="chronicle-title">O último<br>juramento</h2>
+          <h2 id="chronicle-title">O último <br>juramento</h2>
         </header>
         <figure class="chronicle-panorama" data-reveal><img data-portal-art="oakAfter" alt="As ruínas de OakHeaven depois da invasão" loading="lazy"><figcaption>A cidade caiu.<br>A forja permaneceu.</figcaption></figure>
         <div class="timeline" data-reveal>
@@ -135,12 +130,11 @@
           <article><span>III</span><div><small>O último juramento</small><h3>Uma noite que não termina</h3><p>Sozinho na defesa, Kaelen transforma luto em metal, madeira e resistência.</p></div></article>
         </div>
         <blockquote class="chronicle-epigraph" data-reveal>“O metal lembra cada golpe. Eu também.”<cite>Kaelen, ferreiro de OakHeaven</cite></blockquote>
-      </section>
 
       <section class="section history-section" id="historia" aria-labelledby="history-title">
         <header class="section-heading editorial-heading" data-reveal>
           <p class="eyebrow">Território, raízes e memória</p>
-          <h2 id="history-title">Sob as raízes<br>de OakHeaven</h2>
+          <h2 id="history-title">Sob as raízes <br>de OakHeaven</h2>
         </header>
         <div class="history-copy" data-reveal>
           <p>OakHeaven nasceu ao redor de uma árvore ancestral, no encontro entre a estrada das montanhas e as rotas dos antigos ferreiros. Durante gerações, a cidade prosperou com madeira, minério e o trabalho de famílias que transformaram uma colina isolada em lar.</p>
@@ -156,36 +150,21 @@
           <input id="history-slider" type="range" min="0" max="100" value="50" aria-label="Comparar OakHeaven antes e depois da invasão" />
         </div>
         <p class="comparison-note">Um mesmo lugar, duas eras. Arraste o divisor ou use as setas do teclado para comparar.</p>
-        <header class="archive-heading"><p class="eyebrow">Pessoas e lugares</p><h3>O que merece permanecer</h3></header>
-        <div class="character-codex" data-reveal>
-          <div class="character-list" id="character-list" aria-label="Personagens e lugares"></div>
-          <article class="character-profile" id="character-profile" aria-live="polite"></article>
+
+      </section>
+
+      </section>
+      <section class="section codex-section" id="codice" aria-labelledby="codex-title">
+        <header class="codex-heading"><p class="eyebrow">Registros de ferro, memória e éter</p><h2 id="codex-title">Códice de OakHeaven</h2></header>
+        <div class="codex-tabs" role="tablist" aria-label="Arquivos do códice">
+          <button type="button" role="tab" id="codex-tab-forge" aria-controls="forja" aria-selected="true">Arsenal da Forja</button>
+          <button type="button" role="tab" id="codex-tab-beasts" aria-controls="bestiario" aria-selected="false">Bestiário de Éter</button>
+          <button type="button" role="tab" id="codex-tab-people" aria-controls="pessoas" aria-selected="false">Pessoas &amp; Lugares</button>
         </div>
+        <div class="codex-panel" id="forja" role="tabpanel" aria-labelledby="codex-tab-forge"><h3 id="forge-title" class="sr-only">O Livro da Forja</h3><div class="master-detail"><div id="forge-grid" class="codex-list" aria-label="Projetos da forja"></div><article id="forge-detail" class="inspection-panel" aria-live="polite"></article></div></div>
+        <div class="codex-panel" id="bestiario" role="tabpanel" aria-labelledby="codex-tab-beasts" hidden><h3 id="bestiary-title" class="sr-only">Arquivo dos Ceifadores</h3><div class="bestiary-toolbar"><div class="bestiary-filters" role="group" aria-label="Tipo de registro"><button type="button" data-bestiary-filter="all" aria-pressed="true">Arquivo completo</button><button type="button" data-bestiary-filter="active" aria-pressed="false">Primeira noite</button><button type="button" data-bestiary-filter="expansion" aria-pressed="false">Conceitos futuros</button></div><p id="bestiary-count" aria-live="polite"></p></div><div class="master-detail"><div id="bestiary-grid" class="codex-list" aria-label="Criaturas"></div><article id="bestiary-detail" class="inspection-panel" aria-live="polite"></article></div></div>
+        <div class="codex-panel" id="pessoas" role="tabpanel" aria-labelledby="codex-tab-people" hidden><div class="master-detail"><div id="character-list" class="codex-list" aria-label="Personagens e lugares"></div><article id="character-profile" class="inspection-panel" aria-live="polite"></article></div></div>
       </section>
-
-      <section class="section forge-section" id="forja" aria-labelledby="forge-title">
-        <header class="section-heading editorial-heading" data-reveal>
-          <p class="eyebrow">Arsenal híbrido de defesa</p>
-          <h2 id="forge-title">O livro da Forja</h2>
-          <p>Madeira de OakHeaven, sucata humana e tecnologia dos próprios invasores.</p>
-        </header>
-        <div class="forge-ledger" id="forge-grid" data-reveal></div>
-        <p class="workshop-colophon">Cinco estruturas. Um mesmo propósito: manter a estrada longe do santuário.</p>
-      </section>
-
-      <section class="section bestiary-section" id="bestiario" aria-labelledby="bestiary-title">
-        <header class="section-heading editorial-heading" data-reveal>
-          <p class="eyebrow">Códice dos Ceifadores de Éter</p>
-          <h2 id="bestiary-title">Conhecer a presa é sobreviver</h2>
-        </header>
-        <div class="bestiary-toolbar"><div class="bestiary-filters" role="group" aria-label="Tipo de registro">
-          <button type="button" data-bestiary-filter="all" aria-pressed="true">Arquivo completo</button>
-          <button type="button" data-bestiary-filter="active" aria-pressed="false">Primeira noite</button>
-          <button type="button" data-bestiary-filter="expansion" aria-pressed="false">Conceitos futuros</button>
-        </div><p id="bestiary-count" aria-live="polite"></p></div>
-        <div class="bestiary-ledger" id="bestiary-grid" data-reveal></div>
-      </section>
-
 
     </main>
 
@@ -200,6 +179,7 @@
       <div id="codex-modal-content"></div>
     </dialog>
 
+    <dialog id="trailer-modal" class="trailer-modal" aria-labelledby="trailer-modal-title"><div class="trailer-modal-bar"><h2 id="trailer-modal-title">Trailer oficial · OakHeaven</h2><button type="button" id="trailer-close" aria-label="Fechar trailer">×</button></div><div id="trailer-player" class="trailer-player"></div></dialog>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

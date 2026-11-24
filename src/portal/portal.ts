@@ -4,14 +4,9 @@ import './identity.css';
 import './cinematic.css';
 import { setupHeroVideo } from './heroVideo';
 
-import {
-  BESTIARY,
-  CHARACTERS,
-  PORTAL_ASSETS,
-  TOWER_CODEX,
-  type BestiaryEntry,
-  type CharacterEntry,
-} from './codexData';
+import { PORTAL_ASSETS } from './codexData';
+import { setupCodex } from './codex';
+import { setupTrailer } from './trailer';
 
 export interface PortalOptions {
   startGame(): Promise<void>;
@@ -29,144 +24,6 @@ function required<T extends Element>(selector: string): T {
   return element;
 }
 
-function renderCharacter(profile: HTMLElement, entry: CharacterEntry): void {
-  profile.replaceChildren();
-  const image = document.createElement('img');
-  image.src = entry.image;
-  image.alt = entry.name;
-  const copy = document.createElement('div');
-  copy.innerHTML = `
-    <p class="eyebrow">${entry.epithet}</p>
-    <h3>${entry.name}</h3>
-    <blockquote>“${entry.quote}”</blockquote>
-    <p>${entry.description}</p>
-  `;
-  profile.append(image, copy);
-}
-
-function setupCharacters(): void {
-  const list = required<HTMLElement>('#character-list');
-  const profile = required<HTMLElement>('#character-profile');
-  let activeIndex = 0;
-  let transitionTimer = 0;
-
-  const swapCharacter = (entry: CharacterEntry): void => {
-    window.clearTimeout(transitionTimer);
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      renderCharacter(profile, entry);
-      return;
-    }
-    profile.classList.add('is-switching');
-    transitionTimer = window.setTimeout(() => {
-      renderCharacter(profile, entry);
-      profile.classList.remove('is-switching');
-    }, 190);
-  };
-
-  const buttons = CHARACTERS.map((entry, index) => {
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.className = 'character-tab';
-    button.setAttribute('aria-pressed', String(index === 0));
-    button.innerHTML = `<span>${String(index + 1).padStart(2, '0')}</span>${entry.name}<small>${entry.epithet}</small>`;
-    button.addEventListener('click', () => {
-      if (index === activeIndex) return;
-      activeIndex = index;
-      for (const item of buttons) item.setAttribute('aria-pressed', 'false');
-      button.setAttribute('aria-pressed', 'true');
-      swapCharacter(entry);
-    });
-    list.append(button);
-    return button;
-  });
-  renderCharacter(profile, CHARACTERS[0]);
-}
-
-function setupForge(): void {
-  const grid = required<HTMLElement>('#forge-grid');
-  grid.replaceChildren();
-  for (const [index, item] of TOWER_CODEX.entries()) {
-    const tower = item.definition;
-    const article = document.createElement('article');
-    article.className = 'forge-entry forge-' + tower.type;
-    article.innerHTML = `
-      <div class="forge-illustration"><img src="${item.image}" alt="${tower.name}" loading="lazy"><span>PROJETO ${String(index + 1).padStart(2, '0')}</span></div>
-      <div class="forge-copy">
-        <div class="forge-title"><div><small>${tower.placement === 'road' ? 'Estrutura de estrada' : 'Torre de margem'}</small><h3>${tower.name}</h3></div><b>${item.cost}</b></div>
-        <p>${item.role}</p>
-        <details class="forge-notes"><summary>Dados de engenharia</summary><dl>
-          <div><dt>Alcance</dt><dd>${tower.range} unidades</dd></div>
-          <div><dt>Dano</dt><dd>${tower.damage}</dd></div>
-          <div><dt>Intervalo</dt><dd>${tower.fireInterval === 0 ? 'Contato' : tower.fireInterval + ' ticks'}</dd></div>
-          <div><dt>Estrutura</dt><dd>${tower.maxHp} HP</dd></div>
-        </dl><p class="engineering-note">Valores básicos da estrutura. Consulte os aprimoramentos durante a defesa.</p></details>
-      </div>
-    `;
-    grid.append(article);
-  }
-}
-
-function renderBestiaryDetail(container: HTMLElement, entry: BestiaryEntry): void {
-  const badgeClass = entry.category === 'active' ? 'active' : 'expansion';
-  container.innerHTML = `
-    <div class="codex-detail-image"><img src="${entry.image}" alt="${entry.name}"></div>
-    <div class="codex-detail-copy">
-      <span class="codex-badge ${badgeClass}">${entry.category === 'expansion' ? 'Conceito futuro · ' : 'Primeira noite · '}${entry.designation}</span>
-      <h2 id="codex-modal-title">${entry.name}</h2>
-      <p>${entry.summary}</p>
-      <div class="codex-stats">${entry.stats.map((stat) => `<span><small>${stat.label}</small><strong>${stat.value}</strong></span>`).join('')}</div>
-      <h3>Nota de campo</h3><p>${entry.tactic}</p>
-    </div>
-  `;
-}
-
-function setupBestiary(): { modal: HTMLDialogElement } {
-  const grid = required<HTMLElement>('#bestiary-grid');
-  const modal = required<HTMLDialogElement>('#codex-modal');
-  const modalContent = required<HTMLElement>('#codex-modal-content');
-  const closeButton = required<HTMLButtonElement>('[data-close-modal]');
-  let opener: HTMLButtonElement | null = null;
-
-  grid.replaceChildren();
-  for (const entry of BESTIARY) {
-      const article = document.createElement('article');
-      article.className = `bestiary-entry ${entry.category}`;
-      article.innerHTML = `
-        <button type="button" aria-label="Abrir registro de ${entry.name}">
-          <div class="bestiary-image"><img src="${entry.image}" alt="" loading="lazy"><span class="specimen-status">${entry.category === 'active' ? 'Primeira noite' : 'Conceito futuro'}</span></div>
-          <div class="bestiary-copy"><small>${entry.designation}</small><h3>${entry.name}</h3><p>${entry.summary}</p><span class="record-link">Examinar registro</span></div>
-        </button>
-      `;
-      article.querySelector('button')?.addEventListener('click', () => {
-        opener = article.querySelector('button');
-        renderBestiaryDetail(modalContent, entry);
-        modal.showModal();
-        closeButton.focus();
-      });
-      grid.append(article);
-  }
-
-  closeButton.addEventListener('click', () => modal.close());
-  modal.addEventListener('close', () => opener?.focus());
-  modal.addEventListener('click', (event) => {
-    if (event.target === modal) modal.close();
-  });
-  const filters = [...document.querySelectorAll<HTMLButtonElement>('[data-bestiary-filter]')];
-  const count = required<HTMLElement>('#bestiary-count');
-  for (const filter of filters) filter.addEventListener('click', () => {
-    const category = filter.dataset.bestiaryFilter;
-    let visible = 0;
-    for (const entry of grid.querySelectorAll<HTMLElement>('.bestiary-entry')) {
-      entry.hidden = category !== 'all' && !entry.classList.contains(category!);
-      if (!entry.hidden) visible++;
-    }
-    for (const button of filters) button.setAttribute('aria-pressed', String(button === filter));
-    count.textContent = visible + ' registros no arquivo';
-  });
-  count.textContent = BESTIARY.length + ' registros no arquivo';
-  return { modal };
-}
-
 function setupHistory(): void {
   const comparison = required<HTMLElement>('#history-comparison');
   const before = required<HTMLImageElement>('#history-before');
@@ -181,8 +38,9 @@ function setupHistory(): void {
 }
 
 function setupManualTabs(): void {
-  const tabs = [...document.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
-  const panels = [...document.querySelectorAll<HTMLElement>('[role="tabpanel"]')];
+  const manual = required<HTMLElement>('#manual');
+  const tabs = [...manual.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+  const panels = [...manual.querySelectorAll<HTMLElement>('[role="tabpanel"]')];
   const activate = (tab: HTMLButtonElement): void => {
     for (const item of tabs) {
       item.setAttribute('aria-selected', String(item === tab));
@@ -240,7 +98,7 @@ function setupChapters(): void {
     header.classList.toggle('nav-open', open);
   });
   nav.addEventListener('click', (event) => {
-    if ((event.target as Element).closest('a')) closeNav();
+    if ((event.target as Element).closest('a,button')) closeNav();
   });
   header.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && header.classList.contains('nav-open')) {
@@ -295,10 +153,11 @@ export function setupPortal(options: PortalOptions): void {
   cover.src = PORTAL_ASSETS.cover;
   setupHeroVideo(required<HTMLVideoElement>('.hero-video'), required<HTMLElement>('#inicio'), PORTAL_ASSETS.cover);
 
-  setupCharacters();
-  setupForge();
+
+
   setupManualTabs();
-  const { modal } = setupBestiary();
+  const { modal } = setupCodex();
+  const trailerModal = setupTrailer();
   setupHistory();
   setupReveal();
   setupChapters();
@@ -326,7 +185,7 @@ export function setupPortal(options: PortalOptions): void {
   let gameStarting = false;
   let gameFocused = false;
 
-  const modalOpen = (): boolean => modal.open;
+  const modalOpen = (): boolean => modal.open || trailerModal.open;
   const setGameFocus = (focused: boolean): void => {
     gameFocused = focused && gameStarted && !modalOpen();
     shell.classList.toggle('has-game-focus', gameFocused);
@@ -334,6 +193,8 @@ export function setupPortal(options: PortalOptions): void {
       ? '<span></span> Arena em Foco — Comandos Ativos'
       : '<span></span> Clique na Arena para Controlar Kaelen';
   };
+
+  document.addEventListener('oakheaven:trailer-open', () => setGameFocus(false));
 
   const start = async (): Promise<void> => {
     arena.scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
@@ -383,7 +244,7 @@ export function setupPortal(options: PortalOptions): void {
     if (modalOpen()) {
       if (event.key === 'Tab') return;
       if (event.key === 'Escape') {
-        modal.close();
+        if (trailerModal.open) trailerModal.close(); else modal.close();
         event.preventDefault();
       }
       event.stopImmediatePropagation();
@@ -395,6 +256,7 @@ export function setupPortal(options: PortalOptions): void {
     }
     const target = event.target as Element | null;
     const portalControl = target?.closest?.('button,a,input,select,textarea,[contenteditable="true"]');
+    if (gameFocused && !portalControl && ['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(event.code)) event.preventDefault();
     if ((!gameFocused || portalControl) && GAME_KEYS.has(event.code)) {
       event.stopImmediatePropagation();
     }

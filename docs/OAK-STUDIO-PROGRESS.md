@@ -30,3 +30,6 @@ Coyote110ms/buffer100ms, recuperação visual e impacto breve com movimento redu
 
 ## 2026-11-19 - Portal cinematográfico A-E
 Reformulados header/Hero (wordmark aprovado preservado), arena/manual, Crônica/História, Forja/Bestiário e polimento responsivo; dados/canvas/cenas preservados. Direção cgs_art_director e integração pelo coordenador, sem apoio engine necessário. 72 testes + modelo DOM portal, tsc/build/diff-check aprovados. Navegador bloqueado previamente: aparência e interações nativas ainda exigem conferência manual. Estado em STUDIO-HANDOFF.md; sem commit/push/deploy.
+
+## 2026-11-24 - Portal compacto com trailer e Códice
+Implementado novo sistemaobsidiana/ferro/éter,Hero comtrailerfacade, dock3fases, narrativaunida e Códicemasterdetail/abas/hashlegado. Vídeoúnico/canvas/gameplay/assetspreservados.72testes+3harnesses,tsc/build/diffcheck aprovados. Aparência/resoluções/nativeUI pendentes sembrowser; detalhes em STUDIO-HANDOFF.md. Sem commit/push/deploy.

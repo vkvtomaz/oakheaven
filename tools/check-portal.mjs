@@ -55,6 +55,8 @@ class ElementModel extends EventTarget {
     return result;
   }
   querySelector(s) { return this.querySelectorAll(s)[0] ?? null; }
+  getElementById(id) { return this.querySelector('#' + id); }
+  click() { this.dispatchEvent(new Event('click')); }
   closest(s) { return this.matches(s) ? this : this.parentElement?.closest(s) ?? null; }
   contains(node) { return node === this || this.childNodes.some(n => n instanceof ElementModel && n.contains(node)); }
   focus() { documentModel.activeElement = this; this.dispatchEvent(new Event('focusin')); }
@@ -90,6 +92,11 @@ const ids = nodes.map(n => n.id);
 assert.equal(new Set(ids).size, ids.length, 'all static IDs are unique');
 for (const a of parseHtml(html).querySelectorAll('a')) if (a.hash.startsWith('#')) assert.ok(ids.includes(a.hash.slice(1)), a.hash);
 const original = execFileSync('git', ['show', 'HEAD:index.html'], { encoding: 'utf8' });
+assert.equal(html.match(/<video\b[^>]*>/)[0], original.match(/<video\b[^>]*>/)[0], 'original ambient video element attributes preserved');
+assert.equal(parseHtml(html).querySelectorAll('video').length, 1);
+assert.match(parseHtml(html).querySelector('.brand').textContent.replace(/\s+/g, ' '), /OAKHEAVEN O/);
+assert.ok(parseHtml(html).querySelector('#chronicle-title').textContent.includes(' juramento'));
+assert.ok(parseHtml(html).querySelector('#history-title').textContent.includes(' de OakHeaven'));
 assert.equal(html.match(/<h1 id="hero-title">[\s\S]*?<\/h1>/)[0], original.match(/<h1 id="hero-title">[\s\S]*?<\/h1>/)[0], 'approved title markup preserved');
 const normalize = text => text.replace(/\r\n/g, '\n');
 assert.ok(normalize(readFileSync('src/portal/identity.css', 'utf8')) === normalize(execFileSync('git', ['show', 'HEAD:src/portal/identity.css'], { encoding: 'utf8' })), 'approved wordmark CSS untouched');
@@ -105,26 +112,53 @@ try {
   documentModel.exitFullscreen = async () => { documentModel.fullscreenElement = null; documentModel.dispatchEvent(new Event('fullscreenchange')); };
   const media = new EventTarget(); media.matches = true;
   const windowModel = new EventTarget();
-  Object.assign(windowModel, { matchMedia: () => media, setTimeout, clearTimeout });
+  const location = { hash: '' };
+  Object.assign(windowModel, { matchMedia: () => media, setTimeout, clearTimeout, location, history: { pushState(_state, _title, hash) { location.hash = hash; } } });
   Object.assign(globalThis, { document: documentModel, window: windowModel, HTMLElement: ElementModel, Element: ElementModel });
   const { setupPortal } = await server.ssrLoadModule('/src/portal/portal.ts');
   const { TOWER_CODEX, BESTIARY } = await server.ssrLoadModule('/src/portal/codexData.ts');
   let starts = 0;
   setupPortal({ startGame: async () => { starts++; } });
   const q = s => documentModel.querySelector(s);
-  assert.equal(q('#forge-grid').querySelectorAll('article').length, 5);
-  TOWER_CODEX.forEach((entry, i) => assert.ok(q('#forge-grid').querySelectorAll('article')[i].textContent.includes(entry.cost), 'actual tower cost'));
+  assert.equal(q('#forge-grid').querySelectorAll('button').length, 5);
+  TOWER_CODEX.forEach((entry, i) => {
+    fire(q('#forge-grid').querySelectorAll('button')[i], 'click');
+    assert.ok(q('#forge-detail').textContent.includes(entry.cost), 'selected tower actual cost');
+    assert.ok(q('#forge-detail').textContent.includes(entry.definition.maxHp + ' HP'));
+  });
   const filters = documentModel.querySelectorAll('[data-bestiary-filter]');
   fire(filters[1], 'click');
-  assert.equal(q('#bestiary-grid').querySelectorAll('article').filter(n => !n.hidden).length, 3);
+  assert.equal(q('#bestiary-grid').querySelectorAll('button').filter(n => !n.hidden).length, 3);
   fire(filters[2], 'click');
-  assert.equal(q('#bestiary-grid').querySelectorAll('article').filter(n => !n.hidden).length, BESTIARY.filter(e => e.category === 'expansion').length);
-  for (const n of q('#bestiary-grid').querySelectorAll('.expansion')) assert.ok(n.textContent.includes('Conceito futuro'));
-  const opener = q('#bestiary-grid').querySelector('button'); fire(opener, 'click');
+  assert.equal(q('#bestiary-grid').querySelectorAll('button').filter(n => !n.hidden).length, BESTIARY.filter(e => e.category === 'expansion').length);
+  for (const n of q('#bestiary-grid').querySelectorAll('button').filter(n => !n.hidden)) assert.ok(n.textContent.includes('Conceito futuro'));
+  const opener = q('#bestiary-detail').querySelector('button'); fire(opener, 'click');
   assert.equal(q('#codex-modal').open, true);
   assert.ok(q('#codex-modal-title'));
   fire(q('[data-close-modal]'), 'click');
   assert.equal(q('#codex-modal').open, false); assert.equal(documentModel.activeElement, opener);
+  fire(filters[0], 'click');
+  fire(q('#bestiary-grid').querySelector('button'), 'click');
+  assert.deepEqual(q('#bestiary-detail').querySelectorAll('meter').map(n => n.value), ['45','100']);
+  const codexTabs = q('#codice').querySelectorAll('[role="tab"]');
+  fire(codexTabs[1], 'click');
+  assert.equal(q('#forja').hidden, true); assert.equal(q('#bestiario').hidden, false);
+  assert.equal(q('#manual-day').hidden, false, 'codex tabs never hide manual');
+  fire(codexTabs[1], 'keydown', { key: 'End' });
+  assert.equal(q('#pessoas').hidden, false); assert.ok(q('#character-profile').textContent.includes('Kaelen'));
+  location.hash = '#forja'; fire(windowModel, 'hashchange');
+  assert.equal(q('#forja').hidden, false); assert.equal(q('#pessoas').hidden, true);
+  assert.equal(q('#codice').lastScroll.block, 'start');
+  location.hash = '#bestiario'; fire(windowModel, 'hashchange'); assert.equal(q('#bestiario').hidden, false);
+  assert.equal(documentModel.querySelectorAll('video').length, 1);
+  assert.equal(documentModel.querySelectorAll('iframe').length, 0, 'no eager YouTube embed');
+  const trailerTrigger = q('[data-open-trailer]'); fire(trailerTrigger, 'click');
+  assert.equal(q('#trailer-modal').open, true);
+  assert.ok(q('#trailer-player').querySelector('iframe').src.includes('youtube-nocookie.com/embed/U2E1_p_46II'));
+  assert.equal(q('.hero-video').paused, true);
+  fire(windowModel, 'keydown', {key:'Escape', code:'Escape', target:q('#trailer-close')});
+  assert.equal(q('#trailer-modal').open, false); assert.equal(q('#trailer-player').querySelectorAll('iframe').length, 0);
+  assert.equal(documentModel.activeElement, trailerTrigger);
   const tabs = documentModel.querySelectorAll('[role="tab"]');
   fire(tabs[0], 'keydown', { key: 'End' });
   assert.equal(tabs[2].getAttribute('aria-selected'), 'true');
@@ -148,11 +182,13 @@ try {
   let inputReceived = 0; windowModel.addEventListener('keydown', () => inputReceived++);
   fire(windowModel, 'keydown', { code: 'KeyD', key: 'd', target: q('#game-frame') });
   assert.equal(inputReceived, 1, 'focused game gets input');
+  const jumpEvent = fire(windowModel, 'keydown', { code: 'Space', key: ' ', target: q('#game-frame') });
+  assert.equal(jumpEvent.defaultPrevented, true, 'focused arena prevents page scrolling');
   fire(windowModel, 'keydown', { code: 'Space', key: ' ', target: q('#theater-toggle') });
-  assert.equal(inputReceived, 1, 'portal button does not send a game action');
+  assert.equal(inputReceived, 2, 'portal button does not send a game action');
   fire(windowModel, 'keydown', { code: 'Escape', key: 'Escape', target: q('#game-frame') });
   fire(windowModel, 'keydown', { code: 'KeyD', key: 'd', target: q('#game-frame') });
-  assert.equal(inputReceived, 2, 'Escape reached input once, then inactive game is gated');
+  assert.equal(inputReceived, 3, 'Escape reached input once, then inactive game is gated');
   assert.equal(q('.hero-embers').classList.contains('is-paused'), true);
   console.log('PASS: portal IDs/anchors/assets, approved wordmark + Pixi startup unchanged, actual costs, filters/concept labels, modal focus restoration, manual keyboard selection, comparison, menu, theater/fullscreen handler state, start-once and input gating. DOM MODEL ONLY: no browser/layout/render validation.');
 } finally {

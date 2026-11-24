@@ -11,6 +11,7 @@ export function setupHeroVideo(video: HTMLVideoElement, hero: HTMLElement, poste
   const connection = (navigator as Navigator & { connection?: ResourceConnection }).connection;
   let visible = false;
   let gameActive = false;
+  let trailerOpen = false;
   let failed = false;
   let assigned = false;
   let pending = false;
@@ -25,7 +26,7 @@ export function setupHeroVideo(video: HTMLVideoElement, hero: HTMLElement, poste
   video.autoplay = false;
   video.preload = 'none';
 
-  const eligible = (): boolean => visible && !document.hidden && !gameActive && !failed
+  const eligible = (): boolean => visible && !document.hidden && !gameActive && !trailerOpen && !failed
     && !motion.matches && !connection?.saveData
     && !['slow-2g', '2g'].includes(connection?.effectiveType ?? '');
   const clearWatchdog = (): void => {
@@ -54,7 +55,10 @@ export function setupHeroVideo(video: HTMLVideoElement, hero: HTMLElement, poste
     if (pending) { resumeAfterPending = true; return; }
     if (!assigned) {
       const mobile = window.matchMedia('(max-width: 780px)').matches;
-      video.src = import.meta.env.BASE_URL + `media/oakheaven-hero-${mobile ? '720' : '1080'}.mp4?v=0ced5bfea188`;
+      const constrained = connection?.effectiveType === '3g';
+      const pixels = window.innerWidth * Math.min(window.devicePixelRatio || 1, 2);
+      const resolution = constrained ? '720' : !mobile && pixels > 1920 ? '2160' : '1080';
+      video.src = import.meta.env.BASE_URL + `media/oakheaven-hero-${resolution}.mp4?v=20261124-hq`;
       assigned = true;
     }
     if (!video.paused) return;
@@ -80,12 +84,18 @@ export function setupHeroVideo(video: HTMLVideoElement, hero: HTMLElement, poste
   video.addEventListener('stalled', waitForFrame);
   video.addEventListener('error', fallback);
   document.addEventListener('visibilitychange', synchronize);
+  document.addEventListener('oakheaven:trailer-open', () => { trailerOpen = true; synchronize(); });
+  document.addEventListener('oakheaven:trailer-close', () => { trailerOpen = false; synchronize(); });
   document.addEventListener('oakheaven:game-started', () => { gameActive = true; synchronize(); });
   motion.addEventListener('change', synchronize);
   connection?.addEventListener('change', synchronize);
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(([entry]) => {
-      visible = entry?.isIntersecting ?? false;
+      const nextVisible = entry?.isIntersecting ?? false;
+      // Returning to the Hero after leaving gameplay makes the background
+      // eligible again; a trailer dialog still suppresses it independently.
+      if (nextVisible && !visible) gameActive = false;
+      visible = nextVisible;
       synchronize();
     }, { threshold: .05 }).observe(hero);
   }
